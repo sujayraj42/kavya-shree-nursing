@@ -1,0 +1,138 @@
+/* ==========================================================================
+   Home Component Styles: iUniversity Adaptation
+   ========================================================================== */
+
+.hero-section {
+  min-height: 84vh;
+  padding: 80px 0 70px 0;
+  background: linear-gradient(135deg, #10161d 0%, #171f28 50%, #121820 100%);
+  display: flex;
+  align-items: center;
+}
+
+.content-div {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.spaces {
+  max-width: 580px;
+}
+
+/* Campus Hero Image Showcase (iUniversity Reference) */
+.hero-visual-frame {
+  position: relative;
+}
+
+.hero-image-card {
+  background-color: #171a1f;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-image-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 42px rgba(0, 0, 0, 0.5) !important;
+}
+
+.hero-campus-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.hero-image-caption {
+  background-color: #15181d !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hero-campus-meta {
+  font-size: 0.85rem;
+}
+
+/* Counter Container */
+.counter-container {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.counter-div {
+  display: flex;
+  flex-direction: column;
+}
+
+.counter-para {
+  font-size: 15px;
+  color: var(--color--gray);
+  font-weight: 600;
+}
+
+/* Visual Dossier Card */
+.ks-visual-card {
+  border-color: #e0e0e0;
+}
+
+.ks-visual-header {
+  background-color: var(--color--eeire-black) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ks-logo-img {
+  object-fit: contain;
+}
+
+.bg-stone {
+  background-color: #f7f7f7 !important;
+}
+
+/* Form Container */
+.form-container-box {
+  background-color: var(--color--eeire-black) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  border-color: var(--color--carrot-orange) !important;
+  box-shadow: 0 0 0 3px rgba(235, 150, 36, 0.3) !important;
+}
+
+/* Form controls retain a comfortable minimum target on touch screens. */
+.form-container-box .form-control,
+.form-container-box .form-select {
+  min-height: 44px;
+}
+
+@media (max-width: 991px) {
+  .hero-section {
+    padding: 60px 0 50px 0;
+    min-height: auto;
+  }
+
+  .hero-visual-frame {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .hero-image-caption {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 8px;
+  }
+
+  /* Keep Bootstrap's larger vertical gap without letting g-5 rows overrun the viewport. */
+  .hero-section .row.g-5,
+  .general-section .row.g-5 {
+    --bs-gutter-x: 1.5rem;
+  }
+}

@@ -1,0 +1,174 @@
+<header class="ks-site-header">
+  <!-- Top Institutional Bar (Pending Information Notice) -->
+  <div class="ks-top-bar py-1 d-none d-lg-block">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-4 small">
+        <span class="d-inline-flex align-items-center">
+          <svg class="me-1 text-accent opacity-75" width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+          </svg>
+          <strong class="text-white-50 me-1">Admissions Helpline:</strong>
+          <a href="tel:+919661666485" class="ks-topbar-link text-decoration-none">+91 96616 66485</a>
+          <span class="mx-1 text-white-50">/</span>
+          <a href="tel:+916287879239" class="ks-topbar-link text-decoration-none">62878 79239</a>
+        </span>
+        <span class="d-inline-flex align-items-center">
+          <strong class="text-white-50">Campus Email:</strong>
+          <span class="text-light ms-1">[Official Email Pending Confirmation]</span>
+        </span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <span class="ks-badge-header">Academic Session 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary Institutional Navigation Bar (iUniversity Dark Nav) -->
+  <nav class="navbar navbar-expand-xl py-2 py-xl-0" aria-label="Main Institutional Navigation">
+    <div class="container align-items-center">
+      <!-- Institutional Brand Identity & Official Logo -->
+      <a
+        class="navbar-brand d-flex align-items-center text-decoration-none py-1 py-xl-2"
+        routerLink="/"
+        (click)="selectSection('home')"
+        aria-label="Kavya Shree Institute of Nursing — Return to home"
+      >
+        <img
+          src="logo.png"
+          alt="Kavya Shree Institute of Nursing Official Logo"
+          class="ks-brand-logo me-2 me-sm-3"
+          width="48"
+          height="39"
+          loading="eager"
+        />
+        <div class="d-flex flex-column brand-text-col justify-content-center">
+          <span class="ks-brand-name">Kavya Shree Institute of Nursing</span>
+          <span class="ks-brand-tagline">Department of Nursing &amp; Health Sciences</span>
+        </div>
+      </a>
+
+      <!-- Mobile Navigation Hamburger Button -->
+      <button
+        class="navbar-toggler border-0 p-2 shadow-none"
+        type="button"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="isMenuOpen()"
+        aria-controls="primaryNavigationDrawer"
+        aria-label="Toggle navigation menu"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Collapsible Navigation Items -->
+      <div
+        class="collapse navbar-collapse"
+        [class.show]="isMenuOpen()"
+        id="primaryNavigationDrawer"
+      >
+        <ul class="navbar-nav ms-auto mb-2 mb-xl-0 align-items-xl-center">
+          <li class="nav-item">
+            <a
+              class="nav-link px-3"
+              [class.active]="activeSection() === 'home'"
+              routerLink="/"
+              (click)="selectSection('home')"
+            >
+              Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link px-3"
+              [class.active]="activeSection() === 'about'"
+              routerLink="/about"
+              (click)="selectSection('about')"
+            >
+              About Us
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link px-3"
+              [class.active]="activeSection() === 'courses' || activeSection() === 'programs'"
+              routerLink="/programs"
+              (click)="selectSection('courses')"
+            >
+              Academic Programs
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link px-3"
+              [class.active]="activeSection() === 'strengths'"
+              [routerLink]="['/']"
+              [fragment]="'strengths'"
+              (click)="selectSection('strengths')"
+            >
+              Educational Standards
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link px-3"
+              [class.active]="activeSection() === 'facilities'"
+              [routerLink]="['/']"
+              [fragment]="'facilities'"
+              (click)="selectSection('facilities')"
+            >
+              Facilities
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link px-3"
+              [class.active]="activeSection() === 'contact'"
+              routerLink="/contact"
+              (click)="selectSection('contact')"
+            >
+              Contact Us
+            </a>
+          </li>
+          <li class="nav-item ms-xl-3 my-2 my-xl-0">
+            <a
+              class="primary-btn header-cta-btn w-100"
+              routerLink="/admissions"
+              (click)="selectSection('admissions-enquiry')"
+            >
+              <span>Admission Enquiry</span>
+              <svg class="cta-arrow" width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Mobile Drawer Quick Helpline -->
+        <div class="mobile-drawer-contact mt-3 pt-3 border-top border-secondary border-opacity-25 d-xl-none">
+          <div class="d-flex flex-column gap-2">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-white-50 small">Admissions Helpline:</span>
+              <span class="small fw-semibold">
+                <a href="tel:+919661666485" class="ks-topbar-link text-decoration-none">+91 96616 66485</a>
+              </span>
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-white-50 small">Secondary Contact:</span>
+              <span class="small fw-semibold">
+                <a href="tel:+916287879239" class="ks-topbar-link text-decoration-none">+91 62878 79239</a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Backdrop Overlay when Drawer is open -->
+  @if (isMenuOpen()) {
+    <div
+      class="ks-nav-backdrop d-xl-none"
+      (click)="closeMenu()"
+      aria-hidden="true"
+    ></div>
+  }
+</header>

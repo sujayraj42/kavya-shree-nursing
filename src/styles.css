@@ -1,0 +1,903 @@
+/* ==========================================================================
+   Design Tokens & Global Styles: Kavya Shree Institute of Nursing
+   Art Direction: iUniversity Design System Reference
+   Typography: DM Serif Display & Plus Jakarta Sans
+   Palette: Eerie Black (#181818), Carrot Orange (#eb9624), Academic Blue (#124e9d)
+   ========================================================================== */
+
+:root {
+  /* Exact iUniversity Design Tokens */
+  --font--dm-serif: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --font--jakarta-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --color--eeire-black: #181818;
+  --color--black: #000000;
+  --color--carrot-orange: #eb9624;
+  --color--blue: #124e9d;
+  --color--gray: #4f4f4f;
+  --color--gray-light: #6e7074;
+  --color--white: #ffffff;
+  --color--white-80: rgba(255, 255, 255, 0.8);
+  --color--white-60: rgba(255, 255, 255, 0.6);
+
+  /* Component Aliases for Backward Compatibility */
+  --ks-ink: var(--color--eeire-black);
+  --ks-teal: var(--color--blue);
+  --ks-orange: var(--color--carrot-orange);
+  --ks-font-serif: var(--font--dm-serif);
+  --ks-font-sans: var(--font--jakarta-sans);
+  --ks-text-main: #181818;
+  --ks-text-muted: #4f4f4f;
+  --ks-bg-paper: #fafafa;
+  --ks-bg-white: #ffffff;
+  --ks-bg-stone: #f4f4f4;
+  --ks-rule: #e5e5e5;
+  --ks-rule-strong: #d0d0d0;
+
+  /* Standard iUniversity Geometry */
+  --round-4: 4px;
+  --ks-radius-sm: 4px;
+
+  /* Focus Indicator (WCAG 2.2 AA) */
+  --ks-focus-ring: 0 0 0 3px rgba(235, 150, 36, 0.45);
+}
+
+/* Global Reset & Base Setup */
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+}
+
+/* Keep fragment destinations visible below the persistent institutional header. */
+main[id],
+section[id],
+#contact,
+#enquiry-form {
+  scroll-margin-top: 9rem;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: clip;
+  font-family: var(--font--jakarta-sans);
+  color: var(--color--gray);
+  background-color: var(--color--white);
+  font-size: 18px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Accessibility: Reduced Motion Preference */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Accessibility: Skip to Content */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  background-color: var(--color--carrot-orange);
+  color: #000000;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--round-4);
+  z-index: 9999;
+  text-decoration: none;
+  font-weight: 700;
+  transition: top 0.2s ease-in-out;
+}
+
+.skip-link:focus {
+  top: 1rem;
+  outline: 3px solid #000000;
+}
+
+/* Interactive Focus States */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  box-shadow: var(--ks-focus-ring) !important;
+}
+
+/* ==========================================================================
+   iUniversity Typography Hierarchy
+   ========================================================================== */
+
+.h1-heading {
+  font-family: var(--font--dm-serif);
+  text-transform: capitalize;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 56px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.h2-heading {
+  font-family: var(--font--dm-serif);
+  text-transform: capitalize;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 44px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.h3-heading {
+  font-family: var(--font--dm-serif);
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.h4-heading {
+  font-family: var(--font--dm-serif);
+  text-align: left;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.paragraph {
+  font-family: var(--font--jakarta-sans);
+  text-align: left;
+  margin-bottom: 0;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color--gray);
+}
+
+.large-para {
+  margin-bottom: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.small-para {
+  margin-bottom: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.extra-small-para {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Color Modifiers */
+.white {
+  color: var(--color--white) !important;
+}
+
+.black {
+  color: var(--color--black) !important;
+}
+
+.blue {
+  color: var(--color--blue) !important;
+}
+
+.orange {
+  color: var(--color--carrot-orange) !important;
+}
+
+.para-white {
+  color: var(--color--white-80) !important;
+  margin-bottom: 0;
+}
+
+.inline {
+  display: inline-block;
+}
+
+.center {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.round-4 {
+  border-radius: var(--round-4) !important;
+}
+
+/* Legacy Typography Classes */
+.ks-serif-heading {
+  font-family: var(--font--dm-serif);
+  font-weight: 400;
+  color: var(--color--eeire-black);
+}
+
+.ks-section-kicker {
+  font-family: var(--font--jakarta-sans);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color--carrot-orange);
+  margin-bottom: 0.5rem;
+}
+
+.ks-body-prose {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--color--gray);
+}
+
+/* ==========================================================================
+   iUniversity Button System
+   ========================================================================== */
+
+.primary-btn {
+  border: 2px solid var(--color--carrot-orange);
+  background-color: var(--color--carrot-orange);
+  font-family: var(--font--jakarta-sans);
+  color: var(--color--black);
+  text-transform: capitalize;
+  border-radius: var(--round-4);
+  padding: 14px 28px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.primary-btn:hover,
+.primary-btn:focus-visible {
+  background-color: #d88316;
+  border-color: #d88316;
+  color: var(--color--black);
+}
+
+.secondary-btn {
+  border: 2px solid var(--color--carrot-orange);
+  color: var(--color--carrot-orange);
+  background-color: transparent;
+  font-family: var(--font--jakarta-sans);
+  border-radius: var(--round-4);
+  padding: 14px 28px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.secondary-btn:hover,
+.secondary-btn:focus-visible {
+  background-color: var(--color--carrot-orange);
+  color: var(--color--black);
+}
+
+/* Button Container */
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  margin-top: 28px;
+}
+
+/* Button Classes for Compatibility */
+.btn-ks-primary {
+  border: 2px solid var(--color--carrot-orange);
+  background-color: var(--color--carrot-orange);
+  color: var(--color--black);
+  font-weight: 600;
+  border-radius: var(--round-4);
+}
+
+.btn-ks-primary:hover {
+  background-color: #d88316;
+  border-color: #d88316;
+  color: var(--color--black);
+}
+
+.btn-ks-secondary {
+  border: 2px solid var(--color--carrot-orange);
+  color: var(--color--carrot-orange);
+  background-color: transparent;
+  font-weight: 600;
+  border-radius: var(--round-4);
+}
+
+.btn-ks-secondary:hover {
+  background-color: var(--color--carrot-orange);
+  color: var(--color--black);
+}
+
+/* ==========================================================================
+   Section Spacing & Background Layouts
+   ========================================================================== */
+
+.general-section {
+  padding-top: 90px;
+  padding-bottom: 90px;
+}
+
+.general-section.cta-section {
+  background: linear-gradient(rgba(24, 24, 24, 0.92), rgba(24, 24, 24, 0.92)),
+              linear-gradient(135deg, #181818 0%, #0d2238 100%);
+  background-size: cover;
+}
+
+.general-section.testimonial-section {
+  background: linear-gradient(rgba(20, 20, 20, 0.94), rgba(20, 20, 20, 0.94)),
+              linear-gradient(180deg, #141414 0%, #1e1e1e 100%);
+  background-size: cover;
+}
+
+.general-section.footer-section {
+  background-color: var(--color--eeire-black);
+}
+
+/* Institutional Header Shared Shell */
+.ks-site-header {
+  background-color: var(--color--eeire-black);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+}
+
+.ks-top-bar {
+  background-color: #111111;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.8125rem;
+  color: var(--color--white-80);
+}
+
+.ks-topbar-link {
+  color: var(--color--white-80);
+  transition: color 0.15s ease;
+}
+
+.ks-topbar-link:hover,
+.ks-topbar-link:focus-visible {
+  color: var(--color--carrot-orange) !important;
+}
+
+.ks-badge-header {
+  font-size: 0.725rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color--carrot-orange);
+  background-color: rgba(235, 150, 36, 0.12);
+  border: 1px solid rgba(235, 150, 36, 0.28);
+  border-radius: var(--round-4);
+  padding: 0.2rem 0.6rem;
+}
+
+.ks-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 1025;
+}
+
+/* Institutional Header Brand & Elements */
+.ks-brand-logo {
+  height: 44px;
+  width: auto;
+  max-width: 52px;
+  object-fit: contain;
+  flex-shrink: 0;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.navbar-brand:hover .ks-brand-logo,
+.navbar-brand:focus-visible .ks-brand-logo {
+  transform: scale(1.03);
+}
+
+.ks-brand-name {
+  color: var(--color--white);
+  font-family: var(--font--dm-serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  margin-bottom: 2px;
+}
+
+.ks-brand-tagline {
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: var(--font--jakarta-sans);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.header-cta-btn {
+  background-color: var(--color--carrot-orange);
+  color: #000000;
+  font-family: var(--font--jakarta-sans);
+  font-weight: 600;
+  border-radius: var(--round-4);
+  border: 1px solid var(--color--carrot-orange);
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(235, 150, 36, 0.22);
+  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.header-cta-btn:hover {
+  background-color: #d88319;
+  border-color: #d88319;
+  color: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(235, 150, 36, 0.38);
+}
+
+.header-cta-btn:hover .cta-arrow {
+  transform: translateX(3px);
+}
+
+.header-cta-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(235, 150, 36, 0.2);
+}
+
+.cta-arrow {
+  transition: transform 0.15s ease;
+}
+
+/* Header Responsive Layout */
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+  .ks-brand-name {
+    font-size: 1.15rem;
+  }
+  .ks-brand-tagline {
+    font-size: 0.625rem;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .navbar-collapse {
+    background-color: #1a1a1a;
+    border-radius: var(--round-4);
+    padding: 0.85rem 1rem 1.15rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+    position: relative;
+    z-index: 1035;
+  }
+
+  .nav-link {
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    border-radius: var(--round-4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease, padding-left 0.15s ease;
+  }
+
+  .nav-link:hover,
+  .nav-link:focus-visible {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: var(--color--carrot-orange);
+    padding-left: 1.25rem;
+  }
+
+  .nav-link.active {
+    color: var(--color--carrot-orange);
+    font-weight: 600;
+    background-color: rgba(235, 150, 36, 0.1);
+    border-left: 3px solid var(--color--carrot-orange);
+    border-radius: 0 var(--round-4) var(--round-4) 0;
+    padding-left: 1.15rem;
+  }
+
+  .header-cta-btn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+    border-radius: var(--round-4);
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .ks-brand-name {
+    font-size: 1.125rem;
+  }
+  .ks-brand-tagline {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .navbar-brand {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+  }
+  .ks-brand-logo {
+    height: 38px;
+    max-width: 44px;
+  }
+  .ks-brand-name {
+    font-size: 1.0rem;
+    white-space: normal;
+    line-height: 1.2;
+  }
+  .ks-brand-tagline {
+    font-size: 0.6rem;
+    white-space: normal;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 374.98px) {
+  .ks-brand-logo {
+    height: 32px;
+    max-width: 38px;
+  }
+  .ks-brand-name {
+    font-size: 0.875rem;
+    line-height: 1.15;
+  }
+  .ks-brand-tagline {
+    font-size: 0.55rem;
+    letter-spacing: 0.03em;
+  }
+}
+
+.top-100 {
+  margin-top: 80px;
+}
+
+/* Administrative Memo Box */
+.ks-memorandum {
+  background-color: #f7f7f7;
+  border: 1px solid #e0e0e0;
+  border-left: 4px solid var(--color--blue);
+  border-radius: var(--round-4);
+  padding: 1.25rem 1.5rem;
+  font-size: 0.9rem;
+  color: var(--color--gray);
+}
+
+.ks-badge-memo {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color--blue);
+  background-color: rgba(18, 78, 157, 0.08);
+  border: 1px solid rgba(18, 78, 157, 0.2);
+  border-radius: var(--round-4);
+  padding: 0.2rem 0.55rem;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   Course Catalog & Program Cards (iUniversity System)
+   ========================================================================== */
+
+.tabs-menu {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tab-key {
+  background: #ffffff;
+  border: 1px solid #dbe0e6;
+  border-radius: var(--round-4);
+  padding: 10px 18px;
+  font-family: var(--font--jakarta-sans);
+  font-size: 0.90625rem;
+  font-weight: 600;
+  color: var(--color--gray);
+  cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s ease;
+}
+
+.tab-key:hover {
+  color: var(--color--eeire-black);
+  border-color: #b8c1cb;
+  background-color: #f8fafc;
+}
+
+.tab-key.w--current {
+  background-color: var(--color--eeire-black);
+  border-color: var(--color--eeire-black);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.tab-key.w--current .tab-key-count {
+  background-color: var(--color--carrot-orange);
+  color: #000000;
+}
+
+.tab-key-count {
+  font-size: 0.725rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background-color: #e9ecef;
+  color: #495057;
+  margin-left: 8px;
+  transition: all 0.18s ease;
+}
+
+.tab-key:focus-visible {
+  outline: 2px solid var(--color--carrot-orange) !important;
+  outline-offset: 2px;
+}
+
+.ks-course-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e5e9 !important;
+  border-radius: var(--round-4);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.ks-course-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08) !important;
+  border-color: #cbd2d9 !important;
+}
+
+.ks-card-header {
+  background-color: #ffffff;
+}
+
+.ks-card-badge-track {
+  font-family: var(--font--jakarta-sans);
+  font-size: 0.725rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color--blue);
+  background-color: rgba(18, 78, 157, 0.08);
+  border: 1px solid rgba(18, 78, 157, 0.2);
+  border-radius: var(--round-4);
+  padding: 0.25rem 0.65rem;
+}
+
+.ks-card-crest-watermark {
+  height: 24px;
+  width: auto;
+  opacity: 0.45;
+  filter: grayscale(1);
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.ks-course-card:hover .ks-card-crest-watermark {
+  opacity: 0.9;
+  filter: grayscale(0);
+}
+
+.ks-card-provisional-pill {
+  background-color: #fff9ed;
+  border: 1px solid #fed89b;
+  border-radius: var(--round-4);
+  padding: 0.4rem 0.65rem;
+  color: #7a4b04;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.ks-course-title {
+  font-family: var(--font--dm-serif);
+  font-size: 1.375rem;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--color--eeire-black);
+  min-height: 3.5rem;
+}
+
+.ks-course-category {
+  font-size: 0.875rem;
+}
+
+.ks-course-desc {
+  font-size: 0.90625rem;
+  line-height: 1.55;
+  color: var(--color--gray);
+  min-height: 4.5rem;
+}
+
+.ks-card-specs {
+  border-color: #edf0f2 !important;
+}
+
+.ks-card-specs div {
+  border-color: #f1f3f5 !important;
+}
+
+.card-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  width: 100%;
+  padding: 11px 18px;
+  background-color: #ffffff;
+  color: var(--color--eeire-black);
+  border: 1.5px solid #d8dde3;
+  border-radius: var(--round-4);
+  font-family: var(--font--jakarta-sans);
+  font-size: 0.90625rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-cta-btn:hover {
+  background-color: var(--color--eeire-black);
+  border-color: var(--color--eeire-black);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-cta-btn:hover .card-btn-icon {
+  transform: translate(2px, -2px);
+  color: var(--color--carrot-orange);
+}
+
+.card-cta-btn:focus-visible {
+  outline: 2px solid var(--color--carrot-orange) !important;
+  outline-offset: 2px;
+}
+
+.card-btn-icon {
+  transition: transform 0.18s ease, color 0.18s ease;
+}
+
+@media (max-width: 991.98px) {
+  .ks-course-title {
+    min-height: auto;
+    font-size: 1.25rem;
+  }
+  .ks-course-desc {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .tabs-menu {
+    gap: 6px;
+  }
+  .tab-key {
+    padding: 8px 14px;
+    font-size: 0.84rem;
+  }
+  .ks-course-title {
+    font-size: 1.15rem;
+    min-height: auto;
+  }
+  .ks-card-body {
+    padding: 1.25rem !important;
+  }
+}
+
+/* Responsive Scaling */
+.page-hero-banner {
+  background: linear-gradient(135deg, #10161d 0%, #171f28 50%, #121820 100%);
+  padding: 56px 0 48px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.breadcrumb-dark .breadcrumb-item {
+  font-size: 0.875rem;
+  font-family: var(--font--jakarta-sans);
+}
+
+.breadcrumb-dark .breadcrumb-link {
+  color: var(--color--carrot-orange);
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.breadcrumb-dark .breadcrumb-link:hover {
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+.breadcrumb-dark .breadcrumb-item.active {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.breadcrumb-dark .breadcrumb-item + .breadcrumb-item::before {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+@media screen and (max-width: 991px) {
+  .h1-heading {
+    font-size: 44px;
+  }
+
+  .h2-heading {
+    font-size: 34px;
+  }
+
+  .general-section {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .h1-heading {
+    font-size: 34px;
+  }
+
+  .h2-heading {
+    font-size: 28px;
+  }
+
+  .paragraph {
+    font-size: 16px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

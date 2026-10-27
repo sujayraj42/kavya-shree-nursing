@@ -1,0 +1,257 @@
+<!-- Contact Page: Kavya Shree Institute of Nursing -->
+
+<!-- Page Hero Banner -->
+<section class="page-hero-banner">
+  <div class="container">
+    <nav aria-label="Breadcrumb" class="mb-3">
+      <ol class="breadcrumb breadcrumb-dark mb-0">
+        <li class="breadcrumb-item"><a routerLink="/" class="breadcrumb-link">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Contact Us</li>
+      </ol>
+    </nav>
+    <h1 class="h1-heading white mb-2">Contact Admissions Desk</h1>
+    <p class="para-white spaces">
+      Reach our campus admissions desk for program inquiries, campus visitation, and candidate guidance.
+    </p>
+  </div>
+</section>
+
+<!-- Contact Content Section -->
+<section class="general-section bg-white">
+  <div class="container">
+    <div class="row g-5 align-items-stretch">
+      <!-- Left Column: Campus Details & Office Hours -->
+      <div class="col-lg-5">
+        <div class="map-div p-4 p-lg-5 bg-stone round-4 border h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="large-para blue mb-1">Campus Desk</div>
+            <h2 class="h2-heading black mb-3">Get in Touch</h2>
+            <p class="paragraph small mb-4">
+              Our campus admissions desk in Punpun assists prospective nursing students and guardians with information regarding the advertised 2026 academic term.
+            </p>
+
+            <div class="d-flex flex-column gap-4 mb-4">
+              <!-- Location Card -->
+              <div class="d-flex align-items-start gap-3">
+                <span class="badge bg-dark text-white p-2 round-4 mt-1">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+                <div>
+                  <strong class="d-block text-dark">Campus Address:</strong>
+                  <span class="text-dark fw-semibold">Punpun Station Road, opposite Manglam Marriage Hall</span>
+                  <span class="text-muted d-block small">PIN 804453, Patna District, Bihar</span>
+                  <span class="extra-small-para text-muted">[Advertised Campus Location &bull; Verification Pending]</span>
+                </div>
+              </div>
+
+              <!-- Phone Card -->
+              <div class="d-flex align-items-start gap-3">
+                <span class="badge bg-dark text-white p-2 round-4 mt-1">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </span>
+                <div>
+                  <strong class="d-block text-dark">Admissions Helplines:</strong>
+                  <div class="d-flex flex-column gap-1 mt-1">
+                    <a href="tel:+919661666485" class="text-dark fw-bold text-decoration-none">
+                      +91 96616 66485
+                    </a>
+                    <a href="tel:+916287879239" class="text-dark fw-bold text-decoration-none">
+                      +91 62878 79239
+                    </a>
+                  </div>
+                  <span class="extra-small-para text-muted mt-1 d-block">Available Monday – Saturday: 9:00 AM – 5:00 PM IST</span>
+                </div>
+              </div>
+
+              <!-- Email Card -->
+              <div class="d-flex align-items-start gap-3">
+                <span class="badge bg-dark text-white p-2 round-4 mt-1">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </span>
+                <div>
+                  <strong class="d-block text-dark">Institutional Inquiries:</strong>
+                  <span class="small text-muted">[Official Institutional Email Pending Confirmation]</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transparency Notice -->
+          <div class="ks-memorandum">
+            <strong class="d-block text-dark mb-1">Notice on Campus Visitation:</strong>
+            Campus tours and in-person consultations are arranged during advertised working hours. Statutory affiliation documents will be placed on physical display upon official notification.
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Message Form -->
+      <div class="col-lg-7">
+        <div class="form-container-box p-4 p-lg-5 bg-dark text-white round-4 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <h2 class="h4-heading white mb-2">Send an Inquiry</h2>
+            <p class="para-white small mb-4">
+              Have questions about program curricula or admission schedules? Fill out the inquiry form below for local validation.
+            </p>
+
+            @if (!isMessageSent()) {
+              <form (ngSubmit)="sendMessage()" novalidate class="d-flex flex-column gap-3">
+                @if (formValidationError()) {
+                  <div class="alert alert-danger py-2 px-3 small round-4 mb-2" role="alert">
+                    {{ formValidationError() }}
+                  </div>
+                }
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="contactName" class="form-label extra-small-para text-white-50 mb-1">
+                      Full Name <span class="text-warning">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="contactName"
+                      name="contactName"
+                      class="form-control bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
+                      placeholder="Your Full Name"
+                      [ngModel]="contactName()"
+                      (ngModelChange)="contactName.set($event)"
+                      [class.is-invalid]="nameError()"
+                      [attr.aria-invalid]="nameError() ? 'true' : null"
+                      [attr.aria-describedby]="nameError() ? 'contactNameError' : null"
+                      required
+                    />
+                    @if (nameError()) {
+                      <div id="contactNameError" class="invalid-feedback d-block extra-small-para text-warning">
+                        {{ nameError() }}
+                      </div>
+                    }
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="contactPhone" class="form-label extra-small-para text-white-50 mb-1">
+                      Contact Number <span class="text-warning">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      id="contactPhone"
+                      name="contactPhone"
+                      class="form-control bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
+                      placeholder="10-Digit Mobile Number"
+                      [ngModel]="contactPhone()"
+                      (ngModelChange)="contactPhone.set($event)"
+                      [class.is-invalid]="phoneError()"
+                      [attr.aria-invalid]="phoneError() ? 'true' : null"
+                      [attr.aria-describedby]="phoneError() ? 'contactPhoneError' : null"
+                      required
+                    />
+                    @if (phoneError()) {
+                      <div id="contactPhoneError" class="invalid-feedback d-block extra-small-para text-warning">
+                        {{ phoneError() }}
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="contactEmail" class="form-label extra-small-para text-white-50 mb-1">
+                      Email Address <span class="text-white-50">(Optional)</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="contactEmail"
+                      name="contactEmail"
+                      class="form-control bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
+                      placeholder="name@example.com"
+                      [ngModel]="contactEmail()"
+                      (ngModelChange)="contactEmail.set($event)"
+                      [class.is-invalid]="emailError()"
+                      [attr.aria-invalid]="emailError() ? 'true' : null"
+                      [attr.aria-describedby]="emailError() ? 'contactEmailError' : null"
+                    />
+                    @if (emailError()) {
+                      <div id="contactEmailError" class="invalid-feedback d-block extra-small-para text-warning">
+                        {{ emailError() }}
+                      </div>
+                    }
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="contactSubject" class="form-label extra-small-para text-white-50 mb-1">
+                      Subject / Topic <span class="text-white-50">(Optional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="contactSubject"
+                      name="contactSubject"
+                      class="form-control bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
+                      placeholder="e.g. B.Sc. Nursing Syllabus"
+                      [ngModel]="contactSubject()"
+                      (ngModelChange)="contactSubject.set($event)"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="contactMessage" class="form-label extra-small-para text-white-50 mb-1">
+                    Your Message / Question <span class="text-warning">*</span>
+                  </label>
+                  <textarea
+                    id="contactMessage"
+                    name="contactMessage"
+                    rows="4"
+                    class="form-control bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
+                    placeholder="Describe your inquiry or question regarding admissions, campus facilities, or courses"
+                    [ngModel]="contactMessage()"
+                    (ngModelChange)="contactMessage.set($event)"
+                    [class.is-invalid]="messageError()"
+                    [attr.aria-invalid]="messageError() ? 'true' : null"
+                    [attr.aria-describedby]="messageError() ? 'contactMessageError' : null"
+                    required
+                  ></textarea>
+                  @if (messageError()) {
+                    <div id="contactMessageError" class="invalid-feedback d-block extra-small-para text-warning">
+                      {{ messageError() }}
+                    </div>
+                  }
+                </div>
+
+                <div class="p-3 bg-secondary bg-opacity-10 border border-secondary border-opacity-25 round-4 extra-small-para text-white-50">
+                  <strong class="text-warning d-block mb-1">Demonstration Notice:</strong>
+                  This form is currently running in client-side demonstration mode. Inquiries are validated locally and are not transmitted across the internet to the institute.
+                </div>
+
+                <button type="submit" class="primary-btn w-100 justify-content-center mt-2">
+                  Validate &amp; Send Inquiry
+                </button>
+              </form>
+            } @else {
+              <div class="p-4 bg-secondary bg-opacity-10 border border-success border-opacity-50 round-4 text-center">
+                <div class="text-success mb-2">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                </div>
+                <h3 class="h4-heading white mb-2">Inquiry Validated</h3>
+                <p class="para-white small mb-3">
+                  Thank you, <strong>{{ contactName() }}</strong>. Your contact inquiry has been validated locally.
+                </p>
+                <div class="p-3 bg-dark round-4 border border-secondary border-opacity-25 text-start small mb-4">
+                  <div class="text-warning small mb-2 fw-semibold">Note: Client-side demonstration test. No data was sent over the network.</div>
+                  <div class="mb-1"><strong>Name:</strong> {{ contactName() }}</div>
+                  <div class="mb-1"><strong>Phone:</strong> {{ contactPhone() }}</div>
+                  <div class="mb-1"><strong>Email:</strong> {{ contactEmail() || 'Not provided' }}</div>
+                  <div><strong>Message:</strong> {{ contactMessage() }}</div>
+                </div>
+                <button type="button" class="secondary-btn w-100 justify-content-center" (click)="resetContactForm()">
+                  Send Another Inquiry
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

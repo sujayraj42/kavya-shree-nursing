@@ -1,0 +1,304 @@
+<!-- Admissions Page: Kavya Shree Institute of Nursing -->
+
+<!-- Page Hero Banner -->
+<section class="page-hero-banner">
+  <div class="container">
+    <nav aria-label="Breadcrumb" class="mb-3">
+      <ol class="breadcrumb breadcrumb-dark mb-0">
+        <li class="breadcrumb-item"><a routerLink="/" class="breadcrumb-link">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Admissions</li>
+      </ol>
+    </nav>
+    <h1 class="h1-heading white mb-2">Admissions &amp; Candidate Consultation</h1>
+    <p class="para-white spaces">
+      Information on the advertised 2026 academic term, student welfare facilitation, and candidate enquiry registration.
+    </p>
+  </div>
+</section>
+
+<!-- Admissions Process Notice -->
+<section class="general-section bg-white">
+  <div class="container">
+    <div class="row g-5 align-items-stretch">
+      <!-- Left Column: Guidelines & Contact Desk -->
+      <div class="col-lg-5">
+        <div class="map-div p-4 p-lg-5 bg-stone round-4 border h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="large-para blue mb-1">Session 2026 Guidelines</div>
+            <h2 class="h2-heading black mb-3">Admissions Overview</h2>
+            <p class="paragraph small mb-4">
+              Prospective candidates and guardians can register an initial enquiry. Official prospectus release, syllabus details, and admission scheduling will be initiated following the statutory gazette notification.
+            </p>
+
+            <div class="d-flex flex-column gap-3 mb-4">
+              <div class="d-flex align-items-start gap-3">
+                <span class="badge bg-dark text-white p-2 round-4 mt-1">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+                <div>
+                  <strong class="d-block text-dark small">Campus Admissions Desk:</strong>
+                  <span class="small text-dark fw-semibold">Punpun Station Road, opposite Manglam Marriage Hall</span>
+                  <span class="small text-muted d-block">PIN 804453, Patna District, Bihar</span>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-start gap-3">
+                <span class="badge bg-dark text-white p-2 round-4 mt-1">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </span>
+                <div>
+                  <strong class="d-block text-dark small">Helpline Numbers:</strong>
+                  <span class="small text-dark fw-bold">
+                    <a href="tel:+919661666485" class="text-dark text-decoration-none">+91 96616 66485</a>,
+                    <a href="tel:+916287879239" class="text-dark text-decoration-none">+91 62878 79239</a>
+                  </span>
+                  <span class="small text-muted d-block">Monday to Saturday: 9:00 AM – 5:00 PM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ks-memorandum">
+            <strong class="d-block text-dark mb-1">Administrative Transparency:</strong>
+            Campus tours, syllabus inquiries, and prospectus distributions will begin following official publication of the academic gazette for Session 2026.
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Enquiry Form -->
+      <div class="col-lg-7">
+        <div id="enquiry-form" class="form-container-box p-4 p-lg-5 bg-dark text-white round-4 h-100 d-flex flex-column justify-content-between" tabindex="-1">
+          <div>
+            <h2 class="h4-heading white mb-2">Register Admission Enquiry</h2>
+            <p class="para-white small mb-4">
+              Register candidate details for the advertised 2026 academic term. All candidate details are validated locally in compliance with privacy standards.
+            </p>
+
+            @if (!isFormSubmitted()) {
+              <form (ngSubmit)="submitEnquiry()" novalidate class="d-flex flex-column gap-3">
+                @if (formValidationError()) {
+                  <div class="alert alert-danger py-2 px-3 small round-4 mb-2" role="alert">
+                    {{ formValidationError() }}
+                  </div>
+                }
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="admissionsName" class="form-label extra-small-para text-white-50 mb-1">
+                      Full Name <span class="text-warning">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="admissionsName"
+                      name="admissionsName"
+                      class="form-control bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
+                      placeholder="Candidate's Full Name"
+                      [ngModel]="applicantName()"
+                      (ngModelChange)="applicantName.set($event)"
+                      [class.is-invalid]="nameError()"
+                      [attr.aria-invalid]="nameError() ? 'true' : null"
+                      [attr.aria-describedby]="nameError() ? 'admissionsNameError' : null"
+                      required
+                    />
+                    @if (nameError()) {
+                      <div id="admissionsNameError" class="invalid-feedback d-block extra-small-para text-warning">
+                        {{ nameError() }}
+                      </div>
+                    }
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="admissionsPhone" class="form-label extra-small-para text-white-50 mb-1">
+                      Contact Number <span class="text-warning">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      id="admissionsPhone"
+                      name="admissionsPhone"
+                      class="form-control bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
+                      placeholder="10-Digit Mobile Number"
+                      [ngModel]="applicantPhone()"
+                      (ngModelChange)="applicantPhone.set($event)"
+                      [class.is-invalid]="phoneError()"
+                      [attr.aria-invalid]="phoneError() ? 'true' : null"
+                      [attr.aria-describedby]="phoneError() ? 'admissionsPhoneError' : null"
+                      required
+                    />
+                    @if (phoneError()) {
+                      <div id="admissionsPhoneError" class="invalid-feedback d-block extra-small-para text-warning">
+                        {{ phoneError() }}
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="admissionsEmail" class="form-label extra-small-para text-white-50 mb-1">
+                      Email Address <span class="text-white-50">(Optional)</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="admissionsEmail"
+                      name="admissionsEmail"
+                      class="form-control bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
+                      placeholder="name@example.com"
+                      [ngModel]="applicantEmail()"
+                      (ngModelChange)="applicantEmail.set($event)"
+                      [class.is-invalid]="emailError()"
+                      [attr.aria-invalid]="emailError() ? 'true' : null"
+                      [attr.aria-describedby]="emailError() ? 'admissionsEmailError' : null"
+                    />
+                    @if (emailError()) {
+                      <div id="admissionsEmailError" class="invalid-feedback d-block extra-small-para text-warning">
+                        {{ emailError() }}
+                      </div>
+                    }
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="admissionsProgram" class="form-label extra-small-para text-white-50 mb-1">
+                      Intended Program <span class="text-warning">*</span>
+                    </label>
+                    <select
+                      id="admissionsProgram"
+                      name="admissionsProgram"
+                      class="form-select bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
+                      [ngModel]="selectedProgram()"
+                      (ngModelChange)="selectedProgram.set($event)"
+                      [class.is-invalid]="programError()"
+                      [attr.aria-invalid]="programError() ? 'true' : null"
+                      [attr.aria-describedby]="programError() ? 'admissionsProgramError' : null"
+                      required
+                    >
+                      <option value="" disabled selected class="text-dark">Select an Academic Program</option>
+                      <option value="Auxiliary Nursing & Midwifery (ANM)" class="text-dark">Auxiliary Nursing &amp; Midwifery (ANM) &bull; 2-Yr Diploma</option>
+                      <option value="General Nursing & Midwifery (GNM)" class="text-dark">General Nursing &amp; Midwifery (GNM) &bull; 3-Yr Diploma</option>
+                      <option value="Bachelor of Science in Nursing (B.Sc.)" class="text-dark">Bachelor of Science in Nursing (B.Sc.) &bull; 4-Yr Degree</option>
+                      <option value="Post Basic B.Sc. Nursing" class="text-dark">Post Basic B.Sc. Nursing &bull; 2-Yr Degree</option>
+                      <option value="Master of Science in Nursing (M.Sc.)" class="text-dark">Master of Science in Nursing (M.Sc.) &bull; 2-Yr PG Degree</option>
+                    </select>
+                    @if (programError()) {
+                      <div id="admissionsProgramError" class="invalid-feedback d-block extra-small-para text-warning">
+                        {{ programError() }}
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <div>
+                  <label for="admissionsMessage" class="form-label extra-small-para text-white-50 mb-1">
+                    Specific Queries <span class="text-white-50">(Optional)</span>
+                  </label>
+                  <textarea
+                    id="admissionsMessage"
+                    name="admissionsMessage"
+                    rows="3"
+                    class="form-control bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
+                    placeholder="Enter any questions regarding prerequisites, syllabus, hostel accommodation, or session timelines"
+                    [ngModel]="applicantMessage()"
+                    (ngModelChange)="applicantMessage.set($event)"
+                  ></textarea>
+                </div>
+
+                <div class="p-3 bg-secondary bg-opacity-10 border border-secondary border-opacity-25 round-4 extra-small-para text-white-50">
+                  <strong class="text-warning d-block mb-1">Demonstration &amp; Privacy Notice:</strong>
+                  This form is currently running in client-side demonstration mode. Inquiries are validated locally and are not transmitted across the internet to the institute.
+                </div>
+
+                <button type="submit" class="primary-btn w-100 justify-content-center mt-2">
+                  Validate &amp; Submit Demonstration Enquiry
+                </button>
+              </form>
+            } @else {
+              <div class="p-4 bg-secondary bg-opacity-10 border border-success border-opacity-50 round-4 text-center">
+                <div class="text-success mb-2">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                </div>
+                <h3 class="h4-heading white mb-2">Validation Complete</h3>
+                <p class="para-white small mb-3">
+                  Thank you, <strong>{{ confirmedSubmission()?.name }}</strong>. Your details for <strong>{{ confirmedSubmission()?.program }}</strong> have been verified locally.
+                </p>
+                <div class="p-3 bg-dark round-4 border border-secondary border-opacity-25 text-start small mb-4">
+                  <div class="text-warning small mb-2 fw-semibold">Note: Client-side demonstration test. No data was sent over the network.</div>
+                  <div class="mb-1"><strong>Candidate Name:</strong> {{ confirmedSubmission()?.name }}</div>
+                  <div class="mb-1"><strong>Selected Track:</strong> {{ confirmedSubmission()?.program }}</div>
+                  <div class="mb-1"><strong>Contact Phone:</strong> {{ confirmedSubmission()?.phone }}</div>
+                  <div><strong>Email:</strong> {{ confirmedSubmission()?.email }}</div>
+                </div>
+                <button type="button" class="secondary-btn w-100 justify-content-center" (click)="resetForm()">
+                  Reset Demonstration Form
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Financial Facilitation Section -->
+<section class="general-section bg-stone border-top border-bottom">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="large-para blue mb-1">Student Welfare &amp; Facilitation</div>
+      <h2 class="h2-heading black">Advertised Financial Assistance &amp; Welfare Schemes</h2>
+      <p class="paragraph mx-auto text-center" style="max-width: 720px;">
+        Institutional admission materials advertise student welfare assistance for eligible candidates. The following summaries are presented for candidate information, subject to statutory guidelines and regulatory confirmation.
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-6">
+        <div class="tab-card round-4 bg-white p-4 p-lg-5 h-100 border shadow-sm d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="badge bg-warning text-dark px-2 py-1 round-4">Advertised Collateral Claim</span>
+              <span class="small text-muted">[Subject to Eligibility]</span>
+            </div>
+            <div class="d-flex align-items-baseline gap-2 mb-2">
+              <span class="h2-heading blue fw-bold">&#8377;4,000</span>
+              <span class="paragraph text-muted fw-semibold">/ Month Internship Scholarship</span>
+            </div>
+            <h3 class="h4-heading black mb-3">Clinical Internship Stipend Assistance</h3>
+            <p class="paragraph small mb-3">
+              Institutional admission posters advertise monthly scholarship assistance of &#8377;4,000 for trainees during mandatory clinical hospital postings and clinical internships.
+            </p>
+            <div class="p-3 bg-stone round-4 border small text-muted mb-0">
+              <strong class="d-block text-dark mb-1">Qualifying Conditions:</strong>
+              Subject to candidate attendance, satisfactory clinical bedside evaluation, formal institutional gazette schedules, and hospital rotational compliance. Not an unconditional payment guarantee.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="tab-card round-4 bg-white p-4 p-lg-5 h-100 border shadow-sm d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="badge bg-primary text-white px-2 py-1 round-4">State Government Scheme</span>
+              <span class="small text-muted">[Govt. of Bihar]</span>
+            </div>
+            <div class="d-flex align-items-baseline gap-2 mb-2">
+              <span class="h2-heading blue fw-bold">Up to &#8377;4 Lakh</span>
+              <span class="paragraph text-muted fw-semibold">Education Loan Facilitation</span>
+            </div>
+            <h3 class="h4-heading black mb-3">Bihar Student Credit Card (BSCC) Assistance</h3>
+            <p class="paragraph small mb-3">
+              Admission materials reference facilitation support under the Bihar Student Credit Card (BSCC) Scheme, which assists domicile students with education financing up to &#8377;4,00,000 for approved programs.
+            </p>
+            <div class="p-3 bg-stone round-4 border small text-muted mb-0">
+              <strong class="d-block text-dark mb-1">Qualifying Conditions:</strong>
+              Loan sanction, interest subsidies, and disbursement are strictly governed by the Department of Education (Govt. of Bihar). Institutional accreditation under the BSCC portal remains subject to regulatory completion.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

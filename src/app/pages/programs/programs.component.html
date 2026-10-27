@@ -1,0 +1,412 @@
+<!-- Academic Programs Page: Kavya Shree Institute of Nursing -->
+
+<!-- Page Hero Banner -->
+<section class="page-hero-banner">
+  <div class="container">
+    <nav aria-label="Breadcrumb" class="mb-3">
+      <ol class="breadcrumb breadcrumb-dark mb-0">
+        <li class="breadcrumb-item"><a routerLink="/" class="breadcrumb-link">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Academic Programs</li>
+      </ol>
+    </nav>
+    <h1 class="h1-heading white mb-2">Advertised Nursing Programs</h1>
+    <p class="para-white spaces">
+      Comprehensive educational tracks across diploma, undergraduate, and postgraduate nursing disciplines for the 2026 academic session.
+    </p>
+  </div>
+</section>
+
+<!-- Programs Catalog Section -->
+<section class="general-section bg-stone">
+  <div class="container">
+    <!-- Category Tabs -->
+    <div class="text-center mb-4">
+      <div class="ks-section-kicker">Session 2026 Catalog</div>
+      <h2 class="h2-heading black mb-3">Academic Disciplines</h2>
+      <p class="paragraph mx-auto text-center" style="max-width: 740px;">
+        All program curricula, entry prerequisites, seat matrices, and session schedules remain provisional pending official university affiliation and statutory nursing council notifications.
+      </p>
+
+      <div class="tabs-menu mt-4" role="tablist" aria-label="Academic program categories">
+        <button
+          type="button"
+          class="tab-key"
+          role="tab"
+          [attr.aria-selected]="activeTab() === 'all'"
+          [class.w--current]="activeTab() === 'all'"
+          (click)="setTab('all')"
+        >
+          <span class="tab-key-text">All Programs</span>
+          <span class="tab-key-count" aria-label="5 programs available">5</span>
+        </button>
+        <button
+          type="button"
+          class="tab-key"
+          role="tab"
+          [attr.aria-selected]="activeTab() === 'diploma'"
+          [class.w--current]="activeTab() === 'diploma'"
+          (click)="setTab('diploma')"
+        >
+          <span class="tab-key-text">Diploma Tracks</span>
+          <span class="tab-key-count" aria-label="2 diploma programs">2</span>
+        </button>
+        <button
+          type="button"
+          class="tab-key"
+          role="tab"
+          [attr.aria-selected]="activeTab() === 'degree'"
+          [class.w--current]="activeTab() === 'degree'"
+          (click)="setTab('degree')"
+        >
+          <span class="tab-key-text">Undergraduate Degrees</span>
+          <span class="tab-key-count" aria-label="2 degree programs">2</span>
+        </button>
+        <button
+          type="button"
+          class="tab-key"
+          role="tab"
+          [attr.aria-selected]="activeTab() === 'pg'"
+          [class.w--current]="activeTab() === 'pg'"
+          (click)="setTab('pg')"
+        >
+          <span class="tab-key-text">Postgraduate Degree</span>
+          <span class="tab-key-count" aria-label="1 postgraduate program">1</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="row g-4 mt-2 justify-content-center">
+      <!-- Program 1: ANM -->
+      @if (activeTab() === 'all' || activeTab() === 'diploma') {
+        <div class="col-lg-4 col-md-6 col-12 d-flex">
+          <article class="ks-course-card bg-white round-4 border d-flex flex-column w-100 h-100 shadow-sm" aria-labelledby="program-title-anm">
+            <div class="ks-card-header p-3 border-bottom d-flex align-items-center justify-content-between">
+              <span class="ks-card-badge-track">Diploma Discipline</span>
+              <img src="logo.png" alt="" class="ks-card-crest-watermark" width="28" height="23" loading="lazy" aria-hidden="true" />
+            </div>
+
+            <div class="ks-card-body p-4 d-flex flex-column flex-grow-1">
+              <div class="ks-card-provisional-pill mb-3 d-flex align-items-center gap-2" role="note">
+                <svg class="flex-shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+                <span class="extra-small-para fw-semibold">Provisional Offering — Pending Official Confirmation</span>
+              </div>
+
+              <h3 id="program-title-anm" class="ks-course-title mb-2">
+                Auxiliary Nurse Midwifery (ANM)
+              </h3>
+
+              <div class="ks-course-category mb-3">
+                <span class="small fw-semibold text-primary">Foundational Healthcare</span>
+                <span class="small text-muted">&nbsp;&bull;&nbsp;Session 2026</span>
+              </div>
+
+              <p class="paragraph small text-muted mb-4 flex-grow-1 ks-course-desc">
+                Community-oriented nursing curriculum focusing on maternal healthcare, rural immunization protocols, and foundational patient support. Official syllabus guidelines and criteria confirmed upon admissions consultation.
+              </p>
+
+              <dl class="ks-card-specs mb-0 pt-3 border-top list-unstyled small text-muted">
+                <div class="d-flex justify-content-between py-1 border-bottom">
+                  <dt class="fw-normal text-muted">Academic Level:</dt>
+                  <dd class="mb-0 fw-semibold text-dark">Diploma Program</dd>
+                </div>
+                <div class="d-flex justify-content-between py-1 border-bottom">
+                  <dt class="fw-normal text-muted">Curriculum Status:</dt>
+                  <dd class="mb-0 fw-semibold text-dark">Advertised Session 2026</dd>
+                </div>
+                <div class="d-flex justify-content-between py-1">
+                  <dt class="fw-normal text-muted">Statutory Approval:</dt>
+                  <dd class="mb-0 fw-semibold text-warning text-dark-emphasis">Pending Official Gazette</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="ks-card-footer p-4 pt-0 bg-white">
+              <a
+                class="card-cta-btn w-100"
+                [routerLink]="['/admissions']"
+                [queryParams]="{ program: 'Auxiliary Nursing & Midwifery (ANM)' }"
+                aria-label="Enquire about Auxiliary Nurse Midwifery (ANM)"
+              >
+                <span class="card-btn-text">Enquire for Program</span>
+                <svg class="card-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </a>
+            </div>
+          </article>
+        </div>
+      }
+
+      <!-- Program 2: GNM -->
+      @if (activeTab() === 'all' || activeTab() === 'diploma') {
+        <div class="col-lg-4 col-md-6 col-12 d-flex">
+          <article class="ks-course-card bg-white round-4 border d-flex flex-column w-100 h-100 shadow-sm" aria-labelledby="program-title-gnm">
+            <div class="ks-card-header p-3 border-bottom d-flex align-items-center justify-content-between">
+              <span class="ks-card-badge-track">Diploma Discipline</span>
+              <img src="logo.png" alt="" class="ks-card-crest-watermark" width="28" height="23" loading="lazy" aria-hidden="true" />
+            </div>
+
+            <div class="ks-card-body p-4 d-flex flex-column flex-grow-1">
+              <div class="ks-card-provisional-pill mb-3 d-flex align-items-center gap-2" role="note">
+                <svg class="flex-shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+                <span class="extra-small-para fw-semibold">Provisional Offering — Pending Official Confirmation</span>
+              </div>
+
+              <h3 id="program-title-gnm" class="ks-course-title mb-2">
+                General Nursing &amp; Midwifery (GNM)
+              </h3>
+
+              <div class="ks-course-category mb-3">
+                <span class="small fw-semibold text-primary">Clinical Bedside Nursing</span>
+                <span class="small text-muted">&nbsp;&bull;&nbsp;Session 2026</span>
+              </div>
+
+              <p class="paragraph small text-muted mb-4 flex-grow-1 ks-course-desc">
+                Comprehensive clinical nursing track preparing candidates in patient care practices, bedside assistance, maternity protocols, and hospital health services. Formal admission prerequisites published upon notification.
+              </p>
+
+              <dl class="ks-card-specs mb-0 pt-3 border-top list-unstyled small text-muted">
+                <div class="d-flex justify-content-between py-1 border-bottom">
+                  <dt class="fw-normal text-muted">Academic Level:</dt>
+                  <dd class="mb-0 fw-semibold text-dark">Diploma Program</dd>
+                </div>
+                <div class="d-flex justify-content-between py-1 border-bottom">
+                  <dt class="fw-normal text-muted">Curriculum Status:</dt>
+                  <dd class="mb-0 fw-semibold text-dark">Advertised Session 2026</dd>
+                </div>
+                <div class="d-flex justify-content-between py-1">
+                  <dt class="fw-normal text-muted">Statutory Approval:</dt>
+                  <dd class="mb-0 fw-semibold text-warning text-dark-emphasis">Pending Official Gazette</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="ks-card-footer p-4 pt-0 bg-white">
+              <a
+                class="card-cta-btn w-100"
+                [routerLink]="['/admissions']"
+                [queryParams]="{ program: 'General Nursing & Midwifery (GNM)' }"
+                aria-label="Enquire about General Nursing & Midwifery (GNM)"
+              >
+                <span class="card-btn-text">Enquire for Program</span>
+                <svg class="card-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </a>
+            </div>
+          </article>
+        </div>
+      }
+
+      <!-- Program 3: B.Sc. Nursing -->
+      @if (activeTab() === 'all' || activeTab() === 'degree') {
+        <div class="col-lg-4 col-md-6 col-12 d-flex">
+          <article class="ks-course-card bg-white round-4 border d-flex flex-column w-100 h-100 shadow-sm" aria-labelledby="program-title-bscn">
+            <div class="ks-card-header p-3 border-bottom d-flex align-items-center justify-content-between">
+              <span class="ks-card-badge-track">Degree Track</span>
+              <img src="logo.png" alt="" class="ks-card-crest-watermark" width="28" height="23" loading="lazy" aria-hidden="true" />
+            </div>
+
+            <div class="ks-card-body p-4 d-flex flex-column flex-grow-1">
+              <div class="ks-card-provisional-pill mb-3 d-flex align-items-center gap-2" role="note">
+                <svg class="flex-shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+                <span class="extra-small-para fw-semibold">Provisional Offering — Pending Official Confirmation</span>
+              </div>
+
+              <h3 id="program-title-bscn" class="ks-course-title mb-2">
+                Bachelor of Science in Nursing (B.Sc.)
+              </h3>
+
+              <div class="ks-course-category mb-3">
+                <span class="small fw-semibold text-primary">Undergraduate Degree</span>
+                <span class="small text-muted">&nbsp;&bull;&nbsp;Session 2026</span>
+              </div>
+
+              <p class="paragraph small text-muted mb-4 flex-grow-1 ks-course-desc">
+                Academic collegiate degree curriculum designed around medical-surgical healthcare, anatomy, physiology, clinical nursing fundamentals, and community wellness. Official admission schedule subject to regulatory gazette.
+              </p>
+
+              <dl class="ks-card-specs mb-0 pt-3 border-top list-unstyled small text-muted">
+                <div class="d-flex justify-content-between py-1 border-bottom">
+                  <dt class="fw-normal text-muted">Academic Level:</dt>
+                  <dd class="mb-0 fw-semibold text-dark">Undergraduate Degree</dd>
+                </div>
+                <div class="d-flex justify-content-between py-1 border-bottom">
+                  <dt class="fw-normal text-muted">Curriculum Status:</dt>
+                  <dd class="mb-0 fw-semibold text-dark">Advertised Session 2026</dd>
+                </div>
+                <div class="d-flex justify-content-between py-1">
+                  <dt class="fw-normal text-muted">Statutory Approval:</dt>
+                  <dd class="mb-0 fw-semibold text-warning text-dark-emphasis">Pending Official Gazette</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="ks-card-footer p-4 pt-0 bg-white">
+              <a
+                class="card-cta-btn w-100"
+                [routerLink]="['/admissions']"
+                [queryParams]="{ program: 'Bachelor of Science in Nursing (B.Sc.)' }"
+                aria-label="Enquire about Bachelor of Science in Nursing (B.Sc.)"
+              >
+                <span class="card-btn-text">Enquire for Program</span>
+                <svg class="card-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </a>
+            </div>
+          </article>
+        </div>
+      }
+
+      <!-- Program 4: Post Basic B.Sc. Nursing -->
+      @if (activeTab() === 'all' || activeTab() === 'degree') {
+        <div class="col-lg-4 col-md-6 col-12 d-flex">
+          <article class="ks-course-card bg-white round-4 border d-flex flex-column w-100 h-100 shadow-sm" aria-labelledby="program-title-pbbsc">
+            <div class="ks-card-header p-3 border-bottom d-flex align-items-center justify-content-between">
+              <span class="ks-card-badge-track">Degree Track</span>
+              <img src="logo.png" alt="" class="ks-card-crest-watermark" width="28" height="23" loading="lazy" aria-hidden="true" />
+            </div>
+
+            <div class="ks-card-body p-4 d-flex flex-column flex-grow-1">
+              <div class="ks-card-provisional-pill mb-3 d-flex align-items-center gap-2" role="note">
+                <svg class="flex-shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+                <span class="extra-small-para fw-semibold">Provisional Offering — Pending Official Confirmation</span>
+              </div>
+
+              <h3 id="program-title-pbbsc" class="ks-course-title mb-2">
+                Post Basic B.Sc. Nursing
+              </h3>
+
+              <div class="ks-course-category mb-3">
+                <span class="small fw-semibold text-primary">Post-Diploma Upgrade</span>
+                <span class="small text-muted">&nbsp;&bull;&nbsp;Session 2026</span>
+              </div>
+
+              <p class="paragraph small text-muted mb-4 flex-grow-1 ks-course-desc">
+                Post-diploma degree path planned for practicing registered nurses seeking advancement in clinical nursing theory, healthcare administration, and specialized health management. Entry guidelines pending notification.
+              </p>
+
+              <dl class="ks-card-specs mb-0 pt-3 border-top list-unstyled small text-muted">
+                <div class="d-flex justify-content-between py-1 border-bottom">
+                  <dt class="fw-normal text-muted">Academic Level:</dt>
+                  <dd class="mb-0 fw-semibold text-dark">Post-Basic Degree</dd>
+                </div>
+                <div class="d-flex justify-content-between py-1 border-bottom">
+                  <dt class="fw-normal text-muted">Curriculum Status:</dt>
+                  <dd class="mb-0 fw-semibold text-dark">Advertised Session 2026</dd>
+                </div>
+                <div class="d-flex justify-content-between py-1">
+                  <dt class="fw-normal text-muted">Statutory Approval:</dt>
+                  <dd class="mb-0 fw-semibold text-warning text-dark-emphasis">Pending Official Gazette</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="ks-card-footer p-4 pt-0 bg-white">
+              <a
+                class="card-cta-btn w-100"
+                [routerLink]="['/admissions']"
+                [queryParams]="{ program: 'Post Basic B.Sc. Nursing' }"
+                aria-label="Enquire about Post Basic B.Sc. Nursing"
+              >
+                <span class="card-btn-text">Enquire for Program</span>
+                <svg class="card-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </a>
+            </div>
+          </article>
+        </div>
+      }
+
+      <!-- Program 5: M.Sc. Nursing -->
+      @if (activeTab() === 'all' || activeTab() === 'pg') {
+        <div class="col-lg-4 col-md-6 col-12 d-flex">
+          <article class="ks-course-card bg-white round-4 border d-flex flex-column w-100 h-100 shadow-sm" aria-labelledby="program-title-mscn">
+            <div class="ks-card-header p-3 border-bottom d-flex align-items-center justify-content-between">
+              <span class="ks-card-badge-track">Postgraduate Discipline</span>
+              <img src="logo.png" alt="" class="ks-card-crest-watermark" width="28" height="23" loading="lazy" aria-hidden="true" />
+            </div>
+
+            <div class="ks-card-body p-4 d-flex flex-column flex-grow-1">
+              <div class="ks-card-provisional-pill mb-3 d-flex align-items-center gap-2" role="note">
+                <svg class="flex-shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+                <span class="extra-small-para fw-semibold">Provisional Offering — Pending Official Confirmation</span>
+              </div>
+
+              <h3 id="program-title-mscn" class="ks-course-title mb-2">
+                Master of Science in Nursing (M.Sc.)
+              </h3>
+
+              <div class="ks-course-category mb-3">
+                <span class="small fw-semibold text-primary">Postgraduate Degree</span>
+                <span class="small text-muted">&nbsp;&bull;&nbsp;Session 2026</span>
+              </div>
+
+              <p class="paragraph small text-muted mb-4 flex-grow-1 ks-course-desc">
+                Advanced master's degree program planned to cultivate specialized clinical practice, nursing education, and healthcare management competencies. Statutory approvals and specializations subject to official notification.
+              </p>
+
+              <dl class="ks-card-specs mb-0 pt-3 border-top list-unstyled small text-muted">
+                <div class="d-flex justify-content-between py-1 border-bottom">
+                  <dt class="fw-normal text-muted">Academic Level:</dt>
+                  <dd class="mb-0 fw-semibold text-dark">Postgraduate Degree</dd>
+                </div>
+                <div class="d-flex justify-content-between py-1 border-bottom">
+                  <dt class="fw-normal text-muted">Curriculum Status:</dt>
+                  <dd class="mb-0 fw-semibold text-dark">Advertised Session 2026</dd>
+                </div>
+                <div class="d-flex justify-content-between py-1">
+                  <dt class="fw-normal text-muted">Statutory Approval:</dt>
+                  <dd class="mb-0 fw-semibold text-warning text-dark-emphasis">Pending Official Gazette</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="ks-card-footer p-4 pt-0 bg-white">
+              <a
+                class="card-cta-btn w-100"
+                [routerLink]="['/admissions']"
+                [queryParams]="{ program: 'Master of Science in Nursing (M.Sc.)' }"
+                aria-label="Enquire about Master of Science in Nursing (M.Sc.)"
+              >
+                <span class="card-btn-text">Enquire for Program</span>
+                <svg class="card-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </a>
+            </div>
+          </article>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Bottom Advisory -->
+<section class="general-section bg-white border-top">
+  <div class="container text-center">
+    <div class="ks-memorandum mx-auto" style="max-width: 820px;">
+      <strong class="d-block text-dark mb-1">Administrative Transparency:</strong>
+      Curricula, session dates, admission prerequisite criteria, and fee structures will be formally published upon publication of the statutory gazette notification for Academic Session 2026.
+    </div>
+  </div>
+</section>
+
