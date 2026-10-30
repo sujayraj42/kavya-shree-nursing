@@ -1,7 +1,9 @@
-import { Component, HostListener, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, HostListener, signal, inject, OnInit } from '@angular/core';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
+import { SeoService } from './core/services/seo.service';
 
 @Component({
   selector: 'app-root',
@@ -9,8 +11,22 @@ import { FooterComponent } from './layout/footer/footer.component';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
+  private readonly router = inject(Router);
+  private readonly seoService = inject(SeoService);
   protected readonly title = signal('Kavya Shree Institute of Nursing');
+  protected readonly isAdminRoute = signal(false);
+
+  public ngOnInit(): void {
+    this.seoService.initRouteTracking();
+    this.isAdminRoute.set(this.router.url.startsWith('/admin'));
+    this.router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        const targetUrl = event.urlAfterRedirects || event.url;
+        this.isAdminRoute.set(targetUrl.startsWith('/admin'));
+      });
+  }
 
   @HostListener('document:click', ['$event'])
   protected keepFragmentTargetVisible(event: MouseEvent): void {

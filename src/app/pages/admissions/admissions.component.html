@@ -37,7 +37,7 @@
                 </span>
                 <div>
                   <strong class="d-block text-dark small">Campus Admissions Desk:</strong>
-                  <span class="small text-dark fw-semibold">Punpun Station Road, opposite Manglam Marriage Hall</span>
+                  <span class="small text-dark fw-semibold">Punpun Station Road, opposite Manglam Community Hall</span>
                   <span class="small text-muted d-block">PIN 804453, Patna District, Bihar</span>
                 </div>
               </div>
@@ -79,6 +79,12 @@
                 @if (formValidationError()) {
                   <div class="alert alert-danger py-2 px-3 small round-4 mb-2" role="alert">
                     {{ formValidationError() }}
+                  </div>
+                }
+
+                @if (serverError()) {
+                  <div class="alert alert-warning py-2 px-3 small round-4 mb-2" role="alert">
+                    {{ serverError() }}
                   </div>
                 }
 
@@ -201,13 +207,46 @@
                   ></textarea>
                 </div>
 
-                <div class="p-3 bg-secondary bg-opacity-10 border border-secondary border-opacity-25 round-4 extra-small-para text-white-50">
-                  <strong class="text-warning d-block mb-1">Demonstration &amp; Privacy Notice:</strong>
-                  This form is currently running in client-side demonstration mode. Inquiries are validated locally and are not transmitted across the internet to the institute.
+                <!-- Candidate Consent Checkbox -->
+                <div class="form-check my-1">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="admissionsConsent"
+                    name="admissionsConsent"
+                    [ngModel]="applicantConsent()"
+                    (ngModelChange)="applicantConsent.set($event)"
+                    [class.is-invalid]="consentError()"
+                    [attr.aria-invalid]="consentError() ? 'true' : null"
+                    [attr.aria-describedby]="consentError() ? 'admissionsConsentError' : null"
+                    required
+                  />
+                  <label class="form-check-label extra-small-para text-white-50" for="admissionsConsent">
+                    I consent to Kavya Shree Institute of Nursing processing my contact details for admissions consultation regarding session 2026. <span class="text-warning">*</span>
+                  </label>
+                  @if (consentError()) {
+                    <div id="admissionsConsentError" class="invalid-feedback d-block extra-small-para text-warning">
+                      {{ consentError() }}
+                    </div>
+                  }
                 </div>
 
-                <button type="submit" class="primary-btn w-100 justify-content-center mt-2">
-                  Validate &amp; Submit Demonstration Enquiry
+                <div class="p-3 bg-secondary bg-opacity-10 border border-secondary border-opacity-25 round-4 extra-small-para text-white-50">
+                  <strong class="text-warning d-block mb-1">Admissions Consultation &amp; Privacy Notice:</strong>
+                  Your enquiry is transmitted securely to our admissions desk. Candidate contact details are strictly handled in accordance with privacy protocols and are never shared or sold.
+                </div>
+
+                <button
+                  type="submit"
+                  class="primary-btn w-100 justify-content-center mt-2"
+                  [disabled]="isSubmitting()"
+                >
+                  @if (isSubmitting()) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span>Submitting Enquiry...</span>
+                  } @else {
+                    <span>Submit Official Admissions Enquiry</span>
+                  }
                 </button>
               </form>
             } @else {
@@ -218,19 +257,23 @@
                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                   </svg>
                 </div>
-                <h3 class="h4-heading white mb-2">Validation Complete</h3>
+                <h3 class="h4-heading white mb-2">Admissions Enquiry Registered</h3>
                 <p class="para-white small mb-3">
-                  Thank you, <strong>{{ confirmedSubmission()?.name }}</strong>. Your details for <strong>{{ confirmedSubmission()?.program }}</strong> have been verified locally.
+                  Thank you, <strong>{{ confirmedSubmission()?.name }}</strong>. Your admissions enquiry for <strong>{{ confirmedSubmission()?.program }}</strong> has been officially registered with our admissions desk.
                 </p>
                 <div class="p-3 bg-dark round-4 border border-secondary border-opacity-25 text-start small mb-4">
-                  <div class="text-warning small mb-2 fw-semibold">Note: Client-side demonstration test. No data was sent over the network.</div>
+                  @if (confirmedSubmission()?.id) {
+                    <div class="text-warning small mb-2 fw-semibold">
+                      Enquiry Reference ID: <span class="font-monospace">{{ confirmedSubmission()?.id }}</span>
+                    </div>
+                  }
                   <div class="mb-1"><strong>Candidate Name:</strong> {{ confirmedSubmission()?.name }}</div>
                   <div class="mb-1"><strong>Selected Track:</strong> {{ confirmedSubmission()?.program }}</div>
                   <div class="mb-1"><strong>Contact Phone:</strong> {{ confirmedSubmission()?.phone }}</div>
                   <div><strong>Email:</strong> {{ confirmedSubmission()?.email }}</div>
                 </div>
                 <button type="button" class="secondary-btn w-100 justify-content-center" (click)="resetForm()">
-                  Reset Demonstration Form
+                  Submit Another Enquiry
                 </button>
               </div>
             }

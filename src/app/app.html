@@ -1,13 +1,18 @@
 <!-- Skip to Main Content Link for Keyboard and Screen Reader Accessibility -->
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<!-- Shared Institutional Header & Navigation -->
-<app-header></app-header>
+<!-- Shared Institutional Header & Navigation (Public routes only) -->
+@if (!isAdminRoute()) {
+  <app-header></app-header>
+}
 
 <!-- Main Page Content Landmark Hosting Angular Router Outlet -->
 <main id="main-content" class="flex-grow-1" tabindex="-1">
   <router-outlet></router-outlet>
 </main>
 
-<!-- Shared Institutional Footer -->
-<app-footer></app-footer>
+<!-- Shared Institutional Footer (Public routes only) -->
+@if (!isAdminRoute()) {
+  <app-footer></app-footer>
+}
+

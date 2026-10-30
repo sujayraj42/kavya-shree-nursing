@@ -1,0 +1,128 @@
+<div class="admin-login-wrapper d-flex align-items-center justify-content-center min-vh-100 py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+        <div class="card admin-login-card border shadow-sm round-4 p-4 p-sm-5">
+          <!-- Institutional Header -->
+          <div class="text-center mb-4">
+            <img
+              src="logo.png"
+              alt="Kavya Shree Institute of Nursing Official Logo"
+              class="admin-login-logo mb-3"
+              width="56"
+              height="45"
+            />
+            <h1 class="h4 admin-title fw-bold text-dark mb-1">Kavya Shree Institute</h1>
+            <p class="text-muted small mb-0">Department of Nursing &amp; Health Sciences</p>
+            <div class="mt-2">
+              <span class="badge bg-primary px-3 py-1 fw-semibold small">Administrative Portal</span>
+            </div>
+          </div>
+
+          <!-- General Server/Auth Error Alert -->
+          @if (loginError()) {
+            <div class="alert alert-danger py-2 px-3 small d-flex align-items-center mb-3" role="alert">
+              <svg class="me-2 flex-shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+              </svg>
+              <span>{{ loginError() }}</span>
+            </div>
+          }
+
+          <!-- Login Form -->
+          <form (ngSubmit)="onSubmit()" novalidate>
+            <!-- Email Field -->
+            <div class="mb-3">
+              <label for="adminEmail" class="form-label small fw-semibold text-dark">
+                Official Email Address <span class="text-danger">*</span>
+              </label>
+              <input
+                id="adminEmail"
+                type="email"
+                class="form-control"
+                [class.is-invalid]="emailError()"
+                [ngModel]="email()"
+                (ngModelChange)="email.set($event)"
+                name="email"
+                placeholder="admin@kavyashreenursing.edu.in"
+                autocomplete="email"
+                required
+              />
+              @if (emailError()) {
+                <div class="invalid-feedback small">
+                  {{ emailError() }}
+                </div>
+              }
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <label for="adminPassword" class="form-label small fw-semibold text-dark mb-0">
+                  Password <span class="text-danger">*</span>
+                </label>
+              </div>
+              <div class="input-group">
+                <input
+                  id="adminPassword"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  class="form-control"
+                  [class.is-invalid]="passwordError()"
+                  [ngModel]="password()"
+                  (ngModelChange)="password.set($event)"
+                  name="password"
+                  placeholder="Enter administrator password"
+                  autocomplete="current-password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="toggleShowPassword()"
+                  [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+                >
+                  @if (showPassword()) {
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z"/><path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z"/></svg>
+                  } @else {
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/></svg>
+                  }
+                </button>
+              </div>
+              @if (passwordError()) {
+                <div class="text-danger small mt-1">
+                  {{ passwordError() }}
+                </div>
+              }
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="btn btn-primary w-100 py-2 fw-semibold d-flex align-items-center justify-content-center"
+              [disabled]="authService.isAuthenticating()"
+            >
+              @if (authService.isAuthenticating()) {
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                <span>Authenticating Session...</span>
+              } @else {
+                <span>Sign In to Admin Portal</span>
+              }
+            </button>
+          </form>
+
+          <!-- Security Notice & Return link -->
+          <div class="mt-4 pt-3 border-top text-center">
+            <p class="extra-small-para text-muted mb-2">
+              Protected by rate limiting and access controls. Unauthorized attempts are logged.
+            </p>
+            <a routerLink="/" class="small text-decoration-none text-muted">
+              &larr; Return to Public Website
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

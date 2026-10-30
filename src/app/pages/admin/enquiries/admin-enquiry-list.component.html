@@ -1,0 +1,234 @@
+<div class="admin-enquiry-list-view">
+  <!-- Title & Action -->
+  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+    <div>
+      <h1 class="h3 list-heading text-dark mb-1">Admissions Enquiry Management</h1>
+      <p class="text-muted small mb-0">
+        Review, filter, and track prospective nursing candidates across official disciplines.
+      </p>
+    </div>
+    <div>
+      <button
+        type="button"
+        class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
+        (click)="loadEnquiries()"
+        [disabled]="isLoading()"
+      >
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+        </svg>
+        <span>Refresh List</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter & Search Toolbar -->
+  <div class="card border-0 shadow-sm p-3 mb-4">
+    <div class="row g-2 align-items-center">
+      <!-- Search Input -->
+      <div class="col-12 col-md-4">
+        <label for="enquirySearchInput" class="visually-hidden">Search Enquiries</label>
+        <div class="input-group input-group-sm">
+          <span class="input-group-text bg-white border-end-0">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+          </span>
+          <input
+            id="enquirySearchInput"
+            type="search"
+            class="form-control border-start-0"
+            placeholder="Search candidate, phone, email..."
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+            (keyup.enter)="onSearch()"
+          />
+          <button type="button" class="btn btn-primary" (click)="onSearch()">
+            Search
+          </button>
+        </div>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="col-6 col-md-3">
+        <label for="statusFilterSelect" class="visually-hidden">Filter by status</label>
+        <select
+          id="statusFilterSelect"
+          class="form-select form-select-sm"
+          [ngModel]="selectedStatus()"
+          (ngModelChange)="onStatusFilter($event)"
+        >
+          <option value="all">All Statuses</option>
+          @for (st of validStatuses; track st) {
+            <option [value]="st">{{ getStatusLabel(st) }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Program Filter -->
+      <div class="col-6 col-md-3">
+        <label for="programFilterSelect" class="visually-hidden">Filter by program</label>
+        <select
+          id="programFilterSelect"
+          class="form-select form-select-sm"
+          [ngModel]="selectedProgram()"
+          (ngModelChange)="onProgramFilter($event)"
+        >
+          <option value="all">All Programs</option>
+          @for (prog of advertisedPrograms; track prog) {
+            <option [value]="prog">{{ prog }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Reset Filter Button -->
+      <div class="col-12 col-md-2 text-md-end">
+        <button type="button" class="btn btn-outline-secondary btn-sm w-100" (click)="resetFilters()">
+          Clear Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State Alert -->
+  @if (!isLoading() && errorMessage()) {
+    <div class="alert alert-danger p-3 shadow-sm round-4 mb-4" role="alert">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>{{ errorMessage() }}</span>
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="loadEnquiries()">
+          Retry
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="card p-5 text-center border-0 shadow-sm mb-4">
+      <div class="spinner-border text-primary mx-auto mb-3" role="status">
+        <span class="visually-hidden">Loading enquiries...</span>
+      </div>
+      <p class="text-muted small mb-0">Querying candidate submissions...</p>
+    </div>
+  }
+
+  <!-- Data Table & Results -->
+  @if (!isLoading() && !errorMessage()) {
+    <div class="card border-0 shadow-sm mb-4">
+      @if (enquiries().length === 0) {
+        <div class="p-5 text-center">
+          <svg class="text-muted mb-3 opacity-50" width="48" height="48" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+            <path d="M4 4h8v2H4V4zm0 3h8v2H4V7zm0 3h5v2H4v-2z"/>
+          </svg>
+          <h2 class="h5 text-dark mb-1">No Admissions Enquiries Located</h2>
+          <p class="text-muted small mb-3">
+            No records matched your search query or selected category filters.
+          </p>
+          <button type="button" class="btn btn-outline-primary btn-sm" (click)="resetFilters()">
+            Reset All Filters
+          </button>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr class="small text-uppercase text-muted">
+                <th scope="col">Candidate Name</th>
+                <th scope="col">Contact Info</th>
+                <th scope="col">Program</th>
+                <th scope="col">Status</th>
+                <th scope="col">Notes</th>
+                <th scope="col">Submitted</th>
+                <th scope="col" class="text-end">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (enquiry of enquiries(); track enquiry.id) {
+                <tr>
+                  <td>
+                    <div class="fw-bold text-dark">{{ enquiry.name }}</div>
+                    <span class="extra-small-para text-muted font-monospace">Ref: {{ formatRef(enquiry.id) }}</span>
+                  </td>
+                  <td>
+                    <a [href]="'tel:' + enquiry.phone" class="text-decoration-none text-dark small d-block fw-semibold">
+                      {{ enquiry.phone }}
+                    </a>
+                    @if (enquiry.email) {
+                      <a [href]="'mailto:' + enquiry.email" class="text-muted extra-small-para text-decoration-none d-block">
+                        {{ enquiry.email }}
+                      </a>
+                    }
+                  </td>
+                  <td class="small">
+                    {{ enquiry.program }}
+                  </td>
+                  <td>
+                    <span [class]="getBadgeClass(enquiry.status)">
+                      {{ getStatusLabel(enquiry.status) }}
+                    </span>
+                  </td>
+                  <td class="small">
+                    @if (enquiry.notes && enquiry.notes.length > 0) {
+                      <span class="badge bg-light text-dark border">
+                        {{ enquiry.notes.length }} note{{ enquiry.notes.length > 1 ? 's' : '' }}
+                      </span>
+                    } @else {
+                      <span class="text-muted extra-small-para">None</span>
+                    }
+                  </td>
+                  <td class="small text-muted">
+                    {{ formatDate(enquiry.createdAt) }}
+                  </td>
+                  <td class="text-end">
+                    <a [routerLink]="['/admin/enquiries', enquiry.id]" class="btn btn-primary btn-sm">
+                      Inspect &rarr;
+                    </a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="card-footer bg-white border-top p-3 d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+          <div class="small text-muted">
+            Showing Page <strong>{{ pagination().page }}</strong> of <strong>{{ pagination().pages }}</strong> ({{ pagination().total }} total submissions)
+          </div>
+
+          <nav aria-label="Enquiries Table Pagination">
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item" [class.disabled]="pagination().page <= 1">
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="goToPage(pagination().page - 1)"
+                  [disabled]="pagination().page <= 1"
+                  aria-label="Previous Page"
+                >
+                  &larr; Prev
+                </button>
+              </li>
+
+              <li class="page-item active">
+                <span class="page-link">{{ pagination().page }}</span>
+              </li>
+
+              <li class="page-item" [class.disabled]="pagination().page >= pagination().pages">
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="goToPage(pagination().page + 1)"
+                  [disabled]="pagination().page >= pagination().pages"
+                  aria-label="Next Page"
+                >
+                  Next &rarr;
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      }
+    </div>
+  }
+</div>

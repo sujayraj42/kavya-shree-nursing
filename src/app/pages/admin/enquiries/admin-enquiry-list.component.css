@@ -1,0 +1,19 @@
+.list-heading {
+  font-family: var(--font--lora, "Lora", serif);
+  color: var(--ks-ink, #181818);
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.85rem 0.75rem;
+}
+
+.btn-primary {
+  background-color: var(--color--blue, #124e9d);
+  border-color: var(--color--blue, #124e9d);
+}
+
+.btn-primary:hover {
+  background-color: #0d3c7a;
+  border-color: #0d3c7a;
+}
+

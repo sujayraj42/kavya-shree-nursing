@@ -1,8 +1,20 @@
-import { Component, HostListener, PLATFORM_ID, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  PLATFORM_ID,
+  inject,
+  signal,
+  OnInit,
+  OnDestroy,
+  ElementRef,
+  DestroyRef,
+  afterNextRender
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { MotionService } from '../../core/services/motion.service';
 
 @Component({
   selector: 'app-header',
@@ -13,10 +25,53 @@ import { filter } from 'rxjs/operators';
 export class HeaderComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly motionService = inject(MotionService);
+  private readonly elementRef = inject(ElementRef);
+  private readonly destroyRef = inject(DestroyRef);
   private routerSub?: Subscription;
 
   protected readonly isMenuOpen = signal(false);
   protected readonly activeSection = signal<string>('home');
+
+  constructor() {
+    let ctx: any = null;
+    let isDestroyed = false;
+
+    // Synchronously register destruction hook in constructor context
+    this.destroyRef.onDestroy(() => {
+      isDestroyed = true;
+      ctx?.revert();
+    });
+
+    afterNextRender(async () => {
+      if (isDestroyed || this.motionService.prefersReducedMotion()) {
+        return;
+      }
+      const motion = await this.motionService.loadGsap();
+      if (isDestroyed || !motion) {
+        return;
+      }
+      const { gsap } = motion;
+      const headerEl = this.elementRef.nativeElement.querySelector('.ks-site-header');
+      if (!headerEl || isDestroyed) {
+        return;
+      }
+
+      ctx = gsap.context(() => {
+        gsap.from(headerEl, {
+          y: -16,
+          opacity: 0,
+          duration: this.motionService.tokens.duration.standard,
+          ease: this.motionService.tokens.ease.out,
+          clearProps: 'transform,opacity'
+        });
+      }, this.elementRef.nativeElement);
+
+      if (isDestroyed) {
+        ctx.revert();
+      }
+    });
+  }
 
   @HostListener('document:keydown.escape')
   protected onEscape(): void {
@@ -86,6 +141,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   private updateActiveSectionFromScroll(): void {
+    try {
+      const tree = this.router.parseUrl(this.router.url);
+      const segment = tree.root.children['primary']?.segments[0]?.path;
+      if (segment) {
+        return;
+      }
+    } catch {
+      return;
+    }
+
     const scrollY = window.scrollY;
     if (scrollY < 200) {
       this.activeSection.set('home');

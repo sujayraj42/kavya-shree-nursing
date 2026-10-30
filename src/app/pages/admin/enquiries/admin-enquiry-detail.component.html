@@ -1,0 +1,231 @@
+<div class="admin-enquiry-detail-view">
+  <!-- Back Button & Reference Header -->
+  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+    <div>
+      <a routerLink="/admin/enquiries" class="text-decoration-none small text-muted d-inline-flex align-items-center mb-1">
+        &larr; Back to Enquiries List
+      </a>
+      <h1 class="h3 detail-heading text-dark mb-0">Candidate Enquiry Dossier</h1>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="card p-5 text-center border-0 shadow-sm mb-4">
+      <div class="spinner-border text-primary mx-auto mb-3" role="status">
+        <span class="visually-hidden">Loading enquiry details...</span>
+      </div>
+      <p class="text-muted small mb-0">Fetching candidate dossier and internal audit trail...</p>
+    </div>
+  }
+
+  <!-- Error State Alert -->
+  @if (!isLoading() && errorMessage()) {
+    <div class="alert alert-danger p-4 shadow-sm round-4 mb-4" role="alert">
+      <h2 class="h5 alert-heading mb-1">Enquiry Retrieval Failure</h2>
+      <p class="small mb-3">{{ errorMessage() }}</p>
+      <a routerLink="/admin/enquiries" class="btn btn-outline-danger btn-sm">
+        Return to Enquiries List
+      </a>
+    </div>
+  }
+
+  <!-- Main Content Dossier -->
+  @if (!isLoading() && enquiry(); as item) {
+    <div class="row g-4">
+      <!-- Left Column: Candidate Info & Message -->
+      <div class="col-12 col-lg-8">
+        <!-- Candidate Profile Card -->
+        <div class="card border-0 shadow-sm p-4 mb-4">
+          <div class="d-flex justify-content-between align-items-start mb-3 border-bottom pb-3">
+            <div>
+              <span class="badge bg-light text-muted border font-monospace mb-1">ID: {{ item.id }}</span>
+              <h2 class="h4 fw-bold text-dark mb-0">{{ item.name }}</h2>
+            </div>
+            <div>
+              <span [class]="getBadgeClass(item.status) + ' px-3 py-2 fs-6'">
+                {{ getStatusLabel(item.status) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12 col-sm-6">
+              <label class="text-muted extra-small-para text-uppercase fw-semibold d-block">Phone Number</label>
+              <a [href]="'tel:' + item.phone" class="fs-6 fw-bold text-dark text-decoration-none">
+                {{ item.phone }}
+              </a>
+            </div>
+
+            <div class="col-12 col-sm-6">
+              <label class="text-muted extra-small-para text-uppercase fw-semibold d-block">Email Address</label>
+              @if (item.email) {
+                <a [href]="'mailto:' + item.email" class="fs-6 text-dark text-decoration-none">
+                  {{ item.email }}
+                </a>
+              } @else {
+                <span class="text-muted small">[No email provided]</span>
+              }
+            </div>
+
+            <div class="col-12">
+              <label class="text-muted extra-small-para text-uppercase fw-semibold d-block">Academic Program Desired</label>
+              <div class="p-2 bg-light rounded border text-dark fw-semibold small">
+                {{ item.program }}
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label class="text-muted extra-small-para text-uppercase fw-semibold d-block">Candidate Inquiries / Message</label>
+              <div class="p-3 bg-light rounded border text-dark small" style="min-height: 80px; white-space: pre-wrap;">
+                {{ item.message ? item.message : 'No custom message entered by candidate.' }}
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6">
+              <label class="text-muted extra-small-para text-uppercase fw-semibold d-block">Initial Submission Time</label>
+              <span class="small text-dark">{{ formatDate(item.createdAt, true) }}</span>
+            </div>
+
+            <div class="col-12 col-sm-6">
+              <label class="text-muted extra-small-para text-uppercase fw-semibold d-block">Last Activity Update</label>
+              <span class="small text-dark">{{ formatDate(item.updatedAt, true) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Internal Notes Timeline & Add Form -->
+        <div class="card border-0 shadow-sm p-4">
+          <h2 class="h5 fw-bold text-dark mb-1">Internal Admissions Desk Notes</h2>
+          <p class="text-muted extra-small-para mb-3">
+            Confidential staff logs for tracking phone interviews, document submissions, and counselling appointments.
+          </p>
+
+          <!-- Add Note Form -->
+          <div class="mb-4 p-3 bg-light rounded border">
+            <label for="newNoteTextarea" class="form-label small fw-semibold text-dark mb-1">
+              Add Staff Note
+            </label>
+            <textarea
+              id="newNoteTextarea"
+              class="form-control form-control-sm mb-2"
+              rows="3"
+              maxlength="1000"
+              placeholder="e.g., Called candidate; verified 10+2 PCB marksheet. Scheduled consultation on Monday."
+              [ngModel]="newNoteText()"
+              (ngModelChange)="newNoteText.set($event)"
+            ></textarea>
+
+            @if (noteErrorMessage()) {
+              <div class="alert alert-danger py-1 px-2 small mb-2">
+                {{ noteErrorMessage() }}
+              </div>
+            }
+
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="extra-small-para text-muted">
+                {{ newNoteText().length }} / 1000 characters
+              </span>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm px-3"
+                [disabled]="isSubmittingNote() || !newNoteText().trim()"
+                (click)="addInternalNote()"
+              >
+                @if (isSubmittingNote()) {
+                  <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                  <span>Saving...</span>
+                } @else {
+                  <span>Append Note</span>
+                }
+              </button>
+            </div>
+          </div>
+
+          <!-- Chronological Notes Feed -->
+          @if (item.notes.length === 0) {
+            <div class="p-3 text-center text-muted small bg-white border rounded">
+              No internal staff notes recorded for this candidate yet.
+            </div>
+          } @else {
+            <div class="timeline-container">
+              @for (note of item.notes; track note.id || note.createdAt) {
+                <div class="timeline-item p-3 mb-2 bg-white border rounded">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="fw-bold small text-dark">{{ note.author }}</span>
+                    <span class="extra-small-para text-muted">{{ formatDate(note.createdAt, true) }}</span>
+                  </div>
+                  <p class="small text-dark mb-0" style="white-space: pre-wrap;">{{ note.text }}</p>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Right Column: Status Transition Card -->
+      <div class="col-12 col-lg-4">
+        <div class="card border-0 shadow-sm p-4 sticky-top" style="top: 80px;">
+          <h2 class="h5 fw-bold text-dark mb-1">Update Status</h2>
+          <p class="text-muted extra-small-para mb-3">
+            Change the candidate's active state across the standard admissions pipeline.
+          </p>
+
+          @if (statusSuccessMessage()) {
+            <div class="alert alert-success py-2 px-3 small mb-3">
+              {{ statusSuccessMessage() }}
+            </div>
+          }
+
+          @if (statusErrorMessage()) {
+            <div class="alert alert-danger py-2 px-3 small mb-3">
+              {{ statusErrorMessage() }}
+            </div>
+          }
+
+          <div class="mb-3">
+            <label for="statusSelectControl" class="form-label small fw-semibold text-dark">
+              Pipeline State
+            </label>
+            <select
+              id="statusSelectControl"
+              class="form-select"
+              [ngModel]="selectedStatus()"
+              (ngModelChange)="selectedStatus.set($event)"
+            >
+              @for (st of validStatuses; track st) {
+                <option [value]="st">{{ getStatusLabel(st) }}</option>
+              }
+            </select>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-primary w-100 py-2 fw-semibold"
+            [disabled]="isUpdatingStatus() || selectedStatus() === item.status"
+            (click)="updateStatus()"
+          >
+            @if (isUpdatingStatus()) {
+              <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+              <span>Updating Status...</span>
+            } @else {
+              <span>Commit Status Change</span>
+            }
+          </button>
+
+          <div class="mt-4 pt-3 border-top">
+            <h3 class="extra-small-para text-uppercase text-muted fw-bold mb-2">Workflow Reference</h3>
+            <ul class="list-unstyled extra-small-para text-muted mb-0">
+              <li class="mb-1"><strong>New:</strong> Newly arrived candidate submission</li>
+              <li class="mb-1"><strong>Contacted:</strong> Initial phone/email follow-up done</li>
+              <li class="mb-1"><strong>In Review:</strong> Under academic eligibility verification</li>
+              <li class="mb-1"><strong>Admitted:</strong> Seat confirmed for Session 2026</li>
+              <li class="mb-1"><strong>Closed:</strong> Candidate declined or withdrew</li>
+              <li class="mb-0"><strong>Archived:</strong> Historical preservation</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

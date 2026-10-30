@@ -1,0 +1,20 @@
+.admin-top-nav {
+  background-color: var(--ks-ink, #181818) !important;
+}
+
+.admin-brand-text {
+  font-family: var(--font--lora, "Lora", serif);
+  font-size: 1rem;
+}
+
+.admin-nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff !important;
+}
+
+.active-nav-link {
+  background-color: var(--color--blue, #124e9d) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+

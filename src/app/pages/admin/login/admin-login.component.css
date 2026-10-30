@@ -1,0 +1,30 @@
+.admin-login-wrapper {
+  background-color: var(--ks-bg-stone, #f4f4f4);
+}
+
+.admin-login-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+
+.admin-title {
+  font-family: var(--font--lora, "Lora", serif);
+  color: var(--ks-ink, #181818);
+}
+
+.btn-primary {
+  background-color: var(--color--blue, #124e9d);
+  border-color: var(--color--blue, #124e9d);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #0d3c7a;
+  border-color: #0d3c7a;
+}
+
+.form-control:focus {
+  border-color: var(--color--blue, #124e9d);
+  box-shadow: 0 0 0 0.2rem rgba(18, 78, 157, 0.25);
+}
+

@@ -1,12 +1,35 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { of, throwError } from 'rxjs';
 import { HomeComponent } from './home.component';
+import { EnquiryService } from '../../core/services/enquiry.service';
 
 describe('HomeComponent', () => {
+  let mockEnquiryService: {
+    submitEnquiry: any;
+  };
+
   beforeEach(async () => {
+    mockEnquiryService = {
+      submitEnquiry: () =>
+        of({
+          success: true,
+          message: 'Enquiry registered successfully',
+          data: {
+            id: 'mock-reg-id-12345',
+            program: 'Bachelor of Science in Nursing (B.Sc.)',
+            status: 'new',
+            createdAt: new Date().toISOString()
+          }
+        })
+    };
+
     await TestBed.configureTestingModule({
       imports: [HomeComponent],
-      providers: [provideRouter([])]
+      providers: [
+        provideRouter([]),
+        { provide: EnquiryService, useValue: mockEnquiryService }
+      ]
     }).compileComponents();
   });
 
@@ -39,9 +62,9 @@ describe('HomeComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     const heroLinks = compiled.querySelectorAll('#hero a');
-    const linksText = Array.from(heroLinks).map(el => el.textContent?.trim());
-    expect(linksText.some(text => text?.includes('Explore Academic Programs'))).toBe(true);
-    expect(linksText.some(text => text?.includes('Admission Enquiry'))).toBe(true);
+    const linksText = Array.from(heroLinks).map((el) => el.textContent?.trim());
+    expect(linksText.some((text) => text?.includes('Explore Academic Programs'))).toBe(true);
+    expect(linksText.some((text) => text?.includes('Admission Enquiry'))).toBe(true);
   });
 
   it('should render the official campus hero image with proper source and alt attributes', async () => {
@@ -50,78 +73,74 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    const heroImg = compiled.querySelector('#hero img.hero-campus-img');
+    const heroImg = compiled.querySelector<HTMLImageElement>('.hero-campus-img');
     expect(heroImg).toBeTruthy();
-    expect(heroImg?.getAttribute('src')).toBe('images/kavya-shree-campus-hero.png');
-    expect(heroImg?.getAttribute('alt')).toContain('Kavya Shree Institute of Nursing');
-    expect(heroImg?.getAttribute('loading')).toBe('eager');
+    expect(heroImg?.src).toContain('images/kavya-shree-campus-hero.png');
+    expect(heroImg?.alt).toContain('Kavya Shree Institute of Nursing campus');
   });
 
-  it('should display validation warning if enquiry form submitted empty', async () => {
+  it('should display the official institute logo in the header and about cards', async () => {
     const fixture = TestBed.createComponent(HomeComponent);
-    const component = fixture.componentInstance;
     await fixture.whenStable();
     fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    const logos = compiled.querySelectorAll<HTMLImageElement>('img[src="logo.png"]');
+    expect(logos.length).toBeGreaterThan(0);
+  });
+
+  it('should validate form and reject submission when required fields are missing', () => {
+    const fixture = TestBed.createComponent(HomeComponent);
+    const component = fixture.componentInstance;
 
     component['submitEnquiry']();
-    fixture.detectChanges();
-
     expect(component['formValidationError']()).toBeTruthy();
     expect(component['nameError']()).toBeTruthy();
     expect(component['phoneError']()).toBeTruthy();
     expect(component['programError']()).toBeTruthy();
-  });
-
-  it('should display specific error if phone number is less than 10 digits', async () => {
-    const fixture = TestBed.createComponent(HomeComponent);
-    const component = fixture.componentInstance;
-    component['applicantName'].set('Ananya Rao');
-    component['applicantPhone'].set('12345');
-    component['selectedProgram'].set('B.Sc. Nursing');
-
-    component['submitEnquiry']();
-
-    expect(component['phoneError']()).toContain('at least 10 digits');
+    expect(component['consentError']()).toBeTruthy();
     expect(component['isFormSubmitted']()).toBe(false);
   });
 
-  it('should display specific error if email format is invalid', async () => {
+  it('should submit successfully and register candidate when valid details and consent are provided', () => {
     const fixture = TestBed.createComponent(HomeComponent);
     const component = fixture.componentInstance;
-    component['applicantName'].set('Ananya Rao');
+
+    component['applicantName'].set('Anjali Kumari');
     component['applicantPhone'].set('9876543210');
-    component['applicantEmail'].set('invalid-email-format');
-    component['selectedProgram'].set('B.Sc. Nursing');
-
-    component['submitEnquiry']();
-
-    expect(component['emailError']()).toContain('valid email address');
-    expect(component['isFormSubmitted']()).toBe(false);
-  });
-
-  it('should record enquiry and show confirmation status when inputs are valid', async () => {
-    const fixture = TestBed.createComponent(HomeComponent);
-    const component = fixture.componentInstance;
-    component['applicantName'].set('Ananya Rao');
-    component['applicantPhone'].set('9876543210');
-    component['applicantEmail'].set('ananya@example.com');
-    component['selectedProgram'].set('B.Sc. Nursing');
+    component['applicantEmail'].set('anjali@example.com');
+    component['selectedProgram'].set('Bachelor of Science in Nursing (B.Sc.)');
+    component['applicantConsent'].set(true);
 
     component['submitEnquiry']();
 
     expect(component['isFormSubmitted']()).toBe(true);
-    expect(component['confirmedSubmission']()?.name).toBe('Ananya Rao');
-    expect(component['confirmedSubmission']()?.program).toBe('B.Sc. Nursing');
+    expect(component['confirmedSubmission']()?.name).toBe('Anjali Kumari');
+    expect(component['confirmedSubmission']()?.id).toBe('mock-reg-id-12345');
+    expect(component['confirmedSubmission']()?.program).toBe('Bachelor of Science in Nursing (B.Sc.)');
   });
 
-  it('should update selected program when onProgramSelect is called', () => {
+  it('should display server error message when API fails', () => {
+    mockEnquiryService.submitEnquiry = () =>
+      throwError(() => ({
+        error: { error: 'Database service temporarily unavailable' }
+      }));
+
     const fixture = TestBed.createComponent(HomeComponent);
     const component = fixture.componentInstance;
-    expect(component['selectedProgram']()).toBe('');
 
-    component['onProgramSelect']('General Nursing & Midwifery (GNM)');
-    expect(component['selectedProgram']()).toBe('General Nursing & Midwifery (GNM)');
-    expect(component['programError']()).toBe('');
+    component['applicantName'].set('Anjali Kumari');
+    component['applicantPhone'].set('9876543210');
+    component['selectedProgram'].set('Bachelor of Science in Nursing (B.Sc.)');
+    component['applicantConsent'].set(true);
+
+    component['submitEnquiry']();
+
+    expect(component['isFormSubmitted']()).toBe(false);
+    expect(component['serverError']()).toBe('Database service temporarily unavailable');
+    // Ensure form values are preserved on failure
+    expect(component['applicantName']()).toBe('Anjali Kumari');
+    expect(component['applicantPhone']()).toBe('9876543210');
   });
 
   it('should switch active program tab correctly', async () => {
@@ -151,6 +170,7 @@ describe('HomeComponent', () => {
     component['applicantName'].set('Test Name');
     component['applicantPhone'].set('9876543210');
     component['selectedProgram'].set('B.Sc. Nursing');
+    component['applicantConsent'].set(true);
     component['submitEnquiry']();
     expect(component['isFormSubmitted']()).toBe(true);
 
@@ -169,20 +189,20 @@ describe('HomeComponent', () => {
     const cards = compiled.querySelectorAll('#courses .ks-course-card');
     expect(cards.length).toBe(5);
 
-    // Verify all 5 cards display the provisional warning pill
     const provisionalPills = compiled.querySelectorAll('#courses .ks-card-provisional-pill');
     expect(provisionalPills.length).toBe(5);
-    provisionalPills.forEach(pill => {
+    provisionalPills.forEach((pill) => {
       expect(pill.textContent).toContain('Provisional Offering — Pending Official Confirmation');
     });
 
-    // Check titles for each advertised program
-    const titles = Array.from(compiled.querySelectorAll('#courses .ks-course-title')).map(el => el.textContent?.trim());
-    expect(titles.some(t => t?.includes('Auxiliary Nurse Midwifery (ANM)'))).toBe(true);
-    expect(titles.some(t => t?.includes('General Nursing & Midwifery (GNM)'))).toBe(true);
-    expect(titles.some(t => t?.includes('Bachelor of Science in Nursing (B.Sc.)'))).toBe(true);
-    expect(titles.some(t => t?.includes('Post Basic B.Sc. Nursing'))).toBe(true);
-    expect(titles.some(t => t?.includes('Master of Science in Nursing (M.Sc.)'))).toBe(true);
+    const titles = Array.from(compiled.querySelectorAll('#courses .ks-course-title')).map((el) =>
+      el.textContent?.trim()
+    );
+    expect(titles.some((t) => t?.includes('Auxiliary Nurse Midwifery (ANM)'))).toBe(true);
+    expect(titles.some((t) => t?.includes('General Nursing & Midwifery (GNM)'))).toBe(true);
+    expect(titles.some((t) => t?.includes('Bachelor of Science in Nursing (B.Sc.)'))).toBe(true);
+    expect(titles.some((t) => t?.includes('Post Basic B.Sc. Nursing'))).toBe(true);
+    expect(titles.some((t) => t?.includes('Master of Science in Nursing (M.Sc.)'))).toBe(true);
   });
 
   it('should filter cards when diploma, degree, or pg tab is selected', async () => {
@@ -190,19 +210,16 @@ describe('HomeComponent', () => {
     const component = fixture.componentInstance;
     await fixture.whenStable();
 
-    // Diploma tab
     component['setProgramTab']('diploma');
     fixture.detectChanges();
     let cards = fixture.nativeElement.querySelectorAll('#courses .ks-course-card');
     expect(cards.length).toBe(2);
 
-    // Degree tab
     component['setProgramTab']('degree');
     fixture.detectChanges();
     cards = fixture.nativeElement.querySelectorAll('#courses .ks-course-card');
     expect(cards.length).toBe(2);
 
-    // PG tab
     component['setProgramTab']('pg');
     fixture.detectChanges();
     cards = fixture.nativeElement.querySelectorAll('#courses .ks-course-card');

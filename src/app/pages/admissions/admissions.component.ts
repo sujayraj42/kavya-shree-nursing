@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { EnquiryService } from '../../core/services/enquiry.service';
 
 @Component({
   selector: 'app-admissions',
@@ -10,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class AdmissionsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly enquiryService = inject(EnquiryService);
 
   // Form Fields
   protected readonly applicantName = signal('');
@@ -17,17 +19,22 @@ export class AdmissionsComponent implements OnInit {
   protected readonly applicantEmail = signal('');
   protected readonly selectedProgram = signal('');
   protected readonly applicantMessage = signal('');
+  protected readonly applicantConsent = signal(false);
 
   // Field-Level Validation State
   protected readonly nameError = signal('');
   protected readonly phoneError = signal('');
   protected readonly emailError = signal('');
   protected readonly programError = signal('');
+  protected readonly consentError = signal('');
   protected readonly formValidationError = signal('');
+  protected readonly serverError = signal('');
 
   // Submission Status
+  protected readonly isSubmitting = signal(false);
   protected readonly isFormSubmitted = signal(false);
   protected readonly confirmedSubmission = signal<{
+    id?: string;
     name: string;
     program: string;
     phone: string;
@@ -35,7 +42,7 @@ export class AdmissionsComponent implements OnInit {
   } | null>(null);
 
   ngOnInit(): void {
-    this.route.queryParamMap.subscribe(params => {
+    this.route.queryParamMap.subscribe((params) => {
       const prog = params.get('program');
       if (prog) {
         this.selectedProgram.set(prog);
@@ -44,10 +51,16 @@ export class AdmissionsComponent implements OnInit {
   }
 
   protected submitEnquiry(): void {
+    if (this.isSubmitting()) {
+      return;
+    }
+
     const name = this.applicantName().trim();
     const phone = this.applicantPhone().trim();
     const email = this.applicantEmail().trim();
     const program = this.selectedProgram().trim();
+    const message = this.applicantMessage().trim();
+    const consent = this.applicantConsent();
 
     let hasError = false;
 
@@ -84,19 +97,58 @@ export class AdmissionsComponent implements OnInit {
       this.programError.set('');
     }
 
+    if (!consent) {
+      this.consentError.set('Candidate consent is required to process an admissions enquiry.');
+      hasError = true;
+    } else {
+      this.consentError.set('');
+    }
+
     if (hasError) {
       this.formValidationError.set('Please review and correct the highlighted fields above.');
       return;
     }
 
     this.formValidationError.set('');
-    this.confirmedSubmission.set({
-      name,
-      program,
-      phone,
-      email: email || 'Not provided'
-    });
-    this.isFormSubmitted.set(true);
+    this.serverError.set('');
+    this.isSubmitting.set(true);
+
+    this.enquiryService
+      .submitEnquiry({
+        name,
+        phone: phoneDigitsOnly,
+        email: email || null,
+        program,
+        message,
+        consent: true
+      })
+      .subscribe({
+        next: (res) => {
+          this.isSubmitting.set(false);
+          this.confirmedSubmission.set({
+            id: res.data?.id,
+            name,
+            program: res.data?.program || program,
+            phone,
+            email: email || 'Not provided'
+          });
+          this.isFormSubmitted.set(true);
+
+          this.applicantName.set('');
+          this.applicantPhone.set('');
+          this.applicantEmail.set('');
+          this.selectedProgram.set('');
+          this.applicantMessage.set('');
+          this.applicantConsent.set(false);
+        },
+        error: (err) => {
+          this.isSubmitting.set(false);
+          const serverMsg =
+            err?.error?.error ||
+            'Unable to connect to the admissions service. Please verify your connection or call our admissions helpline (+91 96616 66485).';
+          this.serverError.set(serverMsg);
+        }
+      });
   }
 
   protected resetForm(): void {
@@ -105,15 +157,17 @@ export class AdmissionsComponent implements OnInit {
     this.applicantEmail.set('');
     this.selectedProgram.set('');
     this.applicantMessage.set('');
+    this.applicantConsent.set(false);
 
     this.nameError.set('');
     this.phoneError.set('');
     this.emailError.set('');
     this.programError.set('');
+    this.consentError.set('');
     this.formValidationError.set('');
+    this.serverError.set('');
 
     this.confirmedSubmission.set(null);
     this.isFormSubmitted.set(false);
   }
 }
-

@@ -27,6 +27,10 @@ export const routes: Routes = [
     title: 'Contact Admissions Desk | Kavya Shree Institute of Nursing'
   },
   {
+    path: 'admin',
+    loadChildren: () => import('./pages/admin/admin.routes').then(m => m.ADMIN_ROUTES)
+  },
+  {
     path: '**',
     loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent),
     title: 'Page Not Found | Kavya Shree Institute of Nursing'
