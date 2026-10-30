@@ -40,14 +40,18 @@ if (isProduction) {
   }
 }
 
+const rawMongoUri =
+  process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL || '';
+
 const config = {
   env: NODE_ENV,
   isProduction,
   port: parseInt(process.env.PORT, 10) || 5000,
   host: process.env.HOST || '0.0.0.0',
-  mongodbUri: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kavya_shree_nursing_dev',
+  mongodbUri: rawMongoUri || 'mongodb://127.0.0.1:27017/kavya_shree_nursing_dev',
+  mongodbDbName: process.env.MONGODB_DB_NAME || 'kavya_shree_nursing',
   // True only when a database URI was explicitly provided via environment.
-  mongodbUriConfigured: Boolean(process.env.MONGODB_URI),
+  mongodbUriConfigured: Boolean(rawMongoUri),
   frontendOrigin: process.env.FRONTEND_ORIGIN || 'http://localhost:4200',
   jwtSecret: process.env.JWT_SECRET || 'dev-kavya-shree-jwt-secret-do-not-use-in-production',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '8h',

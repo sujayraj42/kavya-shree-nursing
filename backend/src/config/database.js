@@ -35,7 +35,8 @@ async function connectDB({ allowDevStore = true } = {}) {
   try {
     mongoose.set('strictQuery', true);
     await mongoose.connect(config.mongodbUri, {
-      serverSelectionTimeoutMS: config.isProduction ? 5000 : 2000
+      dbName: config.mongodbDbName,
+      serverSelectionTimeoutMS: config.isProduction ? 15000 : 2000
     });
     isConnected = true;
     console.log('[INFO] Database connection established successfully');
