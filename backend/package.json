@@ -7,7 +7,8 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "test": "node --test tests/*.test.js",
-    "seed:admin": "node src/scripts/seedAdmin.js"
+    "seed:admin": "node src/scripts/seedAdmin.js",
+    "db:init": "node src/scripts/initDatabase.js"
   },
   "keywords": [
     "express",
