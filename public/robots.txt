@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Primary XML Sitemap
+Sitemap: https://kavya-shree-nursing.vercel.app/sitemap.xml
+

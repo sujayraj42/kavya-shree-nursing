@@ -1,0 +1,23 @@
+{
+  "name": "Kavya Shree Institute of Nursing",
+  "short_name": "Kavya Shree Nursing",
+  "description": "Kavya Shree Institute of Nursing, Punpun, Patna — Nursing Education & Clinical Training (ANM, GNM, B.Sc., Post Basic B.Sc., M.Sc. Nursing).",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f2942",
+  "lang": "en-IN",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
