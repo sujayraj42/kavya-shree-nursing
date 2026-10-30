@@ -6,11 +6,11 @@
   "framework": null,
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "https://kavya-shree-nursing.onrender.com/api/$1"
+      "source": "/api/:path*",
+      "destination": "https://kavya-shree-nursing.onrender.com/api/:path*"
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
