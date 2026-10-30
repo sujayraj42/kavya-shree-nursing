@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: kavya-shree-nursing-backend
+    env: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: "8h"
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: "100"
+      - key: ENQUIRY_RATE_LIMIT_MAX
+        value: "10"
+      - key: ADMIN_LOGIN_RATE_LIMIT_MAX
+        value: "5"

@@ -1,0 +1,29 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Dependency directories
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Test coverage
+coverage/
+
+# Local Dev Data
+data/
+*.dev-database.json
+.local-dev-db.json

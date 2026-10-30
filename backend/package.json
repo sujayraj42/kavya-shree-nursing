@@ -1,0 +1,36 @@
+{
+  "name": "kavya-shree-nursing-backend",
+  "version": "1.0.0",
+  "description": "Production-oriented backend for Kavya Shree Institute of Nursing candidate enquiry and health monitoring",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test tests/*.test.js",
+    "seed:admin": "node src/scripts/seedAdmin.js"
+  },
+  "keywords": [
+    "express",
+    "mongoose",
+    "nursing-institute",
+    "api"
+  ],
+  "author": "Kavya Shree Institute of Nursing",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.9.5"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

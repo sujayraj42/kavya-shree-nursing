@@ -42,3 +42,20 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Local development data (never commit sample/test data)
+backend/data/
+backend/.local-dev-db.json
+
+# Unrelated local files & original unoptimized asset backups
+public/26COA501_Unit1_Unit2_Detailed_Handwritten_Answers.pdf
+public/assets-original/
+.vscode/highlights.json
