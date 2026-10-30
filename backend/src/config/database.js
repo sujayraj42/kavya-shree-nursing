@@ -40,6 +40,7 @@ async function connectDB({ allowDevStore = true } = {}) {
     });
     isConnected = true;
     console.log('[INFO] Database connection established successfully');
+    await ensureInitialMongoSetup();
   } catch (error) {
     console.error('[ERROR] Database connection failed:', error.message);
 
@@ -61,6 +62,64 @@ async function connectDB({ allowDevStore = true } = {}) {
     isDevStorageActive = true;
     isConnected = true;
     console.log('[INFO] Fallback Data Store active.');
+  }
+}
+
+async function ensureInitialMongoSetup() {
+  if (mongoose.connection.readyState !== 1) return;
+  try {
+    const { Admin } = require('../models/Admin');
+    const { Enquiry } = require('../models/Enquiry');
+    const { loadData } = require('./devStorage');
+
+    await Promise.all([
+      Admin.syncIndexes().catch(() => {}),
+      Enquiry.syncIndexes().catch(() => {})
+    ]);
+
+    const defaultPassword = process.env.ADMIN_SEED_PASSWORD || 'qwertyuiop123';
+    const defaultAdmins = [
+      {
+        email: (process.env.ADMIN_SEED_EMAIL || 'admin@edu.in').trim().toLowerCase(),
+        password: defaultPassword,
+        name: (process.env.ADMIN_SEED_NAME || 'Institute Administrator').trim(),
+        role: 'superadmin'
+      },
+      {
+        email: 'admin@kavyashreenursing.edu.in',
+        password: defaultPassword,
+        name: 'Dr. System Administrator',
+        role: 'superadmin'
+      }
+    ];
+
+    for (const adm of defaultAdmins) {
+      const exists = await Admin.findOne({ email: adm.email });
+      if (!exists) {
+        await Admin.create(adm);
+        console.log(`[INFO] Provisioned initial admin account: ${adm.email}`);
+      }
+    }
+
+    const enquiryCount = await Enquiry.countDocuments();
+    if (enquiryCount <= 1) {
+      const seedDataset = loadData();
+      const initialEnquiries = seedDataset.enquiries || [];
+      for (const item of initialEnquiries) {
+        await Enquiry.create({
+          name: item.name,
+          phone: item.phone,
+          email: item.email,
+          program: item.program,
+          message: item.message,
+          consent: true,
+          status: item.status || 'new'
+        });
+      }
+      console.log(`[INFO] Seeded ${initialEnquiries.length} initial enquiries into MongoDB.`);
+    }
+  } catch (err) {
+    console.warn('[WARN] Initial MongoDB setup check skipped:', err.message);
   }
 }
 

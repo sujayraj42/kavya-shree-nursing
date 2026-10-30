@@ -7,7 +7,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/index.js"
+      "destination": "https://kavya-shree-nursing.onrender.com/api/$1"
     },
     {
       "source": "/((?!api/).*)",
