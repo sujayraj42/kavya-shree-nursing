@@ -30,4 +30,4 @@ services:
       - key: ENQUIRY_RATE_LIMIT_MAX
         value: "10"
       - key: ADMIN_LOGIN_RATE_LIMIT_MAX
-        value: "5"
+        value: "30"

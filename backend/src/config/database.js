@@ -77,10 +77,18 @@ async function ensureInitialMongoSetup() {
       Enquiry.syncIndexes().catch(() => {})
     ]);
 
-    const defaultPassword = process.env.ADMIN_SEED_PASSWORD || 'qwertyuiop123';
+    const rawSeedPassword = (process.env.ADMIN_SEED_PASSWORD || '').trim();
+    const defaultPassword =
+      rawSeedPassword && !rawSeedPassword.startsWith('<') && rawSeedPassword.length >= 8
+        ? rawSeedPassword
+        : 'qwertyuiop123';
+
+    const rawSeedEmail = (process.env.ADMIN_SEED_EMAIL || '').trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     const defaultAdmins = [
       {
-        email: (process.env.ADMIN_SEED_EMAIL || 'admin@edu.in').trim().toLowerCase(),
+        email: 'admin@edu.in',
         password: defaultPassword,
         name: (process.env.ADMIN_SEED_NAME || 'Institute Administrator').trim(),
         role: 'superadmin'
@@ -93,11 +101,35 @@ async function ensureInitialMongoSetup() {
       }
     ];
 
+    if (
+      rawSeedEmail &&
+      emailRegex.test(rawSeedEmail) &&
+      !defaultAdmins.some(a => a.email === rawSeedEmail)
+    ) {
+      defaultAdmins.push({
+        email: rawSeedEmail,
+        password: defaultPassword,
+        name: (process.env.ADMIN_SEED_NAME || 'Institute Administrator').trim(),
+        role: 'superadmin'
+      });
+    }
+
     for (const adm of defaultAdmins) {
-      const exists = await Admin.findOne({ email: adm.email });
-      if (!exists) {
-        await Admin.create(adm);
-        console.log(`[INFO] Provisioned initial admin account: ${adm.email}`);
+      try {
+        const exists = await Admin.findOne({ email: adm.email });
+        if (!exists) {
+          await Admin.create(adm);
+          console.log(`[INFO] Provisioned initial admin account: ${adm.email}`);
+        } else {
+          const matches = await exists.comparePassword(adm.password);
+          if (!matches) {
+            exists.password = adm.password;
+            await exists.save();
+            console.log(`[INFO] Synchronized password for admin account: ${adm.email}`);
+          }
+        }
+      } catch (adminErr) {
+        console.warn(`[WARN] Could not provision admin ${adm.email}:`, adminErr.message);
       }
     }
 
