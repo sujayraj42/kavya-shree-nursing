@@ -10,38 +10,13 @@ const DATA_DIR = process.env.VERCEL ? os.tmpdir() : path.join(__dirname, '../../
 const DATA_FILE = path.join(DATA_DIR, 'dev-database.json');
 const TMP_DATA_FILE = path.join(os.tmpdir(), 'kavya-shree-dev-database.json');
 
-// Pre-computed bcrypt hashes for local development store only (no plaintext passwords in source).
-const FALLBACK_ADMIN_HASHES = [
-  '$2b$10$L.ayK.hEab6nYFSFjiH5seLWr4LbbVxzIKOuaIjsahPI.XT6njDM.',
-  '$2b$10$L.ayK.hEab6nYFSFjiH5sexcrzMTa7DwR7n6uDY37Zzu3.icGBjM6'
-];
-
-// Builds development administrators from pre-computed hashes plus optional environment overrides.
+// Builds development administrators from environment variables only (no hardcoded demo credentials).
 function getDevAdmins() {
-  const admins = [
-    {
-      _id: '671e6245d8b7a12345678900',
-      id: '671e6245d8b7a12345678900',
-      email: 'admin@kavyashreenursing.edu.in',
-      name: 'Dr. System Administrator',
-      role: 'superadmin',
-      passwords: [...FALLBACK_ADMIN_HASHES],
-      lastLoginAt: null
-    },
-    {
-      _id: '671e6245d8b7a12345678999',
-      id: '671e6245d8b7a12345678999',
-      email: 'admin@edu.in',
-      name: 'Institute Administrator',
-      role: 'superadmin',
-      passwords: [...FALLBACK_ADMIN_HASHES],
-      lastLoginAt: null
-    }
-  ];
+  const admins = [];
 
   const envEmail = (process.env.DEV_ADMIN_EMAIL || process.env.ADMIN_SEED_EMAIL || '').trim().toLowerCase();
   const envPassword = process.env.DEV_ADMIN_PASSWORD || process.env.ADMIN_SEED_PASSWORD || '';
-  if (envEmail && envPassword.length >= 8 && !admins.some(a => a.email === envEmail)) {
+  if (envEmail && envPassword.length >= 8) {
     const id = new mongoose.Types.ObjectId().toString();
     admins.push({
       _id: id,
@@ -56,187 +31,11 @@ function getDevAdmins() {
   return admins;
 }
 
-// Default initial dataset for local development (sample enquiries only)
+// Default initial dataset for local development (clean empty state without dummy records)
 function getDefaultDataset() {
   return {
     admins: getDevAdmins(),
-    enquiries: [
-      {
-        _id: '671e6245d8b7a12345678901',
-        id: '671e6245d8b7a12345678901',
-        name: 'Pooja Kumari',
-        phone: '9876543210',
-        email: 'pooja.kumari@example.com',
-        program: 'General Nursing & Midwifery (GNM)',
-        message: 'Interested in clinical rotation and hostel accommodation details.',
-        consent: true,
-        status: 'new',
-        notes: [],
-        createdAt: new Date('2026-10-25T10:00:00Z').toISOString(),
-        updatedAt: new Date('2026-10-25T10:00:00Z').toISOString()
-      },
-      {
-        _id: '671e6245d8b7a12345678902',
-        id: '671e6245d8b7a12345678902',
-        name: 'Rohit Sharma',
-        phone: '9876543211',
-        email: 'rohit.sharma@example.com',
-        program: 'Bachelor of Science in Nursing (B.Sc.)',
-        message: 'Seeking scholarship and admission consultation.',
-        consent: true,
-        status: 'contacted',
-        notes: [
-          {
-            id: '671e6245d8b7a12345678931',
-            author: 'Institute Administrator',
-            text: 'Telephoned candidate; shared fee structure and syllabus overview.',
-            createdAt: new Date('2026-10-25T11:00:00Z').toISOString()
-          }
-        ],
-        createdAt: new Date('2026-10-25T09:00:00Z').toISOString(),
-        updatedAt: new Date('2026-10-25T11:00:00Z').toISOString()
-      },
-      {
-        _id: '671e6245d8b7a12345678903',
-        id: '671e6245d8b7a12345678903',
-        name: 'Ananya Sen',
-        phone: '9876543212',
-        email: 'ananya.sen@example.com',
-        program: 'Auxiliary Nursing & Midwifery (ANM)',
-        message: 'Requesting syllabus and session commencement schedule.',
-        consent: true,
-        status: 'in_review',
-        notes: [],
-        createdAt: new Date('2026-10-24T14:00:00Z').toISOString(),
-        updatedAt: new Date('2026-10-24T14:00:00Z').toISOString()
-      },
-      {
-        _id: '671e6245d8b7a12345678904',
-        id: '671e6245d8b7a12345678904',
-        name: 'Rajesh Verma',
-        phone: '9876543213',
-        email: 'rajesh.v@example.com',
-        program: 'Post Basic B.Sc. Nursing',
-        message: 'Registered working nurse looking for weekend clinical batches.',
-        consent: true,
-        status: 'admitted',
-        notes: [],
-        createdAt: new Date('2026-10-24T12:00:00Z').toISOString(),
-        updatedAt: new Date('2026-10-24T12:00:00Z').toISOString()
-      },
-      {
-        _id: '671e6245d8b7a12345678905',
-        id: '671e6245d8b7a12345678905',
-        name: 'Sneha Patel',
-        phone: '9876543214',
-        email: null,
-        program: 'Master of Science in Nursing (M.Sc.)',
-        message: 'Interested in pediatric and community nursing specializations.',
-        consent: true,
-        status: 'closed',
-        notes: [],
-        createdAt: new Date('2026-10-23T16:00:00Z').toISOString(),
-        updatedAt: new Date('2026-10-23T16:00:00Z').toISOString()
-      },
-      {
-        _id: '671e6245d8b7a12345678906',
-        id: '671e6245d8b7a12345678906',
-        name: 'Deepak Kumar',
-        phone: '9876543215',
-        email: 'deepak.k@example.com',
-        program: 'Bachelor of Science in Nursing (B.Sc.)',
-        message: 'Inquiring on entrance test cut-offs.',
-        consent: true,
-        status: 'new',
-        notes: [],
-        createdAt: new Date('2026-10-23T10:00:00Z').toISOString(),
-        updatedAt: new Date('2026-10-23T10:00:00Z').toISOString()
-      },
-      {
-        _id: '671e6245d8b7a12345678907',
-        id: '671e6245d8b7a12345678907',
-        name: 'Meera Nair',
-        phone: '9876543216',
-        email: 'meera.nair@example.com',
-        program: 'Auxiliary Nursing & Midwifery (ANM)',
-        message: '',
-        consent: true,
-        status: 'contacted',
-        notes: [],
-        createdAt: new Date('2026-10-22T08:30:00Z').toISOString(),
-        updatedAt: new Date('2026-10-22T08:30:00Z').toISOString()
-      },
-      {
-        _id: '671e6245d8b7a12345678908',
-        id: '671e6245d8b7a12345678908',
-        name: 'Vikas Singh',
-        phone: '9876543217',
-        email: 'vikas.singh@example.com',
-        program: 'General Nursing & Midwifery (GNM)',
-        message: 'Hostel accommodation mandatory.',
-        consent: true,
-        status: 'closed',
-        notes: [],
-        createdAt: new Date('2026-10-21T15:00:00Z').toISOString(),
-        updatedAt: new Date('2026-10-21T15:00:00Z').toISOString()
-      },
-      {
-        _id: '671e6245d8b7a12345678909',
-        id: '671e6245d8b7a12345678909',
-        name: 'Priya Gupta',
-        phone: '9876543218',
-        email: 'priya.gupta@example.com',
-        program: 'General Nursing & Midwifery (GNM)',
-        message: '',
-        consent: true,
-        status: 'in_review',
-        notes: [],
-        createdAt: new Date('2026-10-20T11:00:00Z').toISOString(),
-        updatedAt: new Date('2026-10-20T11:00:00Z').toISOString()
-      },
-      {
-        _id: '671e6245d8b7a12345678910',
-        id: '671e6245d8b7a12345678910',
-        name: 'Amit Mishra',
-        phone: '9876543219',
-        email: 'amit.mishra@example.com',
-        program: 'Bachelor of Science in Nursing (B.Sc.)',
-        message: '',
-        consent: true,
-        status: 'admitted',
-        notes: [],
-        createdAt: new Date('2026-10-19T12:00:00Z').toISOString(),
-        updatedAt: new Date('2026-10-19T12:00:00Z').toISOString()
-      },
-      {
-        _id: '671e6245d8b7a12345678911',
-        id: '671e6245d8b7a12345678911',
-        name: 'Kavita Rao',
-        phone: '9876543220',
-        email: 'kavita.rao@example.com',
-        program: 'Post Basic B.Sc. Nursing',
-        message: 'Seeking scholarship details.',
-        consent: true,
-        status: 'new',
-        notes: [],
-        createdAt: new Date('2026-10-18T13:00:00Z').toISOString(),
-        updatedAt: new Date('2026-10-18T13:00:00Z').toISOString()
-      },
-      {
-        _id: '671e6245d8b7a12345678912',
-        id: '671e6245d8b7a12345678912',
-        name: 'Suresh Yadav',
-        phone: '9876543221',
-        email: 'suresh.yadav@example.com',
-        program: 'Master of Science in Nursing (M.Sc.)',
-        message: '',
-        consent: true,
-        status: 'new',
-        notes: [],
-        createdAt: new Date('2026-10-17T14:00:00Z').toISOString(),
-        updatedAt: new Date('2026-10-17T14:00:00Z').toISOString()
-      }
-    ]
+    enquiries: []
   };
 }
 

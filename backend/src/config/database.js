@@ -23,7 +23,7 @@ async function connectDB({ allowDevStore = true } = {}) {
 
   if (!config.mongodbUriConfigured && allowDevStore && !strictProd) {
     const { activateDevStorage } = require('./devStorage');
-    const { Admin, EMAIL_REGEX } = require('../models/Admin');
+    const { Admin } = require('../models/Admin');
     const { Enquiry } = require('../models/Enquiry');
     activateDevStorage(Admin, Enquiry);
     isDevStorageActive = true;
@@ -70,85 +70,23 @@ async function ensureInitialMongoSetup() {
   try {
     const { Admin } = require('../models/Admin');
     const { Enquiry } = require('../models/Enquiry');
-    const { loadData } = require('./devStorage');
 
     await Promise.all([
       Admin.syncIndexes().catch(() => {}),
       Enquiry.syncIndexes().catch(() => {})
     ]);
 
-    const rawSeedPassword = (process.env.ADMIN_SEED_PASSWORD || '').trim();
-    const defaultPassword =
-      rawSeedPassword && !rawSeedPassword.startsWith('<') && rawSeedPassword.length >= 8
-        ? rawSeedPassword
-        : 'qwertyuiop123';
-
-    const rawSeedEmail = (process.env.ADMIN_SEED_EMAIL || '').trim().toLowerCase();
-    
-    const defaultAdmins = [
-      {
-        email: 'admin@edu.in',
-        password: defaultPassword,
-        name: (process.env.ADMIN_SEED_NAME || 'Institute Administrator').trim(),
-        role: 'superadmin'
-      },
-      {
-        email: 'admin@kavyashreenursing.edu.in',
-        password: defaultPassword,
-        name: 'Dr. System Administrator',
-        role: 'superadmin'
-      }
-    ];
-
-    if (
-      rawSeedEmail &&
-      EMAIL_REGEX.test(rawSeedEmail) &&
-      !defaultAdmins.some(a => a.email === rawSeedEmail)
-    ) {
-      defaultAdmins.push({
-        email: rawSeedEmail,
-        password: defaultPassword,
-        name: (process.env.ADMIN_SEED_NAME || 'Institute Administrator').trim(),
-        role: 'superadmin'
-      });
-    }
-
-    for (const adm of defaultAdmins) {
-      try {
-        const exists = await Admin.findOne({ email: adm.email });
-        if (!exists) {
-          await Admin.create(adm);
-          console.log(`[INFO] Provisioned initial admin account: ${adm.email}`);
-        } else {
-          const matches = await exists.comparePassword(adm.password);
-          if (!matches) {
-            exists.password = adm.password;
-            await exists.save();
-            console.log(`[INFO] Synchronized password for admin account: ${adm.email}`);
-          }
+    // Clean up any legacy sample/dummy enquiries that were previously seeded
+    await Enquiry.deleteMany({
+      $or: [
+        { email: /@example\.com$/i },
+        {
+          name: 'Sneha Patel',
+          phone: '9876543214',
+          message: 'Interested in pediatric and community nursing specializations.'
         }
-      } catch (adminErr) {
-        console.warn(`[WARN] Could not provision admin ${adm.email}:`, adminErr.message);
-      }
-    }
-
-    const enquiryCount = await Enquiry.countDocuments();
-    if (enquiryCount <= 1) {
-      const seedDataset = loadData();
-      const initialEnquiries = seedDataset.enquiries || [];
-      for (const item of initialEnquiries) {
-        await Enquiry.create({
-          name: item.name,
-          phone: item.phone,
-          email: item.email,
-          program: item.program,
-          message: item.message,
-          consent: true,
-          status: item.status || 'new'
-        });
-      }
-      console.log(`[INFO] Seeded ${initialEnquiries.length} initial enquiries into MongoDB.`);
-    }
+      ]
+    }).catch(() => {});
   } catch (err) {
     console.warn('[WARN] Initial MongoDB setup check skipped:', err.message);
   }

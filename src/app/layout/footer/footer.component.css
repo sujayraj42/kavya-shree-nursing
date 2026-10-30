@@ -34,22 +34,3 @@
   border-radius: var(--round-4);
   color: var(--color--white-80);
 }
-
-.social-link-box {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
-  background-color: rgba(255, 255, 255, 0.08);
-  border-radius: var(--round-4);
-  color: var(--color--white);
-  transition: all 0.2s ease;
-}
-
-.social-link-box:hover {
-  background-color: var(--color--carrot-orange);
-  color: #000000;
-}

@@ -98,9 +98,9 @@
       <div class="col-lg-7">
         <div class="form-container-box p-4 p-lg-5 bg-dark text-white round-4 h-100 d-flex flex-column justify-content-between">
           <div>
-            <h2 class="h4-heading white mb-2">Send an Inquiry</h2>
+            <h2 class="h4-heading white mb-2">Send an Inquiry to Admissions Desk</h2>
             <p class="para-white small mb-4">
-              Have questions about program curricula or admission schedules? Fill out the inquiry form below for local validation.
+              Have questions about program curricula, campus visitation, or admission schedules? Submit your inquiry directly to our admissions desk.
             </p>
 
             @if (!isMessageSent()) {
@@ -108,6 +108,12 @@
                 @if (formValidationError()) {
                   <div class="alert alert-danger py-2 px-3 small round-4 mb-2" role="alert">
                     {{ formValidationError() }}
+                  </div>
+                }
+
+                @if (serverError()) {
+                  <div class="alert alert-warning py-2 px-3 small round-4 mb-2" role="alert">
+                    {{ serverError() }}
                   </div>
                 }
 
@@ -186,19 +192,39 @@
                   </div>
 
                   <div class="col-md-6">
-                    <label for="contactSubject" class="form-label extra-small-para text-white-50 mb-1">
-                      Subject / Topic <span class="text-white-50">(Optional)</span>
+                    <label for="contactProgram" class="form-label extra-small-para text-white-50 mb-1">
+                      Program of Interest <span class="text-warning">*</span>
                     </label>
-                    <input
-                      type="text"
-                      id="contactSubject"
-                      name="contactSubject"
-                      class="form-control bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
-                      placeholder="e.g. B.Sc. Nursing Syllabus"
-                      [ngModel]="contactSubject()"
-                      (ngModelChange)="contactSubject.set($event)"
-                    />
+                    <select
+                      id="contactProgram"
+                      name="contactProgram"
+                      class="form-select bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
+                      [ngModel]="contactProgram()"
+                      (ngModelChange)="contactProgram.set($event)"
+                      required
+                    >
+                      <option value="Auxiliary Nursing & Midwifery (ANM)" class="text-dark">Auxiliary Nursing &amp; Midwifery (ANM)</option>
+                      <option value="General Nursing & Midwifery (GNM)" class="text-dark">General Nursing &amp; Midwifery (GNM)</option>
+                      <option value="Bachelor of Science in Nursing (B.Sc.)" class="text-dark">Bachelor of Science in Nursing (B.Sc.)</option>
+                      <option value="Post Basic B.Sc. Nursing" class="text-dark">Post Basic B.Sc. Nursing</option>
+                      <option value="Master of Science in Nursing (M.Sc.)" class="text-dark">Master of Science in Nursing (M.Sc.)</option>
+                    </select>
                   </div>
+                </div>
+
+                <div>
+                  <label for="contactSubject" class="form-label extra-small-para text-white-50 mb-1">
+                    Subject / Topic <span class="text-white-50">(Optional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="contactSubject"
+                    name="contactSubject"
+                    class="form-control bg-secondary bg-opacity-25 text-white border-secondary border-opacity-50 round-4"
+                    placeholder="e.g. Campus Visitation or Eligibility Criteria"
+                    [ngModel]="contactSubject()"
+                    (ngModelChange)="contactSubject.set($event)"
+                  />
                 </div>
 
                 <div>
@@ -225,13 +251,45 @@
                   }
                 </div>
 
-                <div class="p-3 bg-secondary bg-opacity-10 border border-secondary border-opacity-25 round-4 extra-small-para text-white-50">
-                  <strong class="text-warning d-block mb-1">Demonstration Notice:</strong>
-                  This form is currently running in client-side demonstration mode. Inquiries are validated locally and are not transmitted across the internet to the institute.
+                <div class="form-check my-1">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="contactConsent"
+                    name="contactConsent"
+                    [ngModel]="contactConsent()"
+                    (ngModelChange)="contactConsent.set($event)"
+                    [class.is-invalid]="consentError()"
+                    [attr.aria-invalid]="consentError() ? 'true' : null"
+                    [attr.aria-describedby]="consentError() ? 'contactConsentError' : null"
+                    required
+                  />
+                  <label class="form-check-label extra-small-para text-white-50" for="contactConsent">
+                    I consent to Kavya Shree Institute of Nursing processing my contact details to respond to this inquiry. <span class="text-warning">*</span>
+                  </label>
+                  @if (consentError()) {
+                    <div id="contactConsentError" class="invalid-feedback d-block extra-small-para text-warning">
+                      {{ consentError() }}
+                    </div>
+                  }
                 </div>
 
-                <button type="submit" class="primary-btn w-100 justify-content-center mt-2">
-                  Validate &amp; Send Inquiry
+                <div class="p-3 bg-secondary bg-opacity-10 border border-secondary border-opacity-25 round-4 extra-small-para text-white-50">
+                  <strong class="text-warning d-block mb-1">Privacy &amp; Data Protection Notice:</strong>
+                  Your inquiry is transmitted securely to our campus admissions desk. Personal contact details are used solely to respond to your academic inquiry.
+                </div>
+
+                <button
+                  type="submit"
+                  class="primary-btn w-100 justify-content-center mt-2"
+                  [disabled]="isSubmitting()"
+                >
+                  @if (isSubmitting()) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span>Submitting Inquiry...</span>
+                  } @else {
+                    <span>Submit Inquiry to Admissions Desk</span>
+                  }
                 </button>
               </form>
             } @else {
@@ -242,14 +300,19 @@
                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                   </svg>
                 </div>
-                <h3 class="h4-heading white mb-2">Inquiry Validated</h3>
+                <h3 class="h4-heading white mb-2">Inquiry Registered</h3>
                 <p class="para-white small mb-3">
-                  Thank you, <strong>{{ contactName() }}</strong>. Your contact inquiry has been validated locally.
+                  Thank you, <strong>{{ contactName() }}</strong>. Your inquiry has been registered with our campus admissions desk.
                 </p>
                 <div class="p-3 bg-dark round-4 border border-secondary border-opacity-25 text-start small mb-4">
-                  <div class="text-warning small mb-2 fw-semibold">Note: Client-side demonstration test. No data was sent over the network.</div>
+                  @if (confirmedReferenceId()) {
+                    <div class="text-warning small mb-2 fw-semibold">
+                      Reference ID: <span class="font-monospace">{{ confirmedReferenceId() }}</span>
+                    </div>
+                  }
                   <div class="mb-1"><strong>Name:</strong> {{ contactName() }}</div>
                   <div class="mb-1"><strong>Phone:</strong> {{ contactPhone() }}</div>
+                  <div class="mb-1"><strong>Program:</strong> {{ contactProgram() }}</div>
                   <div class="mb-1"><strong>Email:</strong> {{ contactEmail() || 'Not provided' }}</div>
                   <div><strong>Message:</strong> {{ contactMessage() }}</div>
                 </div>
@@ -264,4 +327,3 @@
     </div>
   </div>
 </section>
-

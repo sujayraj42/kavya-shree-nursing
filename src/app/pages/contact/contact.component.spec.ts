@@ -1,12 +1,34 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 import { ContactComponent } from './contact.component';
+import { EnquiryService } from '../../core/services/enquiry.service';
 
 describe('ContactComponent', () => {
+  let enquiryServiceSpy: { submitEnquiry: ReturnType<typeof vi.fn> };
+
   beforeEach(async () => {
+    enquiryServiceSpy = {
+      submitEnquiry: vi.fn().mockReturnValue(
+        of({
+          success: true,
+          message: 'Enquiry registered successfully',
+          data: {
+            id: '671e6245d8b7a12345678901',
+            program: 'General Nursing & Midwifery (GNM)',
+            status: 'new',
+            createdAt: new Date().toISOString()
+          }
+        })
+      )
+    };
+
     await TestBed.configureTestingModule({
       imports: [ContactComponent],
-      providers: [provideRouter([])]
+      providers: [
+        provideRouter([]),
+        { provide: EnquiryService, useValue: enquiryServiceSpy }
+      ]
     }).compileComponents();
   });
 
@@ -26,9 +48,10 @@ describe('ContactComponent', () => {
     expect(component['phoneError']()).toBeTruthy();
     expect(component['messageError']()).toBeTruthy();
     expect(component['isMessageSent']()).toBe(false);
+    expect(enquiryServiceSpy.submitEnquiry).not.toHaveBeenCalled();
   });
 
-  it('should validate and send message when all required fields are filled', () => {
+  it('should validate and send message to EnquiryService when all required fields are filled', () => {
     const fixture = TestBed.createComponent(ContactComponent);
     const component = fixture.componentInstance;
 
@@ -37,6 +60,7 @@ describe('ContactComponent', () => {
     component['contactMessage'].set('Inquiring about ANM course syllabus and admission details.');
 
     component['sendMessage']();
+    expect(enquiryServiceSpy.submitEnquiry).toHaveBeenCalled();
     expect(component['isMessageSent']()).toBe(true);
     expect(component['formValidationError']()).toBe('');
   });
@@ -56,4 +80,3 @@ describe('ContactComponent', () => {
     expect(component['contactName']()).toBe('');
   });
 });
-

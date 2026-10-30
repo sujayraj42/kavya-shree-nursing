@@ -51,14 +51,14 @@
 
           <div class="row g-3">
             <div class="col-12 col-sm-6">
-              <label class="text-muted extra-small-para text-uppercase fw-semibold d-block">Phone Number</label>
+              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Phone Number</span>
               <a [href]="'tel:' + item.phone" class="fs-6 fw-bold text-dark text-decoration-none">
                 {{ item.phone }}
               </a>
             </div>
 
             <div class="col-12 col-sm-6">
-              <label class="text-muted extra-small-para text-uppercase fw-semibold d-block">Email Address</label>
+              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Email Address</span>
               @if (item.email) {
                 <a [href]="'mailto:' + item.email" class="fs-6 text-dark text-decoration-none">
                   {{ item.email }}
@@ -69,26 +69,26 @@
             </div>
 
             <div class="col-12">
-              <label class="text-muted extra-small-para text-uppercase fw-semibold d-block">Academic Program Desired</label>
+              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Academic Program Desired</span>
               <div class="p-2 bg-light rounded border text-dark fw-semibold small">
                 {{ item.program }}
               </div>
             </div>
 
             <div class="col-12">
-              <label class="text-muted extra-small-para text-uppercase fw-semibold d-block">Candidate Inquiries / Message</label>
+              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Candidate Inquiries / Message</span>
               <div class="p-3 bg-light rounded border text-dark small" style="min-height: 80px; white-space: pre-wrap;">
                 {{ item.message ? item.message : 'No custom message entered by candidate.' }}
               </div>
             </div>
 
             <div class="col-12 col-sm-6">
-              <label class="text-muted extra-small-para text-uppercase fw-semibold d-block">Initial Submission Time</label>
+              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Initial Submission Time</span>
               <span class="small text-dark">{{ formatDate(item.createdAt, true) }}</span>
             </div>
 
             <div class="col-12 col-sm-6">
-              <label class="text-muted extra-small-para text-uppercase fw-semibold d-block">Last Activity Update</label>
+              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Last Activity Update</span>
               <span class="small text-dark">{{ formatDate(item.updatedAt, true) }}</span>
             </div>
           </div>

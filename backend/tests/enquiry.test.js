@@ -5,11 +5,19 @@ const assert = require('node:assert/strict');
 const request = require('supertest');
 const app = require('../src/app');
 const { Enquiry } = require('../src/models/Enquiry');
+const enquiryRoutes = require('../src/routes/enquiry.routes');
+const { enquiryLimiter } = require('../src/middleware/rateLimiter');
 
 describe('Enquiry Submission and Server-Side Validation', () => {
   let createMock;
 
   beforeEach(() => {
+    enquiryRoutes.clearRecentSubmissions();
+    if (typeof enquiryLimiter.resetKey === 'function') {
+      enquiryLimiter.resetKey('::ffff:127.0.0.1');
+      enquiryLimiter.resetKey('127.0.0.1');
+      enquiryLimiter.resetKey('::1');
+    }
     createMock = mock.method(Enquiry, 'create', async data => ({
       id: 'mock-enquiry-id-507f1f77bcf86cd799439011',
       name: data.name,
@@ -25,6 +33,7 @@ describe('Enquiry Submission and Server-Side Validation', () => {
   });
 
   afterEach(() => {
+    enquiryRoutes.clearRecentSubmissions();
     mock.restoreAll();
   });
 
@@ -200,5 +209,30 @@ describe('Enquiry Submission and Server-Side Validation', () => {
 
     assert.equal(res.status, 400);
     assert.ok(res.body.errors.some(e => e.field === 'message'));
+  });
+
+  it('POST /api/enquiries should reject duplicate rapid submissions with 409 Conflict', async () => {
+    const payload = {
+      name: 'Kiran Devi',
+      phone: '9876501234',
+      program: 'General Nursing & Midwifery (GNM)',
+      consent: true
+    };
+
+    const firstRes = await request(app)
+      .post('/api/enquiries')
+      .set('X-Forwarded-For', '203.0.113.55')
+      .send(payload);
+    assert.equal(firstRes.status, 201);
+    assert.equal(createMock.mock.callCount(), 1);
+
+    const duplicateRes = await request(app)
+      .post('/api/enquiries')
+      .set('X-Forwarded-For', '203.0.113.55')
+      .send(payload);
+    assert.equal(duplicateRes.status, 409);
+    assert.equal(duplicateRes.body.success, false);
+    assert.ok(duplicateRes.body.error.includes('Duplicate enquiry detected'));
+    assert.equal(createMock.mock.callCount(), 1);
   });
 });
