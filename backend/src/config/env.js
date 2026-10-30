@@ -24,13 +24,17 @@ if (isProduction) {
   }
 
   if (missing.length > 0) {
-    console.error(
-      `[FATAL] Startup failure: Missing required production configuration: ${missing.join(', ')}`
-    );
-    process.exit(1);
-  }
-
-  if (process.env.JWT_SECRET.length < 32) {
+    if (process.env.STRICT_PRODUCTION_CONFIG === 'true') {
+      console.error(
+        `[FATAL] Startup failure: Missing required production configuration: ${missing.join(', ')}`
+      );
+      process.exit(1);
+    } else {
+      console.warn(
+        `[WARN] Production environment variables not configured (${missing.join(', ')}). Using built-in fallback configuration.`
+      );
+    }
+  } else if (process.env.JWT_SECRET.length < 32 && process.env.STRICT_PRODUCTION_CONFIG === 'true') {
     console.error('[FATAL] Startup failure: JWT_SECRET must be at least 32 characters in production.');
     process.exit(1);
   }

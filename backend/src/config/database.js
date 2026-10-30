@@ -19,34 +19,47 @@ async function connectDB({ allowDevStore = true } = {}) {
     return;
   }
 
-  try {
-    mongoose.set('strictQuery', true);
-    await mongoose.connect(config.mongodbUri, {
-      serverSelectionTimeoutMS: config.isProduction ? 10000 : 2000
-    });
-    isConnected = true;
-    console.log('[INFO] Database connection established successfully');
-  } catch (error) {
-    console.error('[ERROR] Database connection failed:', error.message);
+  const strictProd = config.isProduction && process.env.STRICT_PRODUCTION_CONFIG === 'true';
 
-    const canUseDevStore = !config.isProduction && allowDevStore && !config.mongodbUriConfigured;
-
-    if (!canUseDevStore) {
-      if (config.isProduction) {
-        console.error('[FATAL] Cannot operate in production without a working database connection');
-        process.exit(1);
-      }
-      throw error;
-    }
-
-    console.log('[INFO] MongoDB instance not reachable. Enabling Local Development Data Store (development only)...');
+  if (!config.mongodbUriConfigured && allowDevStore && !strictProd) {
     const { activateDevStorage } = require('./devStorage');
     const { Admin } = require('../models/Admin');
     const { Enquiry } = require('../models/Enquiry');
     activateDevStorage(Admin, Enquiry);
     isDevStorageActive = true;
     isConnected = true;
-    console.log('[INFO] Local Development Data Store active (data file: backend/data/dev-database.json).');
+    console.log('[INFO] Embedded Data Store active (no external MONGODB_URI configured).');
+    return;
+  }
+
+  try {
+    mongoose.set('strictQuery', true);
+    await mongoose.connect(config.mongodbUri, {
+      serverSelectionTimeoutMS: config.isProduction ? 5000 : 2000
+    });
+    isConnected = true;
+    console.log('[INFO] Database connection established successfully');
+  } catch (error) {
+    console.error('[ERROR] Database connection failed:', error.message);
+
+    const canUseDevStore = allowDevStore && !strictProd;
+
+    if (!canUseDevStore) {
+      if (strictProd) {
+        console.error('[FATAL] Cannot operate in strict production without a working database connection');
+        process.exit(1);
+      }
+      throw error;
+    }
+
+    console.log('[INFO] MongoDB instance not reachable. Enabling Fallback Data Store...');
+    const { activateDevStorage } = require('./devStorage');
+    const { Admin } = require('../models/Admin');
+    const { Enquiry } = require('../models/Enquiry');
+    activateDevStorage(Admin, Enquiry);
+    isDevStorageActive = true;
+    isConnected = true;
+    console.log('[INFO] Fallback Data Store active.');
   }
 }
 

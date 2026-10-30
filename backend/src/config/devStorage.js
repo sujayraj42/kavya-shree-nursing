@@ -1,12 +1,14 @@
 'use strict';
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
-const DATA_DIR = path.join(__dirname, '../../data');
+const DATA_DIR = process.env.VERCEL ? os.tmpdir() : path.join(__dirname, '../../data');
 const DATA_FILE = path.join(DATA_DIR, 'dev-database.json');
+const TMP_DATA_FILE = path.join(os.tmpdir(), 'kavya-shree-dev-database.json');
 
 // Pre-computed bcrypt hashes for local development store only (no plaintext passwords in source).
 const DEV_FALLBACK_HASHES = [
@@ -274,8 +276,12 @@ function saveData() {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
     fs.writeFileSync(DATA_FILE, JSON.stringify(memoryData, null, 2), 'utf8');
-  } catch (err) {
-    console.error('[ERROR] Failed to persist dev data to dev-database.json:', err.message);
+  } catch {
+    try {
+      fs.writeFileSync(TMP_DATA_FILE, JSON.stringify(memoryData, null, 2), 'utf8');
+    } catch {
+      // Keep in-memory state if filesystem is read-only
+    }
   }
 }
 

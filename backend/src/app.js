@@ -21,18 +21,22 @@ if (config.isProduction) {
 // Security HTTP headers
 app.use(helmet());
 
-// CORS configuration: restricted to FRONTEND_ORIGIN in production
+// CORS configuration: restricted to FRONTEND_ORIGIN when explicitly configured in production
 const corsOptions = {
   origin: function (origin, callback) {
-    if (config.isProduction) {
+    if (config.isProduction && process.env.FRONTEND_ORIGIN) {
       const allowedOrigins = config.frontendOrigin
         .split(',')
         .map(o => o.trim().replace(/\/+$/, '').toLowerCase());
 
       const normalizedOrigin = (origin || '').replace(/\/+$/, '').toLowerCase();
 
-      // If no origin (e.g. server-to-server health checks) or matches configured origin
-      if (!origin || allowedOrigins.includes(normalizedOrigin)) {
+      // If no origin (same-origin / server-to-server) or matches configured origin or Vercel preview
+      if (
+        !origin ||
+        allowedOrigins.includes(normalizedOrigin) ||
+        normalizedOrigin.endsWith('.vercel.app')
+      ) {
         return callback(null, true);
       }
       const corsError = new Error('CORS blocked: Request origin not authorized');
@@ -40,7 +44,7 @@ const corsOptions = {
       return callback(corsError);
     }
 
-    // In development and testing, allow requests
+    // Allow same-origin and non-restricted requests
     return callback(null, true);
   },
   methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
