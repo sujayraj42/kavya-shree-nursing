@@ -1,14 +1,16 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdminEnquiryService } from '../services/admin-enquiry.service';
 import {
   AdminEnquiry,
   EnquiryStatus,
-  ENQUIRY_STATUS_BADGE_CLASS,
   ENQUIRY_STATUS_LABELS,
   VALID_ENQUIRY_STATUSES,
-  formatAdminDate
+  formatAdminDate,
+  getEnquiryBadgeClass,
+  getEnquiryStatusLabel
 } from '../models/admin.models';
 
 @Component({
@@ -20,6 +22,7 @@ import {
 export class AdminEnquiryDetailComponent implements OnInit {
   private readonly enquiryService = inject(AdminEnquiryService);
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly validStatuses = VALID_ENQUIRY_STATUSES;
 
@@ -39,7 +42,7 @@ export class AdminEnquiryDetailComponent implements OnInit {
   protected readonly noteErrorMessage = signal('');
 
   public ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.loadEnquiry(id);
@@ -127,11 +130,11 @@ export class AdminEnquiryDetailComponent implements OnInit {
   }
 
   protected getBadgeClass(status: string): string {
-    return ENQUIRY_STATUS_BADGE_CLASS[status as EnquiryStatus] || 'badge bg-secondary';
+    return getEnquiryBadgeClass(status);
   }
 
   protected getStatusLabel(status: string): string {
-    return ENQUIRY_STATUS_LABELS[status as EnquiryStatus] || status;
+    return getEnquiryStatusLabel(status);
   }
 
   protected formatDate(dateStr: string, includeTime = false): string {

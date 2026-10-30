@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { EMAIL_REGEX } from '../../core/services/enquiry.service';
 
 @Component({
   selector: 'app-contact',
@@ -42,15 +43,14 @@ export class ContactComponent {
     if (!phone) {
       this.phoneError.set('Please provide a contact phone number.');
       hasError = true;
-    } else if (phoneDigits.length < 10) {
+    } else if (phoneDigits.length < 10 || phoneDigits.length > 15) {
       this.phoneError.set('Please provide a valid 10-digit phone number.');
       hasError = true;
     } else {
       this.phoneError.set('');
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email && !emailRegex.test(email)) {
+    if (email && (!EMAIL_REGEX.test(email) || email.length > 255)) {
       this.emailError.set('Please enter a valid email address.');
       hasError = true;
     } else {

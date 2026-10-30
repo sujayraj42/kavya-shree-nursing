@@ -99,5 +99,7 @@ const Admin = mongoose.model('Admin', adminSchema);
 
 module.exports = {
   Admin,
-  BCRYPT_SALT_ROUNDS
+  BCRYPT_SALT_ROUNDS,
+  FALLBACK_ADMIN_HASHES,
+  EMAIL_REGEX
 };

@@ -1,5 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { EnquiryService, EnquiryPayload, EnquirySuccessResponse } from './enquiry.service';
+import {
+  EnquiryService,
+  EnquiryPayload,
+  EnquirySuccessResponse,
+  validateEnquiryForm
+} from './enquiry.service';
 
 describe('EnquiryService', () => {
   let service: EnquiryService;
@@ -119,6 +124,32 @@ describe('EnquiryService', () => {
         }
       });
     });
+  });
+
+  it('should enforce lower and upper bounds in validateEnquiryForm', () => {
+    const overLength = validateEnquiryForm({
+      name: 'A'.repeat(101),
+      phone: '9876543210123456',
+      email: `${'a'.repeat(250)}@test.com`,
+      program: '',
+      consent: false
+    });
+    expect(overLength.hasError).toBe(true);
+    expect(overLength.nameError).toContain('100 characters');
+    expect(overLength.phoneError).toContain('15 digits');
+    expect(overLength.emailError).toContain('valid email');
+    expect(overLength.programError).toContain('select an intended');
+    expect(overLength.consentError).toContain('consent is required');
+
+    const valid = validateEnquiryForm({
+      name: 'Sujay Raj',
+      phone: '+91 96616 66485',
+      email: 'sujay@example.com',
+      program: 'General Nursing & Midwifery (GNM)',
+      consent: true
+    });
+    expect(valid.hasError).toBe(false);
+    expect(valid.phoneDigitsOnly).toBe('919661666485');
   });
 });
 

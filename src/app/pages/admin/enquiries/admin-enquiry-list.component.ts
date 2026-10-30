@@ -1,25 +1,18 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdminEnquiryService } from '../services/admin-enquiry.service';
 import {
+  ADVERTISED_PROGRAMS,
   AdminEnquiry,
   EnquiryPagination,
-  EnquiryStatus,
-  ENQUIRY_STATUS_BADGE_CLASS,
-  ENQUIRY_STATUS_LABELS,
   VALID_ENQUIRY_STATUSES,
   formatAdminDate,
-  formatRefId
+  formatRefId,
+  getEnquiryBadgeClass,
+  getEnquiryStatusLabel
 } from '../models/admin.models';
-
-const ADVERTISED_PROGRAMS = [
-  'Auxiliary Nursing & Midwifery (ANM)',
-  'General Nursing & Midwifery (GNM)',
-  'Bachelor of Science in Nursing (B.Sc.)',
-  'Post Basic B.Sc. Nursing',
-  'Master of Science in Nursing (M.Sc.)'
-];
 
 @Component({
   selector: 'app-admin-enquiry-list',
@@ -30,7 +23,7 @@ const ADVERTISED_PROGRAMS = [
 export class AdminEnquiryListComponent implements OnInit {
   private readonly enquiryService = inject(AdminEnquiryService);
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly advertisedPrograms = ADVERTISED_PROGRAMS;
   protected readonly validStatuses = VALID_ENQUIRY_STATUSES;
@@ -54,7 +47,7 @@ export class AdminEnquiryListComponent implements OnInit {
   protected readonly errorMessage = signal('');
 
   public ngOnInit(): void {
-    this.route.queryParamMap.subscribe((params) => {
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const statusParam = params.get('status');
       this.selectedStatus.set(statusParam || 'all');
       const pageParam = parseInt(params.get('page') || '1', 10);
@@ -121,11 +114,11 @@ export class AdminEnquiryListComponent implements OnInit {
   }
 
   protected getBadgeClass(status: string): string {
-    return ENQUIRY_STATUS_BADGE_CLASS[status as EnquiryStatus] || 'badge bg-secondary';
+    return getEnquiryBadgeClass(status);
   }
 
   protected getStatusLabel(status: string): string {
-    return ENQUIRY_STATUS_LABELS[status as EnquiryStatus] || status;
+    return getEnquiryStatusLabel(status);
   }
 
   protected formatRef(id: string): string {

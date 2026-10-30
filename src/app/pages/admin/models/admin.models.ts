@@ -32,6 +32,14 @@ export const VALID_ENQUIRY_STATUSES: EnquiryStatus[] = [
   'archived'
 ];
 
+export const ADVERTISED_PROGRAMS: string[] = [
+  'Auxiliary Nursing & Midwifery (ANM)',
+  'General Nursing & Midwifery (GNM)',
+  'Bachelor of Science in Nursing (B.Sc.)',
+  'Post Basic B.Sc. Nursing',
+  'Master of Science in Nursing (M.Sc.)'
+];
+
 export const ENQUIRY_STATUS_LABELS: Record<EnquiryStatus, string> = {
   new: 'New Submission',
   contacted: 'Contacted',
@@ -49,6 +57,14 @@ export const ENQUIRY_STATUS_BADGE_CLASS: Record<EnquiryStatus, string> = {
   closed: 'badge bg-secondary',
   archived: 'badge bg-dark'
 };
+
+export function getEnquiryBadgeClass(status: string): string {
+  return ENQUIRY_STATUS_BADGE_CLASS[status as EnquiryStatus] || 'badge bg-secondary';
+}
+
+export function getEnquiryStatusLabel(status: string): string {
+  return ENQUIRY_STATUS_LABELS[status as EnquiryStatus] || status;
+}
 
 export interface AdminEnquiry {
   id: string;

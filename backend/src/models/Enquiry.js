@@ -127,7 +127,7 @@ const enquirySchema = new mongoose.Schema(
 );
 
 enquirySchema.index({ createdAt: -1 });
-enquirySchema.index({ status: 1 });
+// Note: { status: 1, createdAt: -1 } also serves as a prefix index for { status: 1 } queries
 enquirySchema.index({ status: 1, createdAt: -1 });
 enquirySchema.index({ program: 1, createdAt: -1 });
 enquirySchema.index({ phone: 1 });

@@ -9,7 +9,7 @@ import {
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MotionService } from '../../core/services/motion.service';
-import { EnquiryService } from '../../core/services/enquiry.service';
+import { EnquiryService, validateEnquiryForm } from '../../core/services/enquiry.service';
 
 @Component({
   selector: 'app-home',
@@ -388,57 +388,19 @@ export class HomeComponent {
     const message = this.applicantMessage().trim();
     const consent = this.applicantConsent();
 
-    let hasError = false;
+    const validation = validateEnquiryForm({ name, phone, email, program, consent });
+    this.nameError.set(validation.nameError);
+    this.phoneError.set(validation.phoneError);
+    this.emailError.set(validation.emailError);
+    this.programError.set(validation.programError);
+    this.consentError.set(validation.consentError);
 
-    // 1. Name Validation
-    if (!name || name.length < 2) {
-      this.nameError.set('Please enter the candidate’s full name (at least 2 characters).');
-      hasError = true;
-    } else {
-      this.nameError.set('');
-    }
-
-    // 2. Phone Validation (must have at least 10 digits)
-    const phoneDigitsOnly = phone.replace(/\D/g, '');
-    if (!phone) {
-      this.phoneError.set('Please provide a contact phone number.');
-      hasError = true;
-    } else if (phoneDigitsOnly.length < 10) {
-      this.phoneError.set('Please enter a valid phone number with at least 10 digits.');
-      hasError = true;
-    } else {
-      this.phoneError.set('');
-    }
-
-    // 3. Email Validation (if provided, must be syntactically valid)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email && !emailRegex.test(email)) {
-      this.emailError.set('Please enter a valid email address (e.g. name@domain.com).');
-      hasError = true;
-    } else {
-      this.emailError.set('');
-    }
-
-    // 4. Program Selection Validation
-    if (!program) {
-      this.programError.set('Please select an intended academic program.');
-      hasError = true;
-    } else {
-      this.programError.set('');
-    }
-
-    // 5. Consent Validation
-    if (!consent) {
-      this.consentError.set('Candidate consent is required to process an admissions enquiry.');
-      hasError = true;
-    } else {
-      this.consentError.set('');
-    }
-
-    if (hasError) {
+    if (validation.hasError) {
       this.formValidationError.set('Please rectify the highlighted errors to proceed.');
       return;
     }
+
+    const phoneDigitsOnly = validation.phoneDigitsOnly;
 
     // Clear validation error summary
     this.formValidationError.set('');
@@ -490,6 +452,11 @@ export class HomeComponent {
   protected resetForm(): void {
     this.isFormSubmitted.set(false);
     this.confirmedSubmission.set(null);
+    this.nameError.set('');
+    this.phoneError.set('');
+    this.emailError.set('');
+    this.programError.set('');
+    this.consentError.set('');
     this.serverError.set('');
     this.formValidationError.set('');
   }

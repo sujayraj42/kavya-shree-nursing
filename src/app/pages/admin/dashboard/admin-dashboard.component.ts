@@ -5,10 +5,9 @@ import { AdminAuthService } from '../services/admin-auth.service';
 import {
   AdminEnquiry,
   DashboardStats,
-  ENQUIRY_STATUS_BADGE_CLASS,
-  ENQUIRY_STATUS_LABELS,
-  EnquiryStatus,
-  formatAdminDate
+  formatAdminDate,
+  getEnquiryBadgeClass,
+  getEnquiryStatusLabel
 } from '../models/admin.models';
 
 @Component({
@@ -50,10 +49,10 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   protected getBadgeClass(status: string): string {
-    return ENQUIRY_STATUS_BADGE_CLASS[status as EnquiryStatus] || 'badge bg-secondary';
+    return getEnquiryBadgeClass(status);
   }
 
   protected getStatusLabel(status: string): string {
-    return ENQUIRY_STATUS_LABELS[status as EnquiryStatus] || status;
+    return getEnquiryStatusLabel(status);
   }
 }

@@ -1,7 +1,8 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { EnquiryService } from '../../core/services/enquiry.service';
+import { EnquiryService, validateEnquiryForm } from '../../core/services/enquiry.service';
 
 @Component({
   selector: 'app-admissions',
@@ -12,6 +13,7 @@ import { EnquiryService } from '../../core/services/enquiry.service';
 export class AdmissionsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly enquiryService = inject(EnquiryService);
+  private readonly destroyRef = inject(DestroyRef);
 
   // Form Fields
   protected readonly applicantName = signal('');
@@ -42,7 +44,7 @@ export class AdmissionsComponent implements OnInit {
   } | null>(null);
 
   ngOnInit(): void {
-    this.route.queryParamMap.subscribe((params) => {
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const prog = params.get('program');
       if (prog) {
         this.selectedProgram.set(prog);
@@ -62,52 +64,19 @@ export class AdmissionsComponent implements OnInit {
     const message = this.applicantMessage().trim();
     const consent = this.applicantConsent();
 
-    let hasError = false;
+    const validation = validateEnquiryForm({ name, phone, email, program, consent });
+    this.nameError.set(validation.nameError);
+    this.phoneError.set(validation.phoneError);
+    this.emailError.set(validation.emailError);
+    this.programError.set(validation.programError);
+    this.consentError.set(validation.consentError);
 
-    if (!name || name.length < 2) {
-      this.nameError.set('Please enter the candidate’s full name (at least 2 characters).');
-      hasError = true;
-    } else {
-      this.nameError.set('');
-    }
-
-    const phoneDigitsOnly = phone.replace(/\D/g, '');
-    if (!phone) {
-      this.phoneError.set('Please provide a contact phone number.');
-      hasError = true;
-    } else if (phoneDigitsOnly.length < 10) {
-      this.phoneError.set('Please enter a valid phone number with at least 10 digits.');
-      hasError = true;
-    } else {
-      this.phoneError.set('');
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email && !emailRegex.test(email)) {
-      this.emailError.set('Please enter a valid email address (e.g. name@domain.com).');
-      hasError = true;
-    } else {
-      this.emailError.set('');
-    }
-
-    if (!program) {
-      this.programError.set('Please select an intended academic program.');
-      hasError = true;
-    } else {
-      this.programError.set('');
-    }
-
-    if (!consent) {
-      this.consentError.set('Candidate consent is required to process an admissions enquiry.');
-      hasError = true;
-    } else {
-      this.consentError.set('');
-    }
-
-    if (hasError) {
+    if (validation.hasError) {
       this.formValidationError.set('Please review and correct the highlighted fields above.');
       return;
     }
+
+    const phoneDigitsOnly = validation.phoneDigitsOnly;
 
     this.formValidationError.set('');
     this.serverError.set('');

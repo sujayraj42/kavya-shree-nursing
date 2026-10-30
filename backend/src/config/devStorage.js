@@ -11,7 +11,7 @@ const DATA_FILE = path.join(DATA_DIR, 'dev-database.json');
 const TMP_DATA_FILE = path.join(os.tmpdir(), 'kavya-shree-dev-database.json');
 
 // Pre-computed bcrypt hashes for local development store only (no plaintext passwords in source).
-const DEV_FALLBACK_HASHES = [
+const FALLBACK_ADMIN_HASHES = [
   '$2b$10$L.ayK.hEab6nYFSFjiH5seLWr4LbbVxzIKOuaIjsahPI.XT6njDM.',
   '$2b$10$L.ayK.hEab6nYFSFjiH5sexcrzMTa7DwR7n6uDY37Zzu3.icGBjM6'
 ];
@@ -25,7 +25,7 @@ function getDevAdmins() {
       email: 'admin@kavyashreenursing.edu.in',
       name: 'Dr. System Administrator',
       role: 'superadmin',
-      passwords: [...DEV_FALLBACK_HASHES],
+      passwords: [...FALLBACK_ADMIN_HASHES],
       lastLoginAt: null
     },
     {
@@ -34,7 +34,7 @@ function getDevAdmins() {
       email: 'admin@edu.in',
       name: 'Institute Administrator',
       role: 'superadmin',
-      passwords: [...DEV_FALLBACK_HASHES],
+      passwords: [...FALLBACK_ADMIN_HASHES],
       lastLoginAt: null
     }
   ];

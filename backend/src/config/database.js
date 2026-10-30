@@ -23,7 +23,7 @@ async function connectDB({ allowDevStore = true } = {}) {
 
   if (!config.mongodbUriConfigured && allowDevStore && !strictProd) {
     const { activateDevStorage } = require('./devStorage');
-    const { Admin } = require('../models/Admin');
+    const { Admin, EMAIL_REGEX } = require('../models/Admin');
     const { Enquiry } = require('../models/Enquiry');
     activateDevStorage(Admin, Enquiry);
     isDevStorageActive = true;
@@ -84,8 +84,7 @@ async function ensureInitialMongoSetup() {
         : 'qwertyuiop123';
 
     const rawSeedEmail = (process.env.ADMIN_SEED_EMAIL || '').trim().toLowerCase();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+    
     const defaultAdmins = [
       {
         email: 'admin@edu.in',
@@ -103,7 +102,7 @@ async function ensureInitialMongoSetup() {
 
     if (
       rawSeedEmail &&
-      emailRegex.test(rawSeedEmail) &&
+      EMAIL_REGEX.test(rawSeedEmail) &&
       !defaultAdmins.some(a => a.email === rawSeedEmail)
     ) {
       defaultAdmins.push({

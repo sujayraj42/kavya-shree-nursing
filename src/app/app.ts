@@ -1,4 +1,5 @@
-import { Component, HostListener, signal, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, HostListener, signal, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
 import { HeaderComponent } from './layout/header/header.component';
@@ -14,14 +15,17 @@ import { SeoService } from './core/services/seo.service';
 export class App implements OnInit {
   private readonly router = inject(Router);
   private readonly seoService = inject(SeoService);
-  protected readonly title = signal('Kavya Shree Institute of Nursing');
+  private readonly destroyRef = inject(DestroyRef);
   protected readonly isAdminRoute = signal(false);
 
   public ngOnInit(): void {
     this.seoService.initRouteTracking();
     this.isAdminRoute.set(this.router.url.startsWith('/admin'));
     this.router.events
-      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((event) => {
         const targetUrl = event.urlAfterRedirects || event.url;
         this.isAdminRoute.set(targetUrl.startsWith('/admin'));

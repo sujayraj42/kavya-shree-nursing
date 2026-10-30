@@ -43,8 +43,13 @@ export class SeoService {
   private readonly titleService = inject(Title);
   private readonly metaService = inject(Meta);
   private readonly router = inject(Router);
+  private isTracking = false;
 
   public initRouteTracking(): void {
+    if (this.isTracking) {
+      return;
+    }
+    this.isTracking = true;
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const cleanUrl = event.urlAfterRedirects.split('?')[0].split('#')[0] || '/';
