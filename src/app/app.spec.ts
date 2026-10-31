@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { vi } from 'vitest';
 import { App } from './app';
+import { environment } from '../environments/environment';
 
 describe('App', () => {
   beforeEach(async () => {
@@ -45,5 +47,20 @@ describe('App', () => {
     expect(compiled.querySelector('app-header')).toBeFalsy();
     expect(compiled.querySelector('main#main-content')).toBeTruthy();
     expect(compiled.querySelector('app-footer')).toBeFalsy();
+  });
+
+  it('should silently ping backend /health endpoint when pingBackendHealth is called', () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }));
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+
+    app.pingBackendHealth();
+
+    expect(fetchSpy).toHaveBeenCalledWith(`${environment.apiBaseUrl}/health`, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-store'
+    });
+    fetchSpy.mockRestore();
   });
 });

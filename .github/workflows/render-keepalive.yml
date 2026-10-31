@@ -1,0 +1,21 @@
+name: Render Keep-Alive Ping
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping-render-backend:
+    name: Ping Render Health Endpoint
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Ping /api/health to prevent Render spin-down
+        run: |
+          response_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 45 "https://kavya-shree-nursing.onrender.com/api/health")
+          echo "Render /api/health HTTP status: ${response_code}"
+          if [ "$response_code" != "200" ]; then
+            echo "Warning: Render health check returned ${response_code}"
+          fi
+

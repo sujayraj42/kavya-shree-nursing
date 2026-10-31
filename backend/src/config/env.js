@@ -58,7 +58,16 @@ const config = {
   rateLimitWindowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 15 * 60 * 1000,
   rateLimitMaxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10) || 100,
   enquiryRateLimitMax: parseInt(process.env.ENQUIRY_RATE_LIMIT_MAX, 10) || 10,
-  adminLoginRateLimitMax: parseInt(process.env.ADMIN_LOGIN_RATE_LIMIT_MAX, 10) || 5
+  adminLoginRateLimitMax: parseInt(process.env.ADMIN_LOGIN_RATE_LIMIT_MAX, 10) || 5,
+  keepAliveEnabled: process.env.KEEP_ALIVE_ENABLED !== 'false',
+  keepAliveUrl: (
+    process.env.KEEP_ALIVE_URL ||
+    process.env.RENDER_EXTERNAL_URL ||
+    (isProduction ? 'https://kavya-shree-nursing.onrender.com' : '')
+  )
+    .trim()
+    .replace(/\/+$/, ''),
+  keepAliveIntervalMs: parseInt(process.env.KEEP_ALIVE_INTERVAL_MS, 10) || 10 * 60 * 1000
 };
 
 module.exports = config;

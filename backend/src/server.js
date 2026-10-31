@@ -4,6 +4,53 @@ const app = require('./app');
 const config = require('./config/env');
 const { connectDB, disconnectDB } = require('./config/database');
 
+let keepAliveTimer = null;
+
+/**
+ * Periodically pings the external Render health endpoint every 10 minutes
+ * so the free-tier Render instance does not spin down after 15 minutes of inactivity.
+ */
+function startKeepAlivePing() {
+  if (!config.keepAliveEnabled || !config.keepAliveUrl) {
+    return null;
+  }
+
+  const targetUrl = `${config.keepAliveUrl}/api/health`;
+  const intervalMs = config.keepAliveIntervalMs;
+
+  console.log(
+    `[INFO] Render keep-alive ping enabled: pinging ${targetUrl} every ${Math.round(intervalMs / 60000)} minutes.`
+  );
+
+  const timer = setInterval(async () => {
+    try {
+      const response = await fetch(targetUrl, {
+        method: 'GET',
+        headers: { 'User-Agent': 'KavyaShree-Render-KeepAlive/1.0' },
+        signal: AbortSignal.timeout(10000)
+      });
+      if (!response.ok) {
+        console.warn(`[WARN] Keep-alive ping returned HTTP ${response.status}`);
+      }
+    } catch (err) {
+      console.warn(`[WARN] Keep-alive ping failed: ${err.message}`);
+    }
+  }, intervalMs);
+
+  if (typeof timer.unref === 'function') {
+    timer.unref();
+  }
+
+  return timer;
+}
+
+function stopKeepAlivePing() {
+  if (keepAliveTimer) {
+    clearInterval(keepAliveTimer);
+    keepAliveTimer = null;
+  }
+}
+
 async function startServer() {
   // Connect to MongoDB Atlas
   await connectDB();
@@ -13,6 +60,7 @@ async function startServer() {
     console.log(
       `[INFO] Kavya Shree Institute Backend running in ${config.env} mode on http://${config.host}:${config.port}`
     );
+    keepAliveTimer = startKeepAlivePing();
   });
 
   server.on('error', async err => {
@@ -23,6 +71,7 @@ async function startServer() {
     } else {
       console.error('[FATAL] HTTP server error:', err.message);
     }
+    stopKeepAlivePing();
     await disconnectDB().catch(() => {});
     process.exit(1);
   });
@@ -30,6 +79,7 @@ async function startServer() {
   // Graceful shutdown handling
   async function shutdown(signal) {
     console.log(`[INFO] Received ${signal}. Initiating graceful shutdown...`);
+    stopKeepAlivePing();
     server.close(async () => {
       console.log('[INFO] HTTP server closed.');
       await disconnectDB();
@@ -66,4 +116,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { startServer };
+module.exports = { startServer, startKeepAlivePing, stopKeepAlivePing };

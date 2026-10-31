@@ -31,3 +31,7 @@ services:
         value: "10"
       - key: ADMIN_LOGIN_RATE_LIMIT_MAX
         value: "5"
+      - key: KEEP_ALIVE_ENABLED
+        value: "true"
+      - key: KEEP_ALIVE_INTERVAL_MS
+        value: "600000"

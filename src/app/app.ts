@@ -1,10 +1,14 @@
-import { Component, DestroyRef, HostListener, signal, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, HostListener, PLATFORM_ID, signal, inject, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
 import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { SeoService } from './core/services/seo.service';
+import { environment } from '../environments/environment';
+
+const KEEP_ALIVE_INTERVAL_MS = 10 * 60 * 1000;
 
 @Component({
   selector: 'app-root',
@@ -16,11 +20,15 @@ export class App implements OnInit {
   private readonly router = inject(Router);
   private readonly seoService = inject(SeoService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID);
   protected readonly isAdminRoute = signal(false);
 
   public ngOnInit(): void {
     this.seoService.initRouteTracking();
     this.isAdminRoute.set(this.router.url.startsWith('/admin'));
+    if (environment.production && isPlatformBrowser(this.platformId)) {
+      this.startBackendKeepAlive();
+    }
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
@@ -30,6 +38,27 @@ export class App implements OnInit {
         const targetUrl = event.urlAfterRedirects || event.url;
         this.isAdminRoute.set(targetUrl.startsWith('/admin'));
       });
+  }
+
+  public pingBackendHealth(): void {
+    if (typeof fetch !== 'function') {
+      return;
+    }
+    fetch(`${environment.apiBaseUrl}/health`, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-store'
+    }).catch(() => {
+      // Silent warmup/keep-alive ping; never disrupt user navigation
+    });
+  }
+
+  private startBackendKeepAlive(): void {
+    this.pingBackendHealth();
+    const timerId = window.setInterval(() => {
+      this.pingBackendHealth();
+    }, KEEP_ALIVE_INTERVAL_MS);
+    this.destroyRef.onDestroy(() => window.clearInterval(timerId));
   }
 
   @HostListener('document:click', ['$event'])

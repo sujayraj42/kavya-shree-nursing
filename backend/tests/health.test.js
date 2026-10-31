@@ -56,4 +56,25 @@ describe('Health and System Endpoints', () => {
     assert.equal(res.body.success, false);
     assert.equal(res.body.error, 'Malformed JSON payload');
   });
+
+  it('Render keep-alive ping scheduler should start and stop cleanly when configured', () => {
+    const config = require('../src/config/env');
+    const { startKeepAlivePing, stopKeepAlivePing } = require('../src/server');
+
+    const prevEnabled = config.keepAliveEnabled;
+    const prevUrl = config.keepAliveUrl;
+
+    try {
+      config.keepAliveEnabled = true;
+      config.keepAliveUrl = 'https://kavya-shree-nursing.onrender.com';
+
+      const timer = startKeepAlivePing();
+      assert.ok(timer, 'Expected keep-alive interval timer to be created');
+      clearInterval(timer);
+      stopKeepAlivePing();
+    } finally {
+      config.keepAliveEnabled = prevEnabled;
+      config.keepAliveUrl = prevUrl;
+    }
+  });
 });
