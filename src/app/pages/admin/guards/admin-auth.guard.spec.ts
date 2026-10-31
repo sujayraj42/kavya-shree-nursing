@@ -41,6 +41,27 @@ describe('Admin Route Guards', () => {
       expect(result).not.toBe(true);
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith(['/admin', 'login']);
     });
+
+    it('should redirect to /admin/login when administrator token is expired', () => {
+      mockAuthService.isAuthenticated.mockReturnValue(true);
+      (mockAuthService as any).isTokenExpired = vi.fn().mockReturnValue(true);
+
+      const result = TestBed.runInInjectionContext(() => adminAuthGuard({} as any, {} as any));
+
+      expect(result).not.toBe(true);
+      expect(mockRouter.createUrlTree).toHaveBeenCalledWith(['/admin', 'login']);
+    });
+
+    it('should redirect to /admin/login when user lacks administrative role', () => {
+      mockAuthService.isAuthenticated.mockReturnValue(true);
+      (mockAuthService as any).isTokenExpired = vi.fn().mockReturnValue(false);
+      (mockAuthService as any).hasAdminRole = vi.fn().mockReturnValue(false);
+
+      const result = TestBed.runInInjectionContext(() => adminAuthGuard({} as any, {} as any));
+
+      expect(result).not.toBe(true);
+      expect(mockRouter.createUrlTree).toHaveBeenCalledWith(['/admin', 'login']);
+    });
   });
 
   describe('adminGuestGuard', () => {

@@ -59,12 +59,27 @@ async function authenticateAdmin(req, res, next) {
       });
     }
 
-    // Verify administrator account still exists in database
-    const admin = await Admin.findById(decoded.id).select('email name role');
+    // Verify administrator account still exists in database and is active
+    const admin = await Admin.findById(decoded.id).select('email name role isActive');
     if (!admin) {
       return res.status(401).json({
         success: false,
         error: 'Administrator identity not recognized or revoked.'
+      });
+    }
+
+    if (admin.isActive === false) {
+      return res.status(401).json({
+        success: false,
+        error: 'Administrator account is inactive or disabled.'
+      });
+    }
+
+    // Role verification: ensure only valid administrative roles are authorized
+    if (!['admin', 'superadmin'].includes(admin.role)) {
+      return res.status(403).json({
+        success: false,
+        error: 'Access denied. Administrative privileges required.'
       });
     }
 

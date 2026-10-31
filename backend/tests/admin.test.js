@@ -11,6 +11,7 @@ const app = require('../src/app');
 const config = require('../src/config/env');
 const { Admin } = require('../src/models/Admin');
 const { Enquiry, VALID_STATUSES, ALL_ALLOWED_STATUSES, normalizeStatus } = require('../src/models/Enquiry');
+const { loginLimiter } = require('../src/middleware/rateLimiter');
 
 describe('Admin Authentication and Security', () => {
   const mockAdminId = new mongoose.Types.ObjectId().toString();
@@ -21,6 +22,11 @@ describe('Admin Authentication and Security', () => {
 
   beforeEach(async () => {
     mock.restoreAll();
+    if (typeof loginLimiter.resetKey === 'function') {
+      loginLimiter.resetKey('::ffff:127.0.0.1');
+      loginLimiter.resetKey('127.0.0.1');
+      loginLimiter.resetKey('::1');
+    }
 
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
     mockAdminDoc = {
@@ -29,6 +35,7 @@ describe('Admin Authentication and Security', () => {
       email: mockAdminEmail,
       name: 'Dr. System Administrator',
       role: 'superadmin',
+      isActive: true,
       password: hashedPassword,
       lastLoginAt: null,
       comparePassword: async function (candidate) {
@@ -66,6 +73,22 @@ describe('Admin Authentication and Security', () => {
     const decoded = jwt.verify(res.body.token, config.jwtSecret);
     assert.equal(decoded.email, mockAdminEmail);
     assert.equal(decoded.id, mockAdminId);
+  });
+
+  it('POST /api/admin/login should reject inactive admin account with 401', async () => {
+    mockAdminDoc.isActive = false;
+    mock.method(Admin, 'findOne', async () => mockAdminDoc);
+
+    const res = await request(app)
+      .post('/api/admin/login')
+      .send({
+        email: mockAdminEmail,
+        password: rawPassword
+      });
+
+    assert.equal(res.status, 401);
+    assert.equal(res.body.success, false);
+    assert.ok(res.body.error.includes('inactive or disabled'));
   });
 
   it('POST /api/admin/login should return 401 with generic message for non-existent email', async () => {
@@ -199,6 +222,58 @@ describe('Admin Authentication and Security', () => {
     assert.equal(res.status, 401);
     assert.equal(res.body.success, false);
     assert.ok(res.body.error.includes('not recognized or revoked'));
+  });
+
+  it('Protected routes should reject requests when admin account is inactive with 401', async () => {
+    const validToken = jwt.sign(
+      { id: mockAdminId, email: mockAdminEmail },
+      config.jwtSecret,
+      { expiresIn: '8h' }
+    );
+
+    mock.method(Admin, 'findById', () => ({
+      select: async () => ({
+        id: mockAdminId,
+        email: mockAdminEmail,
+        name: 'Dr. System Administrator',
+        role: 'superadmin',
+        isActive: false
+      })
+    }));
+
+    const res = await request(app)
+      .get('/api/admin/me')
+      .set('Authorization', `Bearer ${validToken}`);
+
+    assert.equal(res.status, 401);
+    assert.equal(res.body.success, false);
+    assert.ok(res.body.error.includes('inactive or disabled'));
+  });
+
+  it('Protected routes should reject requests when user role is not admin or superadmin with 403', async () => {
+    const validToken = jwt.sign(
+      { id: mockAdminId, email: mockAdminEmail },
+      config.jwtSecret,
+      { expiresIn: '8h' }
+    );
+
+    mock.method(Admin, 'findById', () => ({
+      select: async () => ({
+        id: mockAdminId,
+        email: mockAdminEmail,
+        name: 'Regular Candidate',
+        role: 'guest',
+        isActive: true
+      })
+    }));
+
+    const res = await request(app)
+      .get('/api/admin/me')
+      .set('Authorization', `Bearer ${validToken}`);
+
+    assert.equal(res.status, 403);
+    assert.equal(res.body.success, false);
+    assert.ok(res.body.error.includes('Administrative privileges required'));
   });
 
   it('Protected routes should reject requests with non-ObjectId token ID format without 400 CastError', async () => {

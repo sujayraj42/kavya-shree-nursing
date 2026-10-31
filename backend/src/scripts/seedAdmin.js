@@ -5,8 +5,10 @@ const dotenv = require('dotenv');
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config();
+
+const config = require('../config/env');
 const { connectDB, disconnectDB } = require('../config/database');
-const { Admin } = require('../models/Admin');
+const { Admin, EMAIL_REGEX } = require('../models/Admin');
 
 /**
  * Idempotent Administrative Account Provisioning Script.
@@ -26,13 +28,19 @@ async function seedAdmin() {
     process.exit(1);
   }
 
+  if (!EMAIL_REGEX.test(email)) {
+    console.error('[ERROR] Admin provisioning aborted: ADMIN_SEED_EMAIL is not a valid email address.');
+    process.exit(1);
+  }
+
   if (password.length < 8) {
     console.error('[ERROR] Admin provisioning aborted: ADMIN_SEED_PASSWORD must be at least 8 characters long.');
     process.exit(1);
   }
 
   try {
-    await connectDB();
+    // Target real database when MONGODB_URI is configured
+    await connectDB({ allowDevStore: !config.mongodbUriConfigured });
 
     const existingAdmin = await Admin.findOne({ email });
     if (existingAdmin) {
@@ -45,7 +53,8 @@ async function seedAdmin() {
       email,
       password,
       name,
-      role: 'superadmin'
+      role: 'superadmin',
+      isActive: true
     });
 
     console.log(`[SUCCESS] Initial administrator account created successfully for: ${email}`);

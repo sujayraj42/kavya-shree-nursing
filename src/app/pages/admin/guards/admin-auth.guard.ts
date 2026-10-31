@@ -10,7 +10,11 @@ export const adminAuthGuard: CanActivateFn = () => {
   const authService = inject(AdminAuthService);
   const router = inject(Router);
 
-  if (authService.isAuthenticated()) {
+  const isAuth = authService.isAuthenticated();
+  const notExpired = typeof authService.isTokenExpired === 'function' ? !authService.isTokenExpired() : true;
+  const hasRole = typeof authService.hasAdminRole === 'function' ? authService.hasAdminRole() : true;
+
+  if (isAuth && notExpired && hasRole) {
     return true;
   }
 

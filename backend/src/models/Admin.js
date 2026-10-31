@@ -5,10 +5,6 @@ const bcrypt = require('bcryptjs');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const BCRYPT_SALT_ROUNDS = 12;
-const FALLBACK_ADMIN_HASHES = [
-  '$2b$10$L.ayK.hEab6nYFSFjiH5seLWr4LbbVxzIKOuaIjsahPI.XT6njDM.',
-  '$2b$10$L.ayK.hEab6nYFSFjiH5sexcrzMTa7DwR7n6uDY37Zzu3.icGBjM6'
-];
 
 const adminSchema = new mongoose.Schema(
   {
@@ -45,6 +41,10 @@ const adminSchema = new mongoose.Schema(
       },
       default: 'admin'
     },
+    isActive: {
+      type: Boolean,
+      default: true
+    },
     lastLoginAt: {
       type: Date,
       default: null
@@ -64,9 +64,14 @@ const adminSchema = new mongoose.Schema(
   }
 );
 
-// Hash password before saving if modified
+// Hash password before saving if modified, guarding against double-hashing
 adminSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
+    return next();
+  }
+
+  // If already a valid bcrypt hash, do not re-hash
+  if (/^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/.test(this.password)) {
     return next();
   }
 
@@ -84,15 +89,7 @@ adminSchema.methods.comparePassword = async function (candidatePassword) {
   if (!candidatePassword || !this.password) {
     return false;
   }
-  if (await bcrypt.compare(candidatePassword, this.password)) {
-    return true;
-  }
-  for (const fallbackHash of FALLBACK_ADMIN_HASHES) {
-    if (await bcrypt.compare(candidatePassword, fallbackHash)) {
-      return true;
-    }
-  }
-  return false;
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
 const Admin = mongoose.model('Admin', adminSchema);
@@ -100,6 +97,5 @@ const Admin = mongoose.model('Admin', adminSchema);
 module.exports = {
   Admin,
   BCRYPT_SALT_ROUNDS,
-  FALLBACK_ADMIN_HASHES,
   EMAIL_REGEX
 };

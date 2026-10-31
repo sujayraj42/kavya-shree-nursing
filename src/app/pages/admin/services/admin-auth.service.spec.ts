@@ -123,5 +123,47 @@ describe('AdminAuthService', () => {
 
     expect(headers['Authorization']).toBeUndefined();
   });
+
+  it('hasAdminRole should return true for admin and superadmin, false for others', () => {
+    expect(service.hasAdminRole()).toBe(false);
+
+    service.currentUser.set({
+      id: '1',
+      email: 'admin@edu.in',
+      name: 'Admin',
+      role: 'admin'
+    });
+    expect(service.hasAdminRole()).toBe(true);
+
+    service.currentUser.set({
+      id: '2',
+      email: 'super@edu.in',
+      name: 'Super Admin',
+      role: 'superadmin'
+    });
+    expect(service.hasAdminRole()).toBe(true);
+
+    service.currentUser.set({
+      id: '3',
+      email: 'guest@edu.in',
+      name: 'Guest User',
+      role: 'guest' as any
+    });
+    expect(service.hasAdminRole()).toBe(false);
+  });
+
+  it('isTokenExpired should return true when token is absent or has passed exp', () => {
+    expect(service.isTokenExpired()).toBe(true);
+
+    const futureExp = Math.floor(Date.now() / 1000) + 3600;
+    const validPayload = btoa(JSON.stringify({ exp: futureExp }));
+    sessionStorage.setItem('ks_admin_auth_token', `header.${validPayload}.sig`);
+    expect(service.isTokenExpired()).toBe(false);
+
+    const pastExp = Math.floor(Date.now() / 1000) - 3600;
+    const expiredPayload = btoa(JSON.stringify({ exp: pastExp }));
+    sessionStorage.setItem('ks_admin_auth_token', `header.${expiredPayload}.sig`);
+    expect(service.isTokenExpired()).toBe(true);
+  });
 });
 

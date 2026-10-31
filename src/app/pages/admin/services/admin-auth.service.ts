@@ -34,10 +34,45 @@ export class AdminAuthService {
       const storedUser = sessionStorage.getItem(USER_STORAGE_KEY);
       const storedToken = sessionStorage.getItem(TOKEN_STORAGE_KEY);
       if (storedUser && storedToken) {
+        if (this.isTokenExpired()) {
+          this.clearSession();
+          return;
+        }
         this.currentUser.set(JSON.parse(storedUser));
       }
     } catch {
       this.clearSession();
+    }
+  }
+
+  /**
+   * Verifies if the authenticated user has valid administrative privileges.
+   */
+  public hasAdminRole(): boolean {
+    const user = this.currentUser();
+    return !!user && (user.role === 'admin' || user.role === 'superadmin');
+  }
+
+  /**
+   * Checks whether the current session token has expired according to its JWT payload.
+   */
+  public isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (!token) {
+      return true;
+    }
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        return false;
+      }
+      const payload = JSON.parse(atob(parts[1]));
+      if (!payload.exp) {
+        return false;
+      }
+      return Date.now() >= payload.exp * 1000;
+    } catch {
+      return false;
     }
   }
 

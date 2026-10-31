@@ -123,6 +123,7 @@ function activateDevStorage(AdminModel, EnquiryModel) {
       email: found.email,
       name: found.name,
       role: found.role,
+      isActive: found.isActive !== false,
       lastLoginAt: found.lastLoginAt,
       comparePassword: async function (candidate) {
         for (const hash of found.passwords) {
@@ -152,7 +153,8 @@ function activateDevStorage(AdminModel, EnquiryModel) {
           id: found.id,
           email: found.email,
           name: found.name,
-          role: found.role
+          role: found.role,
+          isActive: found.isActive !== false
         };
       },
       then: async function (resolve) {
@@ -162,7 +164,8 @@ function activateDevStorage(AdminModel, EnquiryModel) {
           id: found.id,
           email: found.email,
           name: found.name,
-          role: found.role
+          role: found.role,
+          isActive: found.isActive !== false
         });
       }
     };
@@ -178,6 +181,7 @@ function activateDevStorage(AdminModel, EnquiryModel) {
       email: (adminData.email || '').trim().toLowerCase(),
       name: (adminData.name || 'Institute Administrator').trim(),
       role: adminData.role || 'admin',
+      isActive: adminData.isActive !== false,
       passwords: [hash],
       lastLoginAt: null
     };
