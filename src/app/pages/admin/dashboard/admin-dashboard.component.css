@@ -1,19 +1,163 @@
+/* ==========================================================================
+   Admin Dashboard Component Styles
+   Institutional Intelligence Console
+   ========================================================================== */
+
 .dashboard-heading {
   font-family: var(--font--lora, "Lora", serif);
-  color: var(--ks-ink, #181818);
+  color: var(--color--eeire-black, #181818);
+  letter-spacing: -0.01em;
+}
+
+.dashboard-card-title {
+  font-family: var(--font--lora, "Lora", serif);
+}
+
+.admin-page-header {
+  border-color: var(--ks-rule, #e5e5e5) !important;
 }
 
 .stat-card {
-  border-radius: 8px;
-  background-color: #ffffff;
+  background-color: var(--color--white, #ffffff);
+  border-color: var(--ks-rule, #e5e5e5) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
 }
 
 .stat-icon-box {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: var(--round-4, 4px);
 }
 
+.tracking-wide {
+  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+}
+
+/* Badge Filter Pills */
+.badge-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--round-4, 4px);
+  font-size: 0.825rem;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.badge-filter-primary {
+  background-color: rgba(18, 78, 157, 0.08);
+  border-color: rgba(18, 78, 157, 0.2);
+  color: var(--color--blue, #124e9d);
+}
+
+.badge-filter-primary:hover {
+  background-color: var(--color--blue, #124e9d);
+  color: #ffffff;
+}
+
+.badge-filter-info {
+  background-color: #e8f4fd;
+  border-color: #b8daf6;
+  color: #0b5394;
+}
+
+.badge-filter-info:hover {
+  background-color: #0b5394;
+  color: #ffffff;
+}
+
+.badge-filter-warning {
+  background-color: var(--ks-provisional-bg, #fff9ed);
+  border-color: var(--ks-provisional-border, #fed89b);
+  color: var(--ks-provisional-text, #7a4b04);
+}
+
+.badge-filter-warning:hover {
+  background-color: var(--color--carrot-orange, #eb9624);
+  color: #000000;
+}
+
+.badge-filter-success {
+  background-color: #eaf7ed;
+  border-color: #bce4c6;
+  color: #1e7e34;
+}
+
+.badge-filter-success:hover {
+  background-color: #1e7e34;
+  color: #ffffff;
+}
+
+.badge-filter-secondary {
+  background-color: #f1f1f1;
+  border-color: #d8d8d8;
+  color: #555555;
+}
+
+.badge-filter-secondary:hover {
+  background-color: #555555;
+  color: #ffffff;
+}
+
+.badge-filter-dark {
+  background-color: #eeeeee;
+  border-color: #cccccc;
+  color: #222222;
+}
+
+.badge-filter-dark:hover {
+  background-color: #222222;
+  color: #ffffff;
+}
+
+/* Institutional Table */
+.institutional-table thead {
+  background-color: #fafafa;
+}
+
+.institutional-table th {
+  font-weight: 600;
+  color: var(--color--gray, #4f4f4f);
+}
+
+.institutional-table-row td {
+  padding: 0.85rem 0.75rem;
+  border-color: var(--ks-rule, #e5e5e5);
+}
+
+.candidate-avatar {
+  width: 32px;
+  height: 32px;
+  background-color: #f0e3ce;
+  color: #7a4b04;
+  font-size: 0.85rem;
+}
+
+.hover-orange:hover {
+  color: var(--color--carrot-orange, #eb9624) !important;
+}
+
+.btn-ks-primary {
+  background-color: var(--color--carrot-orange, #eb9624);
+  border: 1px solid var(--color--carrot-orange, #eb9624);
+  color: #000000;
+  font-weight: 600;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-ks-primary:hover {
+  background-color: #d88316;
+  border-color: #d88316;
+  color: #000000;
+}

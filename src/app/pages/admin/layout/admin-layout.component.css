@@ -1,20 +1,127 @@
-.admin-top-nav {
-  background-color: var(--ks-ink, #181818) !important;
+/* ==========================================================================
+   Admin Layout Shell Styles: Sidebar & Navigation Console
+   Art Direction: iUniversity Institutional Identity
+   ========================================================================== */
+
+.admin-shell {
+  min-height: 100vh;
+  background-color: var(--ks-bg-paper, #fafafa);
 }
 
-.admin-brand-text {
+/* Sidebar (Desktop 260px) */
+.admin-sidebar {
+  width: 260px;
+  background-color: var(--color--eeire-black, #181818);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 1040;
+}
+
+.sidebar-brand-header {
+  background-color: #111111;
+}
+
+.sidebar-logo {
+  object-fit: contain;
+}
+
+.sidebar-title {
   font-family: var(--font--lora, "Lora", serif);
-  font-size: 1rem;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
 }
 
-.admin-nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff !important;
+.sidebar-subtitle {
+  color: var(--color--carrot-orange, #eb9624) !important;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.active-nav-link {
+.sidebar-nav-link {
+  color: var(--color--white-80, rgba(255, 255, 255, 0.8));
+  font-size: 0.9rem;
+  transition: all 0.15s ease-in-out;
+  border-radius: var(--round-4, 4px) !important;
+}
+
+.sidebar-nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--color--white, #ffffff);
+}
+
+.sidebar-sub-link {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.825rem;
+  transition: all 0.15s ease-in-out;
+  border-radius: var(--round-4, 4px) !important;
+}
+
+.sidebar-sub-link:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color--white, #ffffff);
+}
+
+.active-sidebar-item {
   background-color: var(--color--blue, #124e9d) !important;
   color: #ffffff !important;
   font-weight: 600;
+  box-shadow: 0 2px 6px rgba(18, 78, 157, 0.35);
 }
 
+.sidebar-avatar {
+  width: 34px;
+  height: 34px;
+  background-color: var(--color--carrot-orange, #eb9624);
+  font-size: 0.875rem;
+}
+
+/* Top Sticky Navigation Bar */
+.admin-top-nav {
+  background-color: var(--color--eeire-black, #181818);
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  z-index: 1030;
+}
+
+.bg-surface {
+  background-color: var(--ks-bg-paper, #fafafa);
+}
+
+.admin-subfooter {
+  background-color: #ffffff;
+  border-color: var(--ks-rule, #e5e5e5) !important;
+}
+
+/* Status Indicator Dots */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot-success {
+  background-color: #28a745;
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
+}
+
+.status-dot-warning {
+  background-color: var(--color--carrot-orange, #eb9624);
+  box-shadow: 0 0 0 2px rgba(235, 150, 36, 0.2);
+}
+
+.status-dot-info {
+  background-color: var(--color--blue, #124e9d);
+  box-shadow: 0 0 0 2px rgba(18, 78, 157, 0.2);
+}
+
+.ks-badge-provisional {
+  background-color: var(--ks-provisional-bg, #fff9ed);
+  border: 1px solid var(--ks-provisional-border, #fed89b);
+  color: var(--ks-provisional-text, #7a4b04);
+  font-size: 0.725rem;
+  font-weight: 600;
+  border-radius: var(--round-4, 4px);
+}

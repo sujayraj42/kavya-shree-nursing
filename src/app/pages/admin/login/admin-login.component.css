@@ -1,30 +1,111 @@
-.admin-login-wrapper {
-  background-color: var(--ks-bg-stone, #f4f4f4);
+/* ==========================================================================
+   Admin Login Component Styles (Institutional Identity)
+   ========================================================================== */
+
+.admin-login-page {
+  background-color: var(--ks-bg-paper, #fafafa);
+  background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.admin-login-topbar {
+  background-color: var(--color--eeire-black, #181818);
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.admin-login-container {
+  max-width: 480px;
 }
 
 .admin-login-card {
-  background-color: #ffffff;
-  border-radius: 8px;
+  background-color: var(--color--white, #ffffff);
+  border-color: var(--ks-rule, #e5e5e5) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+}
+
+.admin-card-header {
+  background-color: #fafafa;
+}
+
+.admin-login-logo {
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.admin-login-logo:hover {
+  transform: scale(1.04);
 }
 
 .admin-title {
   font-family: var(--font--lora, "Lora", serif);
-  color: var(--ks-ink, #181818);
+  color: var(--color--eeire-black, #181818);
+  letter-spacing: -0.01em;
 }
 
-.btn-primary {
-  background-color: var(--color--blue, #124e9d);
-  border-color: var(--color--blue, #124e9d);
+.form-label {
+  color: var(--color--eeire-black, #181818);
 }
 
-.btn-primary:hover,
-.btn-primary:focus {
-  background-color: #0d3c7a;
-  border-color: #0d3c7a;
+.form-control {
+  border-radius: var(--round-4, 4px);
+  border: 1px solid var(--ks-rule-strong, #d0d0d0);
+  font-family: var(--font--sans);
+  font-size: 0.95rem;
+  padding: 0.6rem 0.85rem;
+  transition: all 0.2s ease-in-out;
 }
 
 .form-control:focus {
-  border-color: var(--color--blue, #124e9d);
-  box-shadow: 0 0 0 0.2rem rgba(18, 78, 157, 0.25);
+  border-color: var(--color--carrot-orange, #eb9624);
+  box-shadow: var(--ks-focus-ring) !important;
 }
 
+.input-group-text {
+  border-radius: var(--round-4, 4px);
+  border-color: var(--ks-rule-strong, #d0d0d0);
+}
+
+.btn-ks-primary {
+  background-color: var(--color--carrot-orange, #eb9624);
+  border: 2px solid var(--color--carrot-orange, #eb9624);
+  color: var(--color--black, #000000);
+  font-family: var(--font--sans);
+  font-size: 0.95rem;
+  min-height: 44px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-ks-primary:hover:not(:disabled),
+.btn-ks-primary:focus-visible:not(:disabled) {
+  background-color: #d88316;
+  border-color: #d88316;
+  color: var(--color--black, #000000);
+}
+
+.btn-ks-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.admin-security-banner {
+  border-color: var(--ks-rule, #e5e5e5) !important;
+  background-color: #fbfbfb !important;
+}
+
+.admin-login-footer {
+  background-color: var(--color--eeire-black, #181818);
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.hover-orange:hover {
+  color: var(--color--carrot-orange, #eb9624) !important;
+}
+
+.ks-badge-provisional {
+  background-color: var(--ks-provisional-bg, #fff9ed);
+  border: 1px solid var(--ks-provisional-border, #fed89b);
+  color: var(--ks-provisional-text, #7a4b04);
+  font-size: 0.725rem;
+  font-weight: 600;
+  border-radius: var(--round-4, 4px);
+}

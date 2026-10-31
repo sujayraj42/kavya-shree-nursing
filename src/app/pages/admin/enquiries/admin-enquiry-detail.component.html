@@ -1,12 +1,12 @@
 <div class="admin-enquiry-detail-view">
-  <!-- Back Button & Reference Header -->
-  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
-    <div>
-      <a routerLink="/admin/enquiries" class="text-decoration-none small text-muted d-inline-flex align-items-center mb-1">
-        &larr; Back to Enquiries List
-      </a>
-      <h1 class="h3 detail-heading text-dark mb-0">Candidate Enquiry Dossier</h1>
-    </div>
+  <!-- Back Button & Breadcrumb Navigation -->
+  <div class="mb-3">
+    <a routerLink="/admin/enquiries" class="back-link d-inline-flex align-items-center gap-2 text-decoration-none">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+      </svg>
+      <span>Return to Admissions Registry</span>
+    </a>
   </div>
 
   <!-- Loading State -->
@@ -15,109 +15,226 @@
       <div class="spinner-border text-primary mx-auto mb-3" role="status">
         <span class="visually-hidden">Loading enquiry details...</span>
       </div>
-      <p class="text-muted small mb-0">Fetching candidate dossier and internal audit trail...</p>
+      <p class="text-muted small mb-0">Fetching candidate dossier and internal admissions audit trail...</p>
     </div>
   }
 
   <!-- Error State Alert -->
   @if (!isLoading() && errorMessage()) {
     <div class="alert alert-danger p-4 shadow-sm round-4 mb-4" role="alert">
-      <h2 class="h5 alert-heading mb-1">Enquiry Retrieval Failure</h2>
-      <p class="small mb-3">{{ errorMessage() }}</p>
-      <a routerLink="/admin/enquiries" class="btn btn-outline-danger btn-sm">
-        Return to Enquiries List
-      </a>
+      <div class="d-flex align-items-center gap-3 mb-2">
+        <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor" class="text-danger flex-shrink-0">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+          <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+        </svg>
+        <h2 class="h5 alert-heading mb-0">Enquiry Retrieval Failure</h2>
+      </div>
+      <p class="small mb-3 ps-5">{{ errorMessage() }}</p>
+      <div class="ps-5">
+        <a routerLink="/admin/enquiries" class="btn btn-outline-danger btn-sm">
+          Return to Admissions List
+        </a>
+      </div>
     </div>
   }
 
   <!-- Main Content Dossier -->
   @if (!isLoading() && enquiry(); as item) {
+    <!-- Dossier Header -->
+    <div class="card header-card border-0 shadow-sm p-4 mb-4">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <div class="candidate-large-avatar">
+            {{ getInitials(item.name) }}
+          </div>
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <span class="badge ref-badge font-monospace">REF: {{ formatRef(item.id) }}</span>
+              <span class="extra-small-para text-muted font-monospace d-none d-sm-inline">ID: {{ item.id }}</span>
+            </div>
+            <h1 class="h3 detail-heading text-dark mb-0">{{ item.name }}</h1>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span [class]="getBadgeClass(item.status) + ' px-3 py-2 fs-6'">
+            {{ getStatusLabel(item.status) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
     <div class="row g-4">
-      <!-- Left Column: Candidate Info & Message -->
+      <!-- Left Column: Candidate Info & Message & Notes -->
       <div class="col-12 col-lg-8">
-        <!-- Candidate Profile Card -->
-        <div class="card border-0 shadow-sm p-4 mb-4">
-          <div class="d-flex justify-content-between align-items-start mb-3 border-bottom pb-3">
-            <div>
-              <span class="badge bg-light text-muted border font-monospace mb-1">ID: {{ item.id }}</span>
-              <h2 class="h4 fw-bold text-dark mb-0">{{ item.name }}</h2>
-            </div>
-            <div>
-              <span [class]="getBadgeClass(item.status) + ' px-3 py-2 fs-6'">
-                {{ getStatusLabel(item.status) }}
-              </span>
-            </div>
+        <!-- Candidate Profile Details Card -->
+        <div class="card section-card border-0 shadow-sm p-4 mb-4">
+          <div class="section-card-header pb-3 mb-3 border-bottom">
+            <h2 class="h5 fw-bold text-dark mb-0">Candidate Demographics & Contact Coordinates</h2>
           </div>
 
           <div class="row g-3">
+            <!-- Phone -->
             <div class="col-12 col-sm-6">
-              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Phone Number</span>
-              <a [href]="'tel:' + item.phone" class="fs-6 fw-bold text-dark text-decoration-none">
-                {{ item.phone }}
-              </a>
+              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block mb-1">Telephone Contact</span>
+              <div class="d-flex align-items-center gap-2">
+                <a [href]="'tel:' + item.phone" class="fs-6 fw-bold text-dark text-decoration-none contact-link">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" class="me-1 text-primary">
+                    <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                  </svg>
+                  {{ item.phone }}
+                </a>
+                <a
+                  [href]="getWhatsAppLink(item.phone)"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="badge bg-success text-white text-decoration-none px-2 py-1"
+                  title="Open WhatsApp chat with candidate"
+                >
+                  WhatsApp
+                </a>
+              </div>
             </div>
 
+            <!-- Email -->
             <div class="col-12 col-sm-6">
-              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Email Address</span>
+              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block mb-1">Email Address</span>
               @if (item.email) {
-                <a [href]="'mailto:' + item.email" class="fs-6 text-dark text-decoration-none">
+                <a [href]="'mailto:' + item.email" class="fs-6 text-dark text-decoration-none contact-link">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" class="me-1 text-primary">
+                    <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/>
+                  </svg>
                   {{ item.email }}
                 </a>
               } @else {
-                <span class="text-muted small">[No email provided]</span>
+                <span class="text-muted small">[No email address provided]</span>
               }
             </div>
 
+            <!-- Program Requested -->
             <div class="col-12">
-              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Academic Program Desired</span>
-              <div class="p-2 bg-light rounded border text-dark fw-semibold small">
-                {{ item.program }}
+              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block mb-1">Academic Nursing Program Requested</span>
+              <div class="p-3 bg-light rounded border program-box d-flex align-items-center justify-content-between">
+                <div>
+                  <div class="text-dark fw-bold">{{ item.program }}</div>
+                  <span class="extra-small-para text-muted">Institutional Academic Session 2026-2027</span>
+                </div>
+                <span class="badge bg-white text-primary border">Direct Enrolment</span>
               </div>
             </div>
 
+            <!-- Candidate Inquiry Message -->
             <div class="col-12">
-              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Candidate Inquiries / Message</span>
-              <div class="p-3 bg-light rounded border text-dark small" style="min-height: 80px; white-space: pre-wrap;">
-                {{ item.message ? item.message : 'No custom message entered by candidate.' }}
+              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block mb-1">Candidate Statement & Remarks</span>
+              <div class="p-3 message-box rounded border">
+                @if (item.message) {
+                  <p class="mb-0 small text-dark fst-italic" style="white-space: pre-wrap;">
+                    "{{ item.message }}"
+                  </p>
+                } @else {
+                  <p class="mb-0 small text-muted fst-italic">
+                    No custom message or inquiry remarks submitted by the candidate.
+                  </p>
+                }
               </div>
             </div>
 
+            <!-- Timestamps -->
             <div class="col-12 col-sm-6">
               <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Initial Submission Time</span>
-              <span class="small text-dark">{{ formatDate(item.createdAt, true) }}</span>
+              <span class="small text-dark font-monospace">{{ formatDate(item.createdAt, true) }}</span>
             </div>
 
             <div class="col-12 col-sm-6">
-              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Last Activity Update</span>
-              <span class="small text-dark">{{ formatDate(item.updatedAt, true) }}</span>
+              <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Last Workflow Update</span>
+              <span class="small text-dark font-monospace">{{ formatDate(item.updatedAt, true) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admissions Eligibility & Verification Reference Matrix -->
+        <div class="card section-card border-0 shadow-sm p-4 mb-4">
+          <div class="section-card-header pb-2 mb-3 border-bottom d-flex justify-content-between align-items-center">
+            <h2 class="h5 fw-bold text-dark mb-0">Admissions Scrutiny Checklist</h2>
+            <span class="extra-small-para text-muted text-uppercase fw-semibold">INC & KNC Criteria</span>
+          </div>
+
+          <div class="row g-2 small">
+            <div class="col-12 col-md-6">
+              <div class="p-2 bg-light rounded border d-flex align-items-start gap-2">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="text-primary flex-shrink-0 mt-1">
+                  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                </svg>
+                <div>
+                  <div class="fw-semibold text-dark">10+2 / PUC Eligibility</div>
+                  <span class="extra-small-para text-muted">Physics, Chemistry, Biology & English (Min 45% aggregate)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="p-2 bg-light rounded border d-flex align-items-start gap-2">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="text-primary flex-shrink-0 mt-1">
+                  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                </svg>
+                <div>
+                  <div class="fw-semibold text-dark">Age Verification</div>
+                  <span class="extra-small-para text-muted">Minimum 17 years completed on or before 31st December</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="p-2 bg-light rounded border d-flex align-items-start gap-2">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="text-primary flex-shrink-0 mt-1">
+                  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                </svg>
+                <div>
+                  <div class="fw-semibold text-dark">Original Certificates</div>
+                  <span class="extra-small-para text-muted">Marksheets, Transfer & Conduct certificates required at interview</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="p-2 bg-light rounded border d-flex align-items-start gap-2">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="text-primary flex-shrink-0 mt-1">
+                  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                </svg>
+                <div>
+                  <div class="fw-semibold text-dark">Medical Fitness Certificate</div>
+                  <span class="extra-small-para text-muted">Issued by a Registered Medical Practitioner (Govt. certified)</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Internal Notes Timeline & Add Form -->
-        <div class="card border-0 shadow-sm p-4">
-          <h2 class="h5 fw-bold text-dark mb-1">Internal Admissions Desk Notes</h2>
-          <p class="text-muted extra-small-para mb-3">
-            Confidential staff logs for tracking phone interviews, document submissions, and counselling appointments.
-          </p>
+        <div class="card section-card border-0 shadow-sm p-4">
+          <div class="section-card-header pb-2 mb-3 border-bottom">
+            <h2 class="h5 fw-bold text-dark mb-1">Confidential Staff Notes & Activity Log</h2>
+            <p class="text-muted extra-small-para mb-0">
+              Internal admissions desk audit logs for recording phone consultations, counseling sessions, document verification, and seat allocation.
+            </p>
+          </div>
 
           <!-- Add Note Form -->
-          <div class="mb-4 p-3 bg-light rounded border">
+          <div class="mb-4 p-3 note-form-box rounded border">
             <label for="newNoteTextarea" class="form-label small fw-semibold text-dark mb-1">
-              Add Staff Note
+              Append Internal Staff Note
             </label>
             <textarea
               id="newNoteTextarea"
               class="form-control form-control-sm mb-2"
               rows="3"
               maxlength="1000"
-              placeholder="e.g., Called candidate; verified 10+2 PCB marksheet. Scheduled consultation on Monday."
+              placeholder="e.g., Contacted candidate via phone. Verified eligibility criteria. Scheduled campus visit for document verification on Saturday..."
               [ngModel]="newNoteText()"
               (ngModelChange)="newNoteText.set($event)"
             ></textarea>
 
             @if (noteErrorMessage()) {
-              <div class="alert alert-danger py-1 px-2 small mb-2">
+              <div class="alert alert-danger py-1 px-2 small mb-2" role="alert">
                 {{ noteErrorMessage() }}
               </div>
             }
@@ -134,7 +251,7 @@
               >
                 @if (isSubmittingNote()) {
                   <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-                  <span>Saving...</span>
+                  <span>Saving Note...</span>
                 } @else {
                   <span>Append Note</span>
                 }
@@ -144,18 +261,26 @@
 
           <!-- Chronological Notes Feed -->
           @if (item.notes.length === 0) {
-            <div class="p-3 text-center text-muted small bg-white border rounded">
-              No internal staff notes recorded for this candidate yet.
+            <div class="p-4 text-center text-muted small bg-light border rounded">
+              <p class="mb-0">No internal staff notes recorded for this candidate yet.</p>
+              <span class="extra-small-para text-muted">Use the form above to log consultation details.</span>
             </div>
           } @else {
             <div class="timeline-container">
               @for (note of item.notes; track note.id || note.createdAt) {
                 <div class="timeline-item p-3 mb-2 bg-white border rounded">
                   <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="fw-bold small text-dark">{{ note.author }}</span>
-                    <span class="extra-small-para text-muted">{{ formatDate(note.createdAt, true) }}</span>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="staff-badge">
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                        </svg>
+                      </div>
+                      <span class="fw-bold small text-dark">{{ note.author }}</span>
+                    </div>
+                    <span class="extra-small-para text-muted font-monospace">{{ formatDate(note.createdAt, true) }}</span>
                   </div>
-                  <p class="small text-dark mb-0" style="white-space: pre-wrap;">{{ note.text }}</p>
+                  <p class="small text-dark mb-0 ps-4" style="white-space: pre-wrap;">{{ note.text }}</p>
                 </div>
               }
             </div>
@@ -163,33 +288,45 @@
         </div>
       </div>
 
-      <!-- Right Column: Status Transition Card -->
+      <!-- Right Column: Status Transition Card & Quick Actions -->
       <div class="col-12 col-lg-4">
-        <div class="card border-0 shadow-sm p-4 sticky-top" style="top: 80px;">
-          <h2 class="h5 fw-bold text-dark mb-1">Update Status</h2>
+        <!-- Status Transition Controller -->
+        <div class="card status-card border-0 shadow-sm p-4 mb-4 sticky-top" style="top: 80px; z-index: 10;">
+          <h2 class="h5 fw-bold text-dark mb-1">Pipeline State Controller</h2>
           <p class="text-muted extra-small-para mb-3">
-            Change the candidate's active state across the standard admissions pipeline.
+            Transition this candidate across the institutional admissions lifecycle.
           </p>
 
           @if (statusSuccessMessage()) {
-            <div class="alert alert-success py-2 px-3 small mb-3">
-              {{ statusSuccessMessage() }}
+            <div class="alert alert-success py-2 px-3 small mb-3" role="alert">
+              <div class="d-flex align-items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" class="text-success flex-shrink-0">
+                  <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                </svg>
+                <span>{{ statusSuccessMessage() }}</span>
+              </div>
             </div>
           }
 
           @if (statusErrorMessage()) {
-            <div class="alert alert-danger py-2 px-3 small mb-3">
-              {{ statusErrorMessage() }}
+            <div class="alert alert-danger py-2 px-3 small mb-3" role="alert">
+              <div class="d-flex align-items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" class="text-danger flex-shrink-0">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                </svg>
+                <span>{{ statusErrorMessage() }}</span>
+              </div>
             </div>
           }
 
           <div class="mb-3">
             <label for="statusSelectControl" class="form-label small fw-semibold text-dark">
-              Pipeline State
+              Select New Stage:
             </label>
             <select
               id="statusSelectControl"
-              class="form-select"
+              class="form-select form-select-sm"
               [ngModel]="selectedStatus()"
               (ngModelChange)="selectedStatus.set($event)"
             >
@@ -201,27 +338,49 @@
 
           <button
             type="button"
-            class="btn btn-primary w-100 py-2 fw-semibold"
+            class="btn btn-primary w-100 py-2 fw-semibold mb-3"
             [disabled]="isUpdatingStatus() || selectedStatus() === item.status"
             (click)="updateStatus()"
           >
             @if (isUpdatingStatus()) {
               <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-              <span>Updating Status...</span>
+              <span>Committing Stage...</span>
             } @else {
               <span>Commit Status Change</span>
             }
           </button>
 
-          <div class="mt-4 pt-3 border-top">
-            <h3 class="extra-small-para text-uppercase text-muted fw-bold mb-2">Workflow Reference</h3>
+          <!-- Candidate Direct Outreach -->
+          <div class="pt-3 border-top mb-3">
+            <span class="extra-small-para text-uppercase text-muted fw-bold d-block mb-2">Direct Candidate Outreach</span>
+            <div class="d-grid gap-2">
+              <a [href]="'tel:' + item.phone" class="btn btn-outline-secondary btn-sm text-start d-flex align-items-center justify-content-between">
+                <span>Call Candidate</span>
+                <span class="font-monospace small">{{ item.phone }}</span>
+              </a>
+              @if (item.email) {
+                <a [href]="'mailto:' + item.email" class="btn btn-outline-secondary btn-sm text-start d-flex align-items-center justify-content-between">
+                  <span>Email Candidate</span>
+                  <span class="font-monospace small text-truncate" style="max-width: 150px;">{{ item.email }}</span>
+                </a>
+              }
+              <a [href]="getWhatsAppLink(item.phone)" target="_blank" rel="noopener noreferrer" class="btn btn-outline-success btn-sm text-start d-flex align-items-center justify-content-between">
+                <span>WhatsApp Message</span>
+                <span>&rarr;</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Workflow Definitions Guide -->
+          <div class="pt-3 border-top">
+            <h3 class="extra-small-para text-uppercase text-muted fw-bold mb-2">Admissions Pipeline Reference</h3>
             <ul class="list-unstyled extra-small-para text-muted mb-0">
-              <li class="mb-1"><strong>New:</strong> Newly arrived candidate submission</li>
-              <li class="mb-1"><strong>Contacted:</strong> Initial phone/email follow-up done</li>
-              <li class="mb-1"><strong>In Review:</strong> Under academic eligibility verification</li>
-              <li class="mb-1"><strong>Admitted:</strong> Seat confirmed for Session 2026</li>
-              <li class="mb-1"><strong>Closed:</strong> Candidate declined or withdrew</li>
-              <li class="mb-0"><strong>Archived:</strong> Historical preservation</li>
+              <li class="mb-1"><strong class="text-dark">New:</strong> Initial online submission; awaiting outreach</li>
+              <li class="mb-1"><strong class="text-dark">Contacted:</strong> Staff communicated via phone or WhatsApp</li>
+              <li class="mb-1"><strong class="text-dark">In Review:</strong> Academic certificates undergoing scrutiny</li>
+              <li class="mb-1"><strong class="text-dark">Admitted:</strong> Seat confirmed for Academic Session 2026</li>
+              <li class="mb-1"><strong class="text-dark">Closed:</strong> Candidate declined or opted out</li>
+              <li class="mb-0"><strong class="text-dark">Archived:</strong> Record preserved for institutional audit</li>
             </ul>
           </div>
         </div>

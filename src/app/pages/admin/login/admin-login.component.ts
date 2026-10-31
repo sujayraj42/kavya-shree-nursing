@@ -12,6 +12,7 @@ import { AdminAuthService } from '../services/admin-auth.service';
 export class AdminLoginComponent {
   protected readonly authService = inject(AdminAuthService);
   private readonly router = inject(Router);
+  protected readonly currentYear = new Date().getFullYear();
 
   protected readonly email = signal('');
   protected readonly password = signal('');

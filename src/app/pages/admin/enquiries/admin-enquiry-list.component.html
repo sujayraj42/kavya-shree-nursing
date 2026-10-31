@@ -1,43 +1,49 @@
 <div class="admin-enquiry-list-view">
-  <!-- Title & Action -->
-  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+  <!-- Page Header & Actions -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-2 border-bottom">
     <div>
-      <h1 class="h3 list-heading text-dark mb-1">Admissions Enquiry Management</h1>
+      <span class="d-inline-block text-uppercase fw-semibold extra-small-para text-primary tracking-wide mb-1">
+        Admissions & Enrolment Operations
+      </span>
+      <h1 class="h3 list-heading text-dark mb-1">Prospective Candidate Enquiries</h1>
       <p class="text-muted small mb-0">
-        Review, filter, and track prospective nursing candidates across official disciplines.
+        Review, filter, and process prospective nursing candidates across official diploma and degree programs.
       </p>
     </div>
-    <div>
+    <div class="d-flex align-items-center gap-2">
       <button
         type="button"
-        class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
+        class="btn btn-institutional-outline btn-sm d-flex align-items-center gap-2"
         (click)="loadEnquiries()"
         [disabled]="isLoading()"
+        aria-label="Refresh candidate enquiries list"
       >
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" [class.spin-active]="isLoading()">
           <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
           <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
         </svg>
-        <span>Refresh List</span>
+        <span>Refresh Records</span>
       </button>
     </div>
   </div>
 
-  <!-- Filter & Search Toolbar -->
-  <div class="card border-0 shadow-sm p-3 mb-4">
+  <!-- Search & Category Filter Toolbar -->
+  <div class="card filter-card border-0 shadow-sm p-3 mb-4">
     <div class="row g-2 align-items-center">
       <!-- Search Input -->
-      <div class="col-12 col-md-4">
-        <label for="enquirySearchInput" class="visually-hidden">Search Enquiries</label>
+      <div class="col-12 col-lg-5">
+        <label for="enquirySearchInput" class="visually-hidden">Search candidate enquiries</label>
         <div class="input-group input-group-sm">
-          <span class="input-group-text bg-white border-end-0">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+          <span class="input-group-text bg-white text-muted border-end-0">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            </svg>
           </span>
           <input
             id="enquirySearchInput"
             type="search"
-            class="form-control border-start-0"
-            placeholder="Search candidate, phone, email..."
+            class="form-control border-start-0 ps-1"
+            placeholder="Search candidate name, phone, email, or remarks..."
             [ngModel]="searchQuery()"
             (ngModelChange)="searchQuery.set($event)"
             (keyup.enter)="onSearch()"
@@ -49,7 +55,7 @@
       </div>
 
       <!-- Status Filter -->
-      <div class="col-6 col-md-3">
+      <div class="col-6 col-lg-3">
         <label for="statusFilterSelect" class="visually-hidden">Filter by status</label>
         <select
           id="statusFilterSelect"
@@ -57,7 +63,7 @@
           [ngModel]="selectedStatus()"
           (ngModelChange)="onStatusFilter($event)"
         >
-          <option value="all">All Statuses</option>
+          <option value="all">All Workflow Statuses</option>
           @for (st of validStatuses; track st) {
             <option [value]="st">{{ getStatusLabel(st) }}</option>
           }
@@ -65,7 +71,7 @@
       </div>
 
       <!-- Program Filter -->
-      <div class="col-6 col-md-3">
+      <div class="col-6 col-lg-3">
         <label for="programFilterSelect" class="visually-hidden">Filter by program</label>
         <select
           id="programFilterSelect"
@@ -73,7 +79,7 @@
           [ngModel]="selectedProgram()"
           (ngModelChange)="onProgramFilter($event)"
         >
-          <option value="all">All Programs</option>
+          <option value="all">All Nursing Programs</option>
           @for (prog of advertisedPrograms; track prog) {
             <option [value]="prog">{{ prog }}</option>
           }
@@ -81,9 +87,14 @@
       </div>
 
       <!-- Reset Filter Button -->
-      <div class="col-12 col-md-2 text-md-end">
-        <button type="button" class="btn btn-outline-secondary btn-sm w-100" (click)="resetFilters()">
-          Clear Filters
+      <div class="col-12 col-lg-1 text-lg-end">
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm w-100"
+          (click)="resetFilters()"
+          title="Reset all active filters"
+        >
+          Reset
         </button>
       </div>
     </div>
@@ -93,94 +104,132 @@
   @if (!isLoading() && errorMessage()) {
     <div class="alert alert-danger p-3 shadow-sm round-4 mb-4" role="alert">
       <div class="d-flex justify-content-between align-items-center">
-        <span>{{ errorMessage() }}</span>
+        <div class="d-flex align-items-center gap-2">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" class="text-danger flex-shrink-0">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+          </svg>
+          <span class="small">{{ errorMessage() }}</span>
+        </div>
         <button type="button" class="btn btn-outline-danger btn-sm" (click)="loadEnquiries()">
-          Retry
+          Retry Query
         </button>
       </div>
     </div>
   }
 
-  <!-- Loading State -->
+  <!-- Loading State Skeleton -->
   @if (isLoading()) {
     <div class="card p-5 text-center border-0 shadow-sm mb-4">
       <div class="spinner-border text-primary mx-auto mb-3" role="status">
-        <span class="visually-hidden">Loading enquiries...</span>
+        <span class="visually-hidden">Loading candidate enquiries...</span>
       </div>
-      <p class="text-muted small mb-0">Querying candidate submissions...</p>
+      <p class="text-muted small mb-0">Querying admissions enquiries from institutional database...</p>
     </div>
   }
 
   <!-- Data Table & Results -->
   @if (!isLoading() && !errorMessage()) {
-    <div class="card border-0 shadow-sm mb-4">
+    <div class="card table-card border-0 shadow-sm mb-4">
       @if (enquiries().length === 0) {
         <div class="p-5 text-center">
-          <svg class="text-muted mb-3 opacity-50" width="48" height="48" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-            <path d="M4 4h8v2H4V4zm0 3h8v2H4V7zm0 3h5v2H4v-2z"/>
-          </svg>
+          <div class="empty-icon-wrap mx-auto mb-3">
+            <svg width="40" height="40" viewBox="0 0 16 16" fill="currentColor" class="text-muted opacity-50">
+              <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+              <path d="M4 4h8v2H4V4zm0 3h8v2H4V7zm0 3h5v2H4v-2z"/>
+            </svg>
+          </div>
           <h2 class="h5 text-dark mb-1">No Admissions Enquiries Located</h2>
           <p class="text-muted small mb-3">
             No records matched your search query or selected category filters.
           </p>
           <button type="button" class="btn btn-outline-primary btn-sm" (click)="resetFilters()">
-            Reset All Filters
+            Clear All Active Filters
           </button>
         </div>
       } @else {
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
-              <tr class="small text-uppercase text-muted">
-                <th scope="col">Candidate Name</th>
-                <th scope="col">Contact Info</th>
+              <tr class="small text-uppercase text-muted border-bottom">
+                <th scope="col" class="ps-3">Candidate</th>
+                <th scope="col">Contact Coordinates</th>
                 <th scope="col">Program</th>
-                <th scope="col">Status</th>
-                <th scope="col">Notes</th>
-                <th scope="col">Submitted</th>
-                <th scope="col" class="text-end">Action</th>
+                <th scope="col">Pipeline Status</th>
+                <th scope="col">Staff Notes</th>
+                <th scope="col">Submission Date</th>
+                <th scope="col" class="text-end pe-3">Action</th>
               </tr>
             </thead>
             <tbody>
               @for (enquiry of enquiries(); track enquiry.id) {
                 <tr>
-                  <td>
-                    <div class="fw-bold text-dark">{{ enquiry.name }}</div>
-                    <span class="extra-small-para text-muted font-monospace">Ref: {{ formatRef(enquiry.id) }}</span>
+                  <!-- Candidate Name & Avatar -->
+                  <td class="ps-3">
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="candidate-avatar">
+                        {{ getInitials(enquiry.name) }}
+                      </div>
+                      <div>
+                        <div class="fw-bold text-dark lh-sm">{{ enquiry.name }}</div>
+                        <span class="extra-small-para text-muted font-monospace">Ref: {{ formatRef(enquiry.id) }}</span>
+                      </div>
+                    </div>
                   </td>
+
+                  <!-- Contact Coordinates -->
                   <td>
-                    <a [href]="'tel:' + enquiry.phone" class="text-decoration-none text-dark small d-block fw-semibold">
-                      {{ enquiry.phone }}
-                    </a>
-                    @if (enquiry.email) {
-                      <a [href]="'mailto:' + enquiry.email" class="text-muted extra-small-para text-decoration-none d-block">
-                        {{ enquiry.email }}
+                    <div class="d-flex flex-column gap-1">
+                      <a [href]="'tel:' + enquiry.phone" class="candidate-contact text-decoration-none text-dark small fw-semibold">
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" class="me-1 text-muted">
+                          <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                        </svg>
+                        {{ enquiry.phone }}
                       </a>
-                    }
+                      @if (enquiry.email) {
+                        <a [href]="'mailto:' + enquiry.email" class="text-muted extra-small-para text-decoration-none">
+                          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" class="me-1 text-muted">
+                            <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/>
+                          </svg>
+                          {{ enquiry.email }}
+                        </a>
+                      }
+                    </div>
                   </td>
+
+                  <!-- Desired Program -->
                   <td class="small">
-                    {{ enquiry.program }}
+                    <span class="program-badge">
+                      {{ enquiry.program }}
+                    </span>
                   </td>
+
+                  <!-- Status -->
                   <td>
                     <span [class]="getBadgeClass(enquiry.status)">
                       {{ getStatusLabel(enquiry.status) }}
                     </span>
                   </td>
+
+                  <!-- Staff Notes Count -->
                   <td class="small">
                     @if (enquiry.notes && enquiry.notes.length > 0) {
-                      <span class="badge bg-light text-dark border">
+                      <span class="badge notes-badge">
                         {{ enquiry.notes.length }} note{{ enquiry.notes.length > 1 ? 's' : '' }}
                       </span>
                     } @else {
-                      <span class="text-muted extra-small-para">None</span>
+                      <span class="text-muted extra-small-para">—</span>
                     }
                   </td>
+
+                  <!-- Submission Date -->
                   <td class="small text-muted">
                     {{ formatDate(enquiry.createdAt) }}
                   </td>
-                  <td class="text-end">
-                    <a [routerLink]="['/admin/enquiries', enquiry.id]" class="btn btn-primary btn-sm">
+
+                  <!-- Action Button -->
+                  <td class="text-end pe-3">
+                    <a [routerLink]="['/admin/enquiries', enquiry.id]" class="btn btn-inspect btn-sm">
                       Inspect &rarr;
                     </a>
                   </td>
@@ -193,7 +242,7 @@
         <!-- Pagination Controls -->
         <div class="card-footer bg-white border-top p-3 d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
           <div class="small text-muted">
-            Showing Page <strong>{{ pagination().page }}</strong> of <strong>{{ pagination().pages }}</strong> ({{ pagination().total }} total submissions)
+            Showing Page <strong>{{ pagination().page }}</strong> of <strong>{{ pagination().pages }}</strong> ({{ pagination().total }} total registrations)
           </div>
 
           <nav aria-label="Enquiries Table Pagination">
@@ -210,7 +259,7 @@
                 </button>
               </li>
 
-              <li class="page-item active">
+              <li class="page-item active" aria-current="page">
                 <span class="page-link">{{ pagination().page }}</span>
               </li>
 

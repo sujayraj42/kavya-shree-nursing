@@ -9,6 +9,7 @@ import {
   ENQUIRY_STATUS_LABELS,
   VALID_ENQUIRY_STATUSES,
   formatAdminDate,
+  formatRefId,
   getEnquiryBadgeClass,
   getEnquiryStatusLabel
 } from '../models/admin.models';
@@ -139,5 +140,23 @@ export class AdminEnquiryDetailComponent implements OnInit {
 
   protected formatDate(dateStr: string, includeTime = false): string {
     return formatAdminDate(dateStr, includeTime);
+  }
+
+  protected formatRef(id: string): string {
+    return formatRefId(id);
+  }
+
+  protected getInitials(name: string): string {
+    if (!name) return 'C';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  protected getWhatsAppLink(phone: string): string {
+    if (!phone) return '#';
+    const cleaned = phone.replace(/\D/g, '');
+    const normalized = cleaned.length === 10 ? `91${cleaned}` : cleaned;
+    return `https://wa.me/${normalized}`;
   }
 }

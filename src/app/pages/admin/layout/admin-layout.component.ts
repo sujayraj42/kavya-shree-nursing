@@ -12,6 +12,7 @@ export class AdminLayoutComponent {
   private readonly router = inject(Router);
   protected readonly authService = inject(AdminAuthService);
   protected readonly isMobileMenuOpen = signal(false);
+  protected readonly currentYear = new Date().getFullYear();
 
   protected isActive(path: string): boolean {
     return this.router.url.startsWith(path);

@@ -1,131 +1,265 @@
-<div class="admin-app-container d-flex flex-column min-vh-100">
-  <!-- Top Administrative Navbar -->
-  <header class="admin-top-nav bg-dark text-white py-2 px-3 border-bottom border-secondary border-opacity-25 sticky-top">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-      <!-- Brand & Title -->
-      <div class="d-flex align-items-center">
-        <a routerLink="/admin/dashboard" class="d-flex align-items-center text-white text-decoration-none">
-          <img
-            src="logo.png"
-            alt="Kavya Shree Official Logo"
-            class="me-2"
-            width="36"
-            height="29"
-          />
-          <div>
-            <span class="fw-bold admin-brand-text d-none d-sm-inline">Kavya Shree Institute</span>
-            <span class="badge bg-warning text-dark ms-2 small">Admin Portal</span>
-          </div>
-        </a>
-      </div>
+<div class="admin-shell d-flex">
+  <!-- Desktop Sidebar Navigation (Dark Eerie Black) -->
+  <aside class="admin-sidebar d-none d-lg-flex flex-column flex-shrink-0" aria-label="Administrative Sidebar Navigation">
+    <!-- Sidebar Header & Institution Brand -->
+    <div class="sidebar-brand-header p-3 border-bottom border-secondary border-opacity-25">
+      <a routerLink="/admin/dashboard" class="d-flex align-items-center text-white text-decoration-none gap-2">
+        <img
+          src="logo.png"
+          alt="Kavya Shree Official Crest"
+          class="sidebar-logo"
+          width="42"
+          height="34"
+        />
+        <div class="overflow-hidden">
+          <div class="sidebar-title fw-bold text-white text-truncate">Kavya Shree Institute</div>
+          <div class="sidebar-subtitle extra-small-para text-warning text-truncate">Admissions Desk</div>
+        </div>
+      </a>
+    </div>
 
-      <!-- Navigation Links (Desktop) -->
-      <nav class="d-none d-md-flex align-items-center gap-2" aria-label="Administrative Navigation">
+    <!-- Navigation Menu Items -->
+    <div class="sidebar-nav-body flex-grow-1 p-3 overflow-auto">
+      <div class="sidebar-section-label text-uppercase text-white-50 extra-small-para fw-semibold mb-2 px-2">
+        Core Operations
+      </div>
+      <nav class="nav flex-column gap-1 mb-4" aria-label="Main Administrative Links">
         <a
           routerLink="/admin/dashboard"
-          [class.active-nav-link]="isActive('/admin/dashboard')"
-          class="admin-nav-item text-decoration-none px-3 py-1 text-light rounded"
+          [class.active-sidebar-item]="isActive('/admin/dashboard')"
+          class="sidebar-nav-link d-flex align-items-center gap-3 px-3 py-2 text-decoration-none rounded"
         >
-          Dashboard
+          <svg class="flex-shrink-0" width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"/>
+            <path d="m8 3.293 6 6V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V9.293l4-4Z"/>
+          </svg>
+          <span class="fw-semibold">Dashboard</span>
         </a>
+
         <a
           routerLink="/admin/enquiries"
-          [class.active-nav-link]="isActive('/admin/enquiries')"
-          class="admin-nav-item text-decoration-none px-3 py-1 text-light rounded"
+          [class.active-sidebar-item]="isActive('/admin/enquiries')"
+          class="sidebar-nav-link d-flex align-items-center gap-3 px-3 py-2 text-decoration-none rounded"
         >
-          Enquiries
+          <svg class="flex-shrink-0" width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793V2zm5 4a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0z"/>
+          </svg>
+          <span class="fw-semibold">All Enquiries</span>
         </a>
+      </nav>
+
+      <div class="sidebar-section-label text-uppercase text-white-50 extra-small-para fw-semibold mb-2 px-2">
+        Quick Filters
+      </div>
+      <nav class="nav flex-column gap-1 mb-4" aria-label="Status Quick Filters">
+        <a
+          routerLink="/admin/enquiries"
+          [queryParams]="{ status: 'new' }"
+          class="sidebar-sub-link d-flex align-items-center justify-content-between px-3 py-1 text-decoration-none rounded"
+        >
+          <span class="d-flex align-items-center gap-2">
+            <span class="status-dot status-dot-warning"></span>
+            <span>New Submissions</span>
+          </span>
+          <span class="extra-small-para text-white-50">&rarr;</span>
+        </a>
+
+        <a
+          routerLink="/admin/enquiries"
+          [queryParams]="{ status: 'in_review' }"
+          class="sidebar-sub-link d-flex align-items-center justify-content-between px-3 py-1 text-decoration-none rounded"
+        >
+          <span class="d-flex align-items-center gap-2">
+            <span class="status-dot status-dot-info"></span>
+            <span>In Review</span>
+          </span>
+          <span class="extra-small-para text-white-50">&rarr;</span>
+        </a>
+
+        <a
+          routerLink="/admin/enquiries"
+          [queryParams]="{ status: 'admitted' }"
+          class="sidebar-sub-link d-flex align-items-center justify-content-between px-3 py-1 text-decoration-none rounded"
+        >
+          <span class="d-flex align-items-center gap-2">
+            <span class="status-dot status-dot-success"></span>
+            <span>Admitted</span>
+          </span>
+          <span class="extra-small-para text-white-50">&rarr;</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-section-label text-uppercase text-white-50 extra-small-para fw-semibold mb-2 px-2">
+        External Portal
+      </div>
+      <nav class="nav flex-column gap-1">
         <a
           routerLink="/"
           target="_blank"
           rel="noopener"
-          class="admin-nav-item text-decoration-none px-3 py-1 text-white-50 rounded"
-          title="Open Public Website"
+          class="sidebar-nav-link d-flex align-items-center gap-3 px-3 py-2 text-decoration-none rounded"
+          title="Open Public Candidate Website in a new tab"
         >
-          Public Portal &nearr;
+          <svg class="flex-shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+            <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+          </svg>
+          <span>Public Portal</span>
+          <span class="badge bg-secondary bg-opacity-50 extra-small-para ms-auto">2026</span>
         </a>
       </nav>
-
-      <!-- User Identity & Logout Button -->
-      <div class="d-flex align-items-center gap-3">
-        @if (authService.currentUser(); as user) {
-          <div class="text-end d-none d-lg-block">
-            <div class="small fw-semibold text-white">{{ user.name }}</div>
-            <div class="extra-small-para text-white-50">{{ user.email }}</div>
-          </div>
-        }
-
-        <button
-          type="button"
-          class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1"
-          (click)="onLogout()"
-          aria-label="Log out of administrator session"
-        >
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
-            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
-          </svg>
-          <span>Sign Out</span>
-        </button>
-
-        <!-- Mobile Menu Toggle Button -->
-        <button
-          class="btn btn-dark d-md-none p-1"
-          type="button"
-          (click)="toggleMobileMenu()"
-          [attr.aria-expanded]="isMobileMenuOpen()"
-          aria-label="Toggle navigation drawer"
-        >
-          <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor">
-            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-          </svg>
-        </button>
-      </div>
     </div>
 
-    <!-- Mobile Drawer -->
-    @if (isMobileMenuOpen()) {
-      <div class="d-md-none border-top border-secondary border-opacity-25 mt-2 pt-2 pb-1">
-        <div class="d-flex flex-column gap-1">
-          <a
-            routerLink="/admin/dashboard"
-            [class.active-nav-link]="isActive('/admin/dashboard')"
-            (click)="closeMobileMenu()"
-            class="text-decoration-none px-3 py-2 text-light rounded"
+    <!-- Sidebar Footer / Identity Card -->
+    <div class="sidebar-footer p-3 border-top border-secondary border-opacity-25 bg-black bg-opacity-25">
+      @if (authService.currentUser(); as user) {
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="sidebar-avatar flex-shrink-0 rounded-circle text-dark fw-bold d-flex align-items-center justify-content-center">
+            {{ user.name.slice(0, 1) }}
+          </div>
+          <div class="overflow-hidden flex-grow-1">
+            <div class="small fw-semibold text-white text-truncate">{{ user.name }}</div>
+            <div class="extra-small-para text-white-50 text-truncate">{{ user.email }}</div>
+          </div>
+          <span class="badge bg-warning text-dark text-uppercase extra-small-para">{{ user.role }}</span>
+        </div>
+      }
+
+      <button
+        type="button"
+        class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2"
+        (click)="onLogout()"
+        aria-label="Log out of administrator session"
+      >
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+          <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+        </svg>
+        <span class="fw-semibold">Sign Out</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main View Container -->
+  <div class="admin-main-wrapper d-flex flex-column flex-grow-1 min-vh-100">
+    <!-- Top Administrative Header (Sticky) -->
+    <header class="admin-top-nav py-2 px-3 px-md-4 border-bottom sticky-top">
+      <div class="d-flex justify-content-between align-items-center">
+        <!-- Left: Mobile Menu Toggle & Title -->
+        <div class="d-flex align-items-center gap-2">
+          <button
+            class="btn btn-sm btn-outline-light d-lg-none"
+            type="button"
+            (click)="toggleMobileMenu()"
+            [attr.aria-expanded]="isMobileMenuOpen()"
+            aria-label="Toggle navigation drawer"
           >
-            Dashboard
+            <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+              <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+          </button>
+
+          <a routerLink="/admin/dashboard" class="d-flex align-items-center text-white text-decoration-none d-lg-none">
+            <img src="logo.png" alt="Logo" class="me-2" width="28" height="23" />
+            <span class="fw-bold small text-white">Kavya Shree Admin</span>
           </a>
-          <a
-            routerLink="/admin/enquiries"
-            [class.active-nav-link]="isActive('/admin/enquiries')"
-            (click)="closeMobileMenu()"
-            class="text-decoration-none px-3 py-2 text-light rounded"
-          >
-            Enquiries
-          </a>
+
+          <!-- Desktop Breadcrumb / System Status Badge -->
+          <div class="d-none d-lg-flex align-items-center gap-2">
+            <span class="badge ks-badge-provisional">Admissions Intake 2026</span>
+            <span class="text-white-50 extra-small-para">&bull;</span>
+            <span class="text-white-50 extra-small-para d-flex align-items-center gap-1">
+              <span class="status-dot status-dot-success"></span>
+              <span>Atlas MongoDB Live</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Right: Context Actions -->
+        <div class="d-flex align-items-center gap-3">
           <a
             routerLink="/"
             target="_blank"
             rel="noopener"
-            (click)="closeMobileMenu()"
-            class="text-decoration-none px-3 py-2 text-white-50 rounded"
+            class="btn btn-sm btn-outline-light d-none d-sm-inline-flex align-items-center gap-1 text-decoration-none"
           >
-            Public Website &nearr;
+            <span>Public Site &nearr;</span>
           </a>
+
+          @if (authService.currentUser(); as user) {
+            <div class="text-end d-none d-sm-block">
+              <span class="small fw-semibold text-white d-block lh-1">{{ user.name }}</span>
+              <span class="extra-small-para text-white-50">{{ user.email }}</span>
+            </div>
+          }
+
+          <button
+            type="button"
+            class="btn btn-outline-danger btn-sm d-lg-none"
+            (click)="onLogout()"
+            aria-label="Log out of administrator session"
+          >
+            Sign Out
+          </button>
         </div>
       </div>
-    }
-  </header>
 
-  <!-- Administrative Main Body Landmark -->
-  <main class="flex-grow-1 bg-light py-4">
-    <div class="container-fluid px-3 px-md-4">
+      <!-- Mobile Dropdown Drawer -->
+      @if (isMobileMenuOpen()) {
+        <div class="d-lg-none border-top border-secondary border-opacity-25 mt-2 pt-2 pb-1">
+          <div class="d-flex flex-column gap-1 mb-2">
+            <a
+              routerLink="/admin/dashboard"
+              [class.active-sidebar-item]="isActive('/admin/dashboard')"
+              (click)="closeMobileMenu()"
+              class="sidebar-nav-link text-decoration-none px-3 py-2 text-white rounded"
+            >
+              Dashboard
+            </a>
+            <a
+              routerLink="/admin/enquiries"
+              [class.active-sidebar-item]="isActive('/admin/enquiries')"
+              (click)="closeMobileMenu()"
+              class="sidebar-nav-link text-decoration-none px-3 py-2 text-white rounded"
+            >
+              All Enquiries
+            </a>
+            <a
+              routerLink="/"
+              target="_blank"
+              rel="noopener"
+              (click)="closeMobileMenu()"
+              class="sidebar-nav-link text-decoration-none px-3 py-2 text-white-50 rounded"
+            >
+              Public Website &nearr;
+            </a>
+          </div>
+
+          @if (authService.currentUser(); as user) {
+            <div class="border-top border-secondary border-opacity-25 pt-2 px-3 pb-2 text-white-50 small">
+              <div class="text-white fw-semibold">{{ user.name }}</div>
+              <div class="extra-small-para">{{ user.email }}</div>
+            </div>
+          }
+        </div>
+      }
+    </header>
+
+    <!-- Administrative Body -->
+    <main class="flex-grow-1 bg-surface py-4 px-3 px-md-4">
       <router-outlet></router-outlet>
-    </div>
-  </main>
+    </main>
 
-  <!-- Admin Sub-Footer -->
-  <footer class="bg-white border-top py-2 px-3 text-center small text-muted">
-    Kavya Shree Institute of Nursing &bull; Administrative Console Session &bull; Punpun, Patna, Bihar
-  </footer>
+    <!-- Admin Sub-Footer -->
+    <footer class="admin-subfooter py-3 px-3 px-md-4 border-top text-center text-muted small">
+      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 extra-small-para">
+        <div>
+          &copy; {{ currentYear }} Kavya Shree Institute of Nursing &bull; Punpun Station Road, Patna District, Bihar PIN 804453
+        </div>
+        <div class="text-muted">
+          Authenticated Staff Session &bull; Protected Health Sciences Admissions Terminal
+        </div>
+      </div>
+    </footer>
+  </div>
 </div>
