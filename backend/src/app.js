@@ -73,6 +73,31 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/content', contentRoutes);
 
+// Root API Directory & Institutional Index
+app.get(['/', '/api'], (req, res) => {
+  res.status(200).json({
+    success: true,
+    name: 'Kavya Shree Institute of Nursing API',
+    institution: 'Kavya Shree Institute of Nursing',
+    accreditation: 'Recognized by Indian Nursing Council (INC) & Bihar Nursing Registration Council (BNRC)',
+    version: '1.0.0',
+    documentation: 'https://kavya-shree-nursing.vercel.app',
+    endpoints: {
+      health: '/api/health',
+      courses: '/api/content/courses',
+      notices: '/api/content/notices',
+      approvals: '/api/content/approvals',
+      gallery: '/api/content/gallery',
+      faqs: '/api/content/faqs',
+      downloads: '/api/content/downloads',
+      enquiries: '/api/enquiries',
+      applications: '/api/applications',
+      receipts: '/api/applications/:appNumber/receipt',
+      admin: '/api/admin'
+    }
+  });
+});
+
 // Catch-all 404 handler
 app.use(notFoundHandler);
 

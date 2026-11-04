@@ -235,4 +235,10 @@ describe('Enquiry Submission and Server-Side Validation', () => {
     assert.ok(duplicateRes.body.error.includes('Duplicate enquiry detected'));
     assert.equal(createMock.mock.callCount(), 1);
   });
+  it('GET /api/enquiries should return 200 with enquiry endpoint usage guide', async () => {
+    const res = await request(app).get('/api/enquiries');
+    assert.equal(res.status, 200);
+    assert.equal(res.body.success, true);
+    assert.ok(res.body.usage.submitEnquiry);
+  });
 });

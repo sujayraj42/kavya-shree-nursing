@@ -9,6 +9,18 @@ const { notifyNewEnquiry } = require('../services/automation.service');
 
 const router = express.Router();
 
+router.get('/enquiries', (req, res) => {
+  res.status(200).json({
+    success: true,
+    endpoint: '/api/enquiries',
+    description: 'Kavya Shree Institute Admissions Enquiry API',
+    usage: {
+      submitEnquiry: 'POST /api/enquiries',
+      adminWorkspace: 'GET /api/admin/enquiries (Requires Bearer token)'
+    }
+  });
+});
+
 const DUPLICATE_WINDOW_MS = 60 * 1000;
 const recentSubmissions = new Map();
 

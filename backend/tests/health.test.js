@@ -54,6 +54,19 @@ describe('Health and System Endpoints', () => {
     }
   });
 
+  it('GET / and GET /api should return 200 with institutional API directory', async () => {
+    const res1 = await request(app).get('/');
+    assert.equal(res1.status, 200);
+    assert.equal(res1.body.success, true);
+    assert.ok(res1.body.endpoints);
+    assert.ok(res1.body.name.includes('Kavya Shree'));
+
+    const res2 = await request(app).get('/api');
+    assert.equal(res2.status, 200);
+    assert.equal(res2.body.success, true);
+    assert.ok(res2.body.endpoints.health);
+  });
+
   it('GET /api/nonexistent should return 404 with structured error', async () => {
     const res = await request(app).get('/api/nonexistent');
 

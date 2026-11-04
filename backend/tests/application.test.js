@@ -159,5 +159,31 @@ describe('Online Applications API', () => {
     assert.match(res.text, /Application Number/);
     assert.match(res.text, /Suman Kumari/);
   });
-});
+  it('GET /api/applications should return 200 with application endpoint usage guide', async () => {
+    const res = await request(app).get('/api/applications');
+    assert.equal(res.status, 200);
+    assert.equal(res.body.success, true);
+    assert.ok(res.body.usage);
+    assert.ok(res.body.usage.submitApplication);
+  });
 
+  it('GET /api/applications/:appNumber should return application status when reference exists', async () => {
+    const mockApp = {
+      applicationNumber: 'KSIN-2026-APP-1234',
+      applicantName: 'Suman Kumari',
+      program: 'Bachelor of Science in Nursing (B.Sc.)',
+      status: 'submitted',
+      createdAt: new Date().toISOString()
+    };
+    mock.method(Application, 'findOne', async (query) => {
+      if (query.applicationNumber === 'KSIN-2026-APP-1234') return mockApp;
+      return null;
+    });
+
+    const res = await request(app).get('/api/applications/KSIN-2026-APP-1234');
+    assert.equal(res.status, 200);
+    assert.equal(res.body.success, true);
+    assert.equal(res.body.data.applicationNumber, 'KSIN-2026-APP-1234');
+    assert.equal(res.body.data.status, 'submitted');
+  });
+});

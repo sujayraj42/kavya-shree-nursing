@@ -10,6 +10,9 @@ const router = express.Router();
 // Public: Submit online application (Rate limited)
 router.post('/', enquiryLimiter, applicationController.submitApplication);
 
+// Public: API Overview / Query application status
+router.get('/', applicationController.getApplicationStatus);
+
 // Public: Automated Candidate Application Slip / Receipt (Printable HTML / PDF)
 router.get('/:appNumber/receipt', applicationController.getApplicationReceipt);
 
@@ -21,5 +24,8 @@ router.get('/admin/:id', authenticateAdmin, applicationController.getApplication
 router.patch('/admin/:id/status', authenticateAdmin, applicationController.updateApplicationStatus);
 router.post('/admin/:id/notes', authenticateAdmin, applicationController.addApplicationNote);
 router.delete('/admin/:id', authenticateAdmin, applicationController.deleteApplication);
+
+// Public: Individual Application status lookup by reference number
+router.get('/:appNumber', applicationController.getApplicationStatus);
 
 module.exports = router;

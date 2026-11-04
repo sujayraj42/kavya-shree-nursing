@@ -427,12 +427,62 @@ async function getApplicationReceipt(req, res, next) {
   }
 }
 
+
+async function getApplicationStatus(req, res, next) {
+  try {
+    const rawParam = String(req.params.appNumber || req.query.appNumber || req.query.ref || '').trim();
+    if (!rawParam) {
+      return res.status(200).json({
+        success: true,
+        endpoint: '/api/applications',
+        description: 'Kavya Shree Institute Online Admissions Application API',
+        usage: {
+          submitApplication: 'POST /api/applications',
+          checkStatus: 'GET /api/applications/:appNumber',
+          downloadReceipt: 'GET /api/applications/:appNumber/receipt',
+          adminWorkspace: 'GET /api/applications/admin (Requires Bearer token)'
+        }
+      });
+    }
+
+    let application = null;
+    if (mongoose.Types.ObjectId.isValid(rawParam)) {
+      application = await Application.findOne({ _id: rawParam, deletedAt: null });
+    }
+    if (!application) {
+      application = await Application.findOne({ applicationNumber: rawParam, deletedAt: null });
+    }
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        error: `Application with reference '${rawParam}' not found.`
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        applicationNumber: application.applicationNumber,
+        applicantName: application.applicantName,
+        program: application.program,
+        status: application.status,
+        submittedAt: application.createdAt,
+        receiptUrl: `/api/applications/${application.applicationNumber}/receipt`
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   submitApplication,
   listApplications,
   getApplicationById,
   updateApplicationStatus,
   getApplicationReceipt,
+  getApplicationStatus,
   addApplicationNote,
   exportApplications,
   deleteApplication

@@ -40,3 +40,4 @@ jobs:
             exit 1
           fi
           echo "Secret scan clean: No production credentials detected."
+
