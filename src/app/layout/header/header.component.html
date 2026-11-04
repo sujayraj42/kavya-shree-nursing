@@ -1,7 +1,7 @@
 <header class="ks-site-header">
-  <!-- Top Institutional Bar (Pending Information Notice) -->
+  <!-- Top Institutional Bar (Admissions Helpline, Notices, Downloads, Language, Session) -->
   <div class="ks-top-bar py-1 d-none d-lg-block">
-    <div class="container d-flex justify-content-between align-items-center">
+    <div class="container-fluid container-xxl d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center gap-4 small">
         <span class="d-inline-flex align-items-center">
           <svg class="me-1 text-accent opacity-75" width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
@@ -12,15 +12,25 @@
           <span class="mx-1 text-white-50">/</span>
           <a href="tel:+916287879239" class="ks-topbar-link text-decoration-none">62878 79239</a>
         </span>
-        <span class="d-inline-flex align-items-center">
-          <strong class="text-white-50">Campus Email:</strong>
-          <span class="text-light ms-1">[Official Email Pending Confirmation]</span>
-        </span>
       </div>
       <div class="d-flex align-items-center gap-3">
-        <a routerLink="/downloads" class="ks-topbar-link small text-decoration-none d-none d-xxl-inline-block">
-          &darr; Prospectus 2026
+        <a routerLink="/notices" class="ks-topbar-link small text-decoration-none d-flex align-items-center gap-1">
+          <span class="ks-pulse-dot" aria-hidden="true"></span>
+          Notices &amp; News
         </a>
+        <span class="text-white-50 opacity-50">&bull;</span>
+        <a routerLink="/downloads" class="ks-topbar-link small text-decoration-none">
+          Prospectus 2026
+        </a>
+        <span class="text-white-50 opacity-50">&bull;</span>
+        <a routerLink="/faculty" class="ks-topbar-link small text-decoration-none d-none d-xl-inline-block">
+          Faculty Mentors
+        </a>
+        <span class="text-white-50 opacity-50 d-none d-xl-inline-block">&bull;</span>
+        <a routerLink="/faqs" class="ks-topbar-link small text-decoration-none d-none d-xl-inline-block">
+          FAQs
+        </a>
+        <span class="text-white-50 opacity-50">&bull;</span>
         <button
           type="button"
           class="btn btn-sm btn-outline-light py-0 px-2 extra-small-para ks-lang-btn"
@@ -35,7 +45,7 @@
     </div>
   </div>
 
-  <!-- Primary Institutional Navigation Bar (iUniversity Dark Nav) -->
+  <!-- Primary Institutional Navigation Bar -->
   <nav class="navbar navbar-expand-xl py-2 py-xl-0" aria-label="Main Institutional Navigation">
     <div class="container-fluid container-xxl align-items-center">
       <!-- Institutional Brand Identity & Official Logo -->
@@ -103,7 +113,7 @@
               class="nav-link px-2 px-xxl-3"
               [class.active]="activeSection() === 'courses' || activeSection() === 'programs'"
               routerLink="/programs"
-              (click)="selectSection('programs')"
+              (click)="selectSection('courses')"
             >
               Academic Programs
             </a>
@@ -111,61 +121,31 @@
           <li class="nav-item">
             <a
               class="nav-link px-2 px-xxl-3"
-              [class.active]="activeSection() === 'approvals'"
+              [class.active]="activeSection() === 'strengths' || activeSection() === 'approvals'"
               routerLink="/approvals"
               (click)="selectSection('approvals')"
             >
-              Approvals
+              Approvals &amp; Standards
             </a>
           </li>
           <li class="nav-item">
             <a
               class="nav-link px-2 px-xxl-3"
-              [class.active]="activeSection() === 'gallery'"
+              [class.active]="activeSection() === 'facilities' || activeSection() === 'gallery'"
               routerLink="/gallery"
-              (click)="selectSection('gallery')"
+              (click)="selectSection('facilities')"
             >
-              Gallery
+              Campus &amp; Facilities
             </a>
           </li>
           <li class="nav-item">
             <a
               class="nav-link px-2 px-xxl-3"
-              [class.active]="activeSection() === 'faculty'"
-              routerLink="/faculty"
-              (click)="selectSection('faculty')"
+              [class.active]="activeSection() === 'admissions-enquiry' || activeSection() === 'admissions'"
+              routerLink="/admissions"
+              (click)="selectSection('admissions')"
             >
-              Faculty
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link px-2 px-xxl-3"
-              [class.active]="activeSection() === 'notices'"
-              routerLink="/notices"
-              (click)="selectSection('notices')"
-            >
-              Notices
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link px-2 px-xxl-3"
-              [class.active]="activeSection() === 'downloads'"
-              routerLink="/downloads"
-              (click)="selectSection('downloads')"
-            >
-              Downloads
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link px-2 px-xxl-3"
-              [class.active]="activeSection() === 'faqs'"
-              routerLink="/faqs"
-              (click)="selectSection('faqs')"
-            >
-              FAQs
+              Admissions
             </a>
           </li>
           <li class="nav-item">
@@ -178,15 +158,7 @@
               Contact Us
             </a>
           </li>
-          <li class="nav-item ms-xl-2 my-2 my-xl-0 d-flex gap-2">
-            <a
-              class="btn btn-outline-warning btn-sm d-none d-xxl-inline-flex align-items-center"
-              routerLink="/admissions"
-              (click)="selectSection('admissions')"
-              title="Admissions Consultation Desk"
-            >
-              Enquire
-            </a>
+          <li class="nav-item ms-xl-3 my-2 my-xl-0">
             <a
               class="primary-btn header-cta-btn w-100"
               routerLink="/apply"
@@ -215,20 +187,60 @@
             </button>
           </div>
 
+          <!-- Secondary Mobile Links Grid -->
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <a
+                routerLink="/notices"
+                (click)="selectSection('notices')"
+                class="btn btn-outline-light btn-sm w-100 text-start text-truncate py-2"
+              >
+                &bull; Official Notices
+              </a>
+            </div>
+            <div class="col-6">
+              <a
+                routerLink="/downloads"
+                (click)="selectSection('downloads')"
+                class="btn btn-outline-light btn-sm w-100 text-start text-truncate py-2"
+              >
+                &darr; Prospectus 2026
+              </a>
+            </div>
+            <div class="col-6">
+              <a
+                routerLink="/faculty"
+                (click)="selectSection('faculty')"
+                class="btn btn-outline-light btn-sm w-100 text-start text-truncate py-2"
+              >
+                &bull; Faculty Mentors
+              </a>
+            </div>
+            <div class="col-6">
+              <a
+                routerLink="/faqs"
+                (click)="selectSection('faqs')"
+                class="btn btn-outline-light btn-sm w-100 text-start text-truncate py-2"
+              >
+                &bull; Admissions FAQs
+              </a>
+            </div>
+          </div>
+
           <div class="d-grid gap-2 mb-3">
+            <a
+              routerLink="/apply"
+              (click)="selectSection('apply')"
+              class="primary-btn text-center justify-content-center"
+            >
+              <span>Formal Online Application 2026 &rarr;</span>
+            </a>
             <a
               routerLink="/admissions"
               (click)="selectSection('admissions')"
               class="btn btn-outline-light btn-sm text-center"
             >
               Admission Enquiry Desk
-            </a>
-            <a
-              routerLink="/apply"
-              (click)="selectSection('apply')"
-              class="btn btn-warning text-dark fw-bold btn-sm text-center"
-            >
-              Formal Online Application 2026 &rarr;
             </a>
           </div>
 
@@ -242,7 +254,7 @@
             <div class="d-flex align-items-center justify-content-between">
               <span class="text-white-50 small">Secondary Contact:</span>
               <span class="small fw-semibold">
-                <a href="tel:+916287879239" class="ks-topbar-link text-decoration-none">+91 62878 79239</a>
+                <a href="tel:+916287879239" class="ks-topbar-link text-decoration-none">62878 79239</a>
               </span>
             </div>
           </div>

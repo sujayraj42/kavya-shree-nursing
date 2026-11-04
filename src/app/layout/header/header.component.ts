@@ -131,6 +131,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.activeSection.set('courses');
         } else if (segment === 'admissions' || segment === 'admission') {
           this.activeSection.set('admissions');
+        } else if (segment === 'approvals' || segment === 'affiliations' || segment === 'affiliation') {
+          this.activeSection.set('approvals');
+        } else if (segment === 'gallery') {
+          this.activeSection.set('gallery');
         } else {
           this.activeSection.set(segment);
         }
