@@ -15,6 +15,7 @@ import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MotionService } from '../../core/services/motion.service';
+import { I18nService } from '../../core/services/i18n.service';
 
 @Component({
   selector: 'app-header',
@@ -28,6 +29,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private readonly motionService = inject(MotionService);
   private readonly elementRef = inject(ElementRef);
   private readonly destroyRef = inject(DestroyRef);
+  protected readonly i18n = inject(I18nService);
   private routerSub?: Subscription;
 
   protected readonly isMenuOpen = signal(false);

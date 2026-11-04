@@ -1,0 +1,95 @@
+<!-- Page Hero Banner -->
+<section class="page-hero-banner">
+  <div class="container">
+    <nav aria-label="Breadcrumb" class="mb-3">
+      <ol class="breadcrumb breadcrumb-dark mb-0">
+        <li class="breadcrumb-item"><a routerLink="/" class="breadcrumb-link">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">FAQs</li>
+      </ol>
+    </nav>
+    <h1 class="h1-heading white mb-2">Frequently Asked Questions</h1>
+    <p class="para-white spaces">
+      Direct answers regarding admissions criteria, application guidelines, hostel accommodation, and clinical hospital rotations.
+    </p>
+  </div>
+</section>
+
+<!-- FAQ Accordion Section -->
+<section class="general-section bg-stone">
+  <div class="container" style="max-width: 900px;">
+    <!-- Search Bar -->
+    <div class="mb-4">
+      <label for="faqSearchInput" class="visually-hidden">Search Questions</label>
+      <div class="input-group input-group-lg shadow-sm">
+        <span class="input-group-text bg-white border-end-0">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" class="text-muted">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+          </svg>
+        </span>
+        <input
+          id="faqSearchInput"
+          type="search"
+          class="form-control border-start-0 ps-1"
+          placeholder="Search by keyword (e.g. eligibility, fees, hostel, clinical)..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+        />
+      </div>
+    </div>
+
+    <!-- Accordion List -->
+    <div class="accordion ks-accordion shadow-sm rounded" id="faqAccordion">
+      @for (faq of filteredFaqs(); track faq.id) {
+        <div class="accordion-item border-0 mb-2 rounded overflow-hidden">
+          <h2 class="accordion-header" [id]="'heading-' + faq.id">
+            <button
+              class="accordion-button ks-faq-button"
+              type="button"
+              [class.collapsed]="!isOpen(faq.id)"
+              (click)="toggleFaq(faq.id)"
+              [attr.aria-expanded]="isOpen(faq.id)"
+              [attr.aria-controls]="'collapse-' + faq.id"
+            >
+              <span class="fw-bold text-dark pe-3">{{ faq.title }}</span>
+            </button>
+          </h2>
+          <div
+            [id]="'collapse-' + faq.id"
+            class="accordion-collapse collapse"
+            [class.show]="isOpen(faq.id)"
+            [attr.aria-labelledby]="'heading-' + faq.id"
+          >
+            <div class="accordion-body bg-white text-muted small border-top pt-3 pb-4">
+              {{ faq.content }}
+            </div>
+          </div>
+        </div>
+      }
+      @if (filteredFaqs().length === 0) {
+        <div class="card p-5 text-center border-0 bg-white shadow-sm">
+          <h3 class="h6 text-muted mb-2">No matching questions located</h3>
+          <p class="small text-muted mb-3">Try refining your search keyword or reach out directly.</p>
+          <button type="button" class="btn btn-outline-primary btn-sm mx-auto" (click)="searchQuery.set('')">
+            Clear Search
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Need More Clarification Card -->
+    <div class="mt-5 p-4 bg-white rounded border shadow-sm text-center">
+      <h3 class="h5 fw-bold mb-2">Have a Question Not Listed Here?</h3>
+      <p class="text-muted small mx-auto mb-3" style="max-width: 550px;">
+        Our admissions desk is available on phone, WhatsApp, and in-person at the campus to assist you.
+      </p>
+      <div class="d-flex justify-content-center gap-2">
+        <button type="button" class="btn btn-institutional-primary btn-sm px-4" (click)="modalService.openEnquiryModal('FAQ Clarification')">
+          Ask Admissions Desk &rarr;
+        </button>
+        <a routerLink="/contact" class="btn btn-outline-dark btn-sm px-3">
+          Campus Office Hours
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

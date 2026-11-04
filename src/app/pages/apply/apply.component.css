@@ -1,0 +1,114 @@
+.page-hero-banner {
+  background-color: var(--color--eeire-black, #181818);
+  padding: 60px 0 50px 0;
+}
+
+.breadcrumb-dark {
+  background: transparent;
+  padding: 0;
+}
+
+.breadcrumb-dark .breadcrumb-item,
+.breadcrumb-dark .breadcrumb-item.active {
+  color: #adb5bd;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+}
+
+.breadcrumb-dark .breadcrumb-item.active {
+  color: #ffffff;
+}
+
+.breadcrumb-dark .breadcrumb-item + .breadcrumb-item::before {
+  color: #6c757d;
+  content: "/";
+}
+
+.breadcrumb-link {
+  color: #adb5bd;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.breadcrumb-link:hover {
+  color: var(--color--carrot-orange, #eb9624);
+}
+
+.general-section {
+  padding: 60px 0;
+}
+
+.bg-stone {
+  background-color: #f8fafc;
+}
+
+.success-badge-circle {
+  width: 72px;
+  height: 72px;
+  background-color: #e8f5e9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ks-badge-amber {
+  background-color: var(--color--carrot-orange, #eb9624);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.btn-institutional-primary {
+  background-color: var(--color--carrot-orange, #eb9624);
+  color: #ffffff;
+  border: 1px solid var(--color--carrot-orange, #eb9624);
+  font-weight: 600;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-institutional-primary:hover,
+.btn-institutional-primary:focus {
+  background-color: #d88219;
+  border-color: #d88219;
+  color: #ffffff;
+}
+
+.btn-institutional-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.progress-bar.bg-warning {
+  background-color: var(--color--carrot-orange, #eb9624) !important;
+}
+
+.text-warning {
+  color: var(--color--carrot-orange, #eb9624) !important;
+}
+
+.border-warning {
+  border-color: var(--color--carrot-orange, #eb9624) !important;
+}
+
+.card {
+  border-radius: 6px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--color--carrot-orange, #eb9624);
+  box-shadow: 0 0 0 0.2rem rgba(235, 150, 36, 0.15);
+}
+
+.extra-small-para {
+  font-size: 0.75rem;
+  line-height: 1.3;
+}

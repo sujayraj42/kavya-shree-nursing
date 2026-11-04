@@ -44,6 +44,7 @@ export class AdminEnquiryListComponent implements OnInit {
     pages: 1
   });
   protected readonly isLoading = signal(true);
+  protected readonly isExporting = signal(false);
   protected readonly errorMessage = signal('');
 
   public ngOnInit(): void {
@@ -127,6 +128,18 @@ export class AdminEnquiryListComponent implements OnInit {
 
   protected formatDate(dateStr: string): string {
     return formatAdminDate(dateStr, false);
+  }
+
+  protected async exportCsv(): Promise<void> {
+    if (this.isExporting()) return;
+    this.isExporting.set(true);
+    try {
+      await this.enquiryService.exportEnquiriesCsv();
+    } catch (err: any) {
+      this.errorMessage.set(err?.message || 'Failed to export enquiries CSV.');
+    } finally {
+      this.isExporting.set(false);
+    }
   }
 
   protected getInitials(name: string): string {

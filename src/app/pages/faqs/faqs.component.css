@@ -1,0 +1,40 @@
+.page-hero-banner {
+  background-color: var(--color--eeire-black, #181818);
+  padding: 60px 0 50px 0;
+}
+
+.ks-faq-button {
+  background-color: #ffffff;
+  padding: 1.15rem 1.25rem;
+  font-size: 1rem;
+  border-radius: var(--round-4, 4px) !important;
+  transition: background-color 0.15s ease;
+}
+
+.ks-faq-button:not(.collapsed) {
+  background-color: #fff9ed;
+  color: #7a4b04;
+  box-shadow: none;
+}
+
+.ks-faq-button:focus-visible {
+  outline: 3px solid var(--color--carrot-orange, #eb9624) !important;
+  box-shadow: none;
+}
+
+.accordion-item {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.btn-institutional-primary {
+  background-color: var(--color--carrot-orange, #eb9624);
+  color: #181818;
+  font-weight: 600;
+  border-radius: var(--round-4, 4px);
+  border: none;
+}
+
+.btn-institutional-primary:hover {
+  background-color: #d88214;
+  color: #000000;
+}

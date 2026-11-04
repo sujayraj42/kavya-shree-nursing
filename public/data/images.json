@@ -1,0 +1,100 @@
+{
+  "_notice": "All images listed here are illustrative representations for academic context. Institution owners can replace any image by updating the respective path with authentic campus photographs.",
+  "hero": {
+    "title": "Nursing Students Campus Walk",
+    "isIllustrative": true,
+    "1600w": "images/generated/campus-hero-1600w.webp",
+    "800w": "images/generated/campus-hero-800w.webp",
+    "alt": "Group of nursing students outside Kavya Shree Institute of Nursing campus building"
+  },
+  "gallery": [
+    {
+      "id": "campus-main",
+      "category": "Campus",
+      "title": "Academic Campus & Infrastructure",
+      "isIllustrative": true,
+      "1600w": "images/generated/campus-hero-1600w.webp",
+      "800w": "images/generated/campus-hero-800w.webp",
+      "alt": "Kavya Shree Institute academic complex in Punpun, Patna"
+    },
+    {
+      "id": "skills-lab",
+      "category": "Labs",
+      "title": "Nursing Foundation & Skills Lab",
+      "isIllustrative": true,
+      "1600w": "images/generated/skills-lab-1600w.webp",
+      "800w": "images/generated/skills-lab-800w.webp",
+      "alt": "Nursing candidates practising procedural techniques in simulation laboratory"
+    },
+    {
+      "id": "clinical-training",
+      "category": "Clinical",
+      "title": "Hospital Ward Clinical Rotation",
+      "isIllustrative": true,
+      "1600w": "images/generated/clinical-training-1600w.webp",
+      "800w": "images/generated/clinical-training-800w.webp",
+      "alt": "Supervised clinical instruction and bedside patient care monitoring"
+    },
+    {
+      "id": "classroom",
+      "category": "Classroom",
+      "title": "Lecture Theaters & Smart Learning",
+      "isIllustrative": true,
+      "1600w": "images/generated/classroom-1600w.webp",
+      "800w": "images/generated/classroom-800w.webp",
+      "alt": "Students attending health science lecture in academic hall"
+    },
+    {
+      "id": "library",
+      "category": "Campus",
+      "title": "Health Sciences Reference Library",
+      "isIllustrative": true,
+      "1600w": "images/generated/library-1600w.webp",
+      "800w": "images/generated/library-800w.webp",
+      "alt": "Students studying medical textbooks and journals in the reading room"
+    },
+    {
+      "id": "campus-life",
+      "category": "Hostel",
+      "title": "Residential Life & Campus Grounds",
+      "isIllustrative": true,
+      "1600w": "images/generated/campus-life-1600w.webp",
+      "800w": "images/generated/campus-life-800w.webp",
+      "alt": "Student residential life and collaborative peer study on campus"
+    }
+  ],
+  "faculty": [
+    {
+      "id": "fac-01",
+      "department": "Department of Medical-Surgical Nursing",
+      "role": "Associate Professor & Clinical Coordinator",
+      "isIllustrative": true,
+      "imageUrl": "images/generated/faculty-1.webp",
+      "alt": "Faculty mentor portrait"
+    },
+    {
+      "id": "fac-02",
+      "department": "Department of Community Health Nursing",
+      "role": "Assistant Professor & Field Coordinator",
+      "isIllustrative": true,
+      "imageUrl": "images/generated/faculty-2.webp",
+      "alt": "Faculty mentor portrait"
+    },
+    {
+      "id": "fac-03",
+      "department": "Department of Obstetrics & Gynecological Nursing",
+      "role": "Senior Tutor & Midwifery Specialist",
+      "isIllustrative": true,
+      "imageUrl": "images/generated/faculty-3.webp",
+      "alt": "Faculty mentor portrait"
+    },
+    {
+      "id": "fac-04",
+      "department": "Department of Child Health (Pediatric) Nursing",
+      "role": "Clinical Instructor",
+      "isIllustrative": true,
+      "imageUrl": "images/generated/faculty-4.webp",
+      "alt": "Faculty mentor portrait"
+    }
+  ]
+}

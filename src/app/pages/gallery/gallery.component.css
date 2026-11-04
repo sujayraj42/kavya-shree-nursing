@@ -1,0 +1,141 @@
+.page-hero-banner {
+  background-color: var(--color--eeire-black, #181818);
+  padding: 60px 0 50px 0;
+}
+
+.tabs-menu {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tab-key {
+  background-color: #ffffff;
+  border: 1px solid #dcdcdc;
+  padding: 0.5rem 1rem;
+  border-radius: var(--round-4, 4px);
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #4f4f4f;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tab-key:hover {
+  background-color: #f7f7f7;
+  color: #181818;
+}
+
+.tab-key.w--current {
+  background-color: var(--color--eeire-black, #181818);
+  color: #ffffff;
+  border-color: var(--color--eeire-black, #181818);
+}
+
+.gallery-card {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: var(--round-4, 4px);
+}
+
+.gallery-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1) !important;
+}
+
+.gallery-image-wrap {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background-color: #181818;
+}
+
+.gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gallery-card:hover .gallery-img {
+  transform: scale(1.05);
+}
+
+.gallery-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.gallery-card:hover .gallery-overlay {
+  opacity: 1;
+}
+
+/* Lightbox Modal */
+.lightbox-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.88);
+  z-index: 1060;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.lightbox-modal {
+  position: relative;
+  max-width: 900px;
+  width: 100%;
+  background-color: #181818;
+  border-radius: var(--round-4, 4px);
+  overflow: hidden;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1070;
+}
+
+.lightbox-image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0d0d0d;
+  max-height: 70vh;
+}
+
+.lightbox-img {
+  max-height: 70vh;
+  object-fit: contain;
+  width: 100%;
+}
+
+.lightbox-caption {
+  background-color: #181818;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ks-badge-amber {
+  background-color: var(--color--carrot-orange, #eb9624);
+  color: #181818;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--round-4, 4px);
+}

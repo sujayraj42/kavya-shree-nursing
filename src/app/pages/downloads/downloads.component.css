@@ -1,0 +1,17 @@
+.page-hero-banner {
+  background-color: var(--color--eeire-black, #181818);
+  padding: 60px 0 50px 0;
+}
+
+.btn-institutional-primary {
+  background-color: var(--color--carrot-orange, #eb9624);
+  color: #181818;
+  font-weight: 600;
+  border-radius: var(--round-4, 4px);
+  border: none;
+}
+
+.btn-institutional-primary:hover {
+  background-color: #d88214;
+  color: #000000;
+}

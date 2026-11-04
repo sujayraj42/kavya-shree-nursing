@@ -1,0 +1,111 @@
+/* Desktop Floating Action Buttons */
+.ks-floating-desktop {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 1040;
+}
+
+.ks-fab {
+  width: 52px;
+  height: 52px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  text-decoration: none;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ks-fab:hover {
+  transform: scale(1.06);
+  color: #ffffff;
+}
+
+.ks-fab:focus-visible {
+  outline: 3px solid var(--color--carrot-orange, #eb9624) !important;
+  outline-offset: 3px;
+}
+
+.ks-fab-whatsapp {
+  background-color: #25d366;
+}
+
+.ks-fab-whatsapp:hover {
+  background-color: #20ba59;
+}
+
+.ks-fab-phone {
+  background-color: var(--color--eeire-black, #181818);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ks-fab-phone:hover {
+  background-color: #2a2a2a;
+}
+
+.ks-fab-tooltip {
+  position: absolute;
+  right: 62px;
+  background-color: #181818;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.ks-fab:hover .ks-fab-tooltip {
+  opacity: 1;
+}
+
+/* Mobile Bottom Bar */
+.ks-mobile-action-bar {
+  background-color: #ffffff;
+  border-color: #e5e5e5 !important;
+  z-index: 1040;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.ks-mobile-btn {
+  border-radius: 0;
+  border: none;
+  border-right: 1px solid #f0f0f0;
+  color: #333333;
+  text-decoration: none;
+  min-height: 52px;
+}
+
+.ks-mobile-btn:last-child {
+  border-right: none;
+}
+
+.ks-mobile-btn:hover,
+.ks-mobile-btn:active {
+  background-color: #f8f9fa;
+  color: #181818;
+}
+
+.ks-mobile-whatsapp {
+  color: #128c7e;
+}
+
+.ks-mobile-apply {
+  background-color: var(--color--carrot-orange, #eb9624);
+  color: #181818;
+}
+
+.ks-mobile-apply:hover,
+.ks-mobile-apply:active {
+  background-color: #d88214;
+  color: #000000;
+}

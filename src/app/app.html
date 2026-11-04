@@ -1,6 +1,11 @@
 <!-- Skip to Main Content Link for Keyboard and Screen Reader Accessibility -->
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
+<!-- Shared Admissions Notice Bar (Public routes only) -->
+@if (!isAdminRoute()) {
+  <app-notice-bar></app-notice-bar>
+}
+
 <!-- Shared Institutional Header & Navigation (Public routes only) -->
 @if (!isAdminRoute()) {
   <app-header></app-header>
@@ -11,8 +16,10 @@
   <router-outlet></router-outlet>
 </main>
 
-<!-- Shared Institutional Footer (Public routes only) -->
+<!-- Shared Institutional Footer & Floating Actions (Public routes only) -->
 @if (!isAdminRoute()) {
   <app-footer></app-footer>
+  <app-floating-actions></app-floating-actions>
+  <app-enquiry-modal></app-enquiry-modal>
 }
 

@@ -1,0 +1,38 @@
+.page-hero-banner {
+  background-color: var(--color--eeire-black, #181818);
+  padding: 60px 0 50px 0;
+}
+
+.notice-card {
+  cursor: pointer;
+  border-radius: var(--round-4, 4px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notice-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+.ks-badge-amber {
+  background-color: var(--color--carrot-orange, #eb9624);
+  color: #181818;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--round-4, 4px);
+}
+
+.btn-institutional-primary {
+  background-color: var(--color--carrot-orange, #eb9624);
+  color: #181818;
+  font-weight: 600;
+  border-radius: var(--round-4, 4px);
+  border: none;
+}
+
+.btn-institutional-primary:hover {
+  background-color: #d88214;
+  color: #000000;
+}

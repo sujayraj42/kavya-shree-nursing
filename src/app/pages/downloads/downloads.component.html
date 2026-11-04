@@ -1,0 +1,64 @@
+<!-- Page Hero Banner -->
+<section class="page-hero-banner">
+  <div class="container">
+    <nav aria-label="Breadcrumb" class="mb-3">
+      <ol class="breadcrumb breadcrumb-dark mb-0">
+        <li class="breadcrumb-item"><a routerLink="/" class="breadcrumb-link">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Downloads</li>
+      </ol>
+    </nav>
+    <h1 class="h1-heading white mb-2">Institutional Prospectus &amp; Forms</h1>
+    <p class="para-white spaces">
+      Official PDF downloads including the academic prospectus, printable admissions application, and curriculum guides.
+    </p>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section class="general-section bg-stone">
+  <div class="container">
+    <div class="row g-4">
+      @for (item of downloads(); track item.id) {
+        <div class="col-lg-4 col-md-6 col-12">
+          <div class="card p-4 border-0 shadow-sm bg-white h-100 d-flex flex-column">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="badge bg-danger bg-opacity-10 text-danger fw-bold border border-danger border-opacity-25 extra-small-para">
+                {{ item.data.fileType }}
+              </span>
+              <span class="small text-muted font-monospace">{{ item.data.fileSize }}</span>
+            </div>
+
+            <h2 class="h5 fw-bold text-dark mb-2">{{ item.title }}</h2>
+            <p class="text-muted small mb-4 flex-grow-1">{{ item.content }}</p>
+
+            <div class="mt-auto pt-3 border-top d-flex gap-2">
+              <a
+                [href]="item.data.downloadUrl"
+                download
+                class="btn btn-institutional-primary btn-sm flex-fill d-flex align-items-center justify-content-center gap-2"
+                aria-label="Download PDF document"
+              >
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                  <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                </svg>
+                <span>Download ({{ item.data.fileSize }})</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Online vs Offline Note -->
+    <div class="mt-5 p-4 bg-white rounded border shadow-sm text-center">
+      <h3 class="h5 fw-bold mb-2">Prefer Applying Online?</h3>
+      <p class="text-muted small mx-auto mb-3" style="max-width: 600px;">
+        You can submit your formal application completely online with your mobile phone without needing to print physical forms.
+      </p>
+      <a routerLink="/apply" class="btn btn-institutional-primary btn-sm px-4">
+        Start Online Application &rarr;
+      </a>
+    </div>
+  </div>
+</section>

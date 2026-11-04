@@ -1,0 +1,92 @@
+<!-- Page Hero Banner -->
+<section class="page-hero-banner">
+  <div class="container">
+    <nav aria-label="Breadcrumb" class="mb-3">
+      <ol class="breadcrumb breadcrumb-dark mb-0">
+        <li class="breadcrumb-item"><a routerLink="/" class="breadcrumb-link">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Notices &amp; Circulars</li>
+      </ol>
+    </nav>
+    <h1 class="h1-heading white mb-2">Institutional Notices &amp; Announcements</h1>
+    <p class="para-white spaces">
+      Official updates regarding academic session 2026, verification timelines, and admissions notifications.
+    </p>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section class="general-section bg-stone">
+  <div class="container">
+    @if (selectedNotice(); as sn) {
+      <!-- Notice Detail View -->
+      <div class="card p-4 p-md-5 border-0 shadow-sm bg-white mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="clearSelection()">
+            &larr; Back to All Notices
+          </button>
+          <span class="badge ks-badge-amber text-uppercase">
+            {{ sn.data?.badge || 'Official Circular' }}
+          </span>
+        </div>
+
+        <h2 class="h3 fw-bold text-dark mb-2">{{ sn.title }}</h2>
+        @if (sn.subtitle) {
+          <h3 class="h6 text-muted mb-3">{{ sn.subtitle }}</h3>
+        }
+
+        @if (sn.data?.lastDate) {
+          <div class="alert alert-warning small mb-4">
+            <strong>Key Deadline:</strong> Last date for submission is <strong>{{ sn.data?.lastDate }}</strong>.
+          </div>
+        }
+
+        <div class="lead-text small text-dark mb-4" style="line-height: 1.8;">
+          {{ sn.content }}
+        </div>
+
+        <div class="d-flex gap-2 border-top pt-4">
+          <a routerLink="/apply" class="btn btn-institutional-primary btn-sm px-4">
+            Proceed to Online Application &rarr;
+          </a>
+          <button type="button" class="btn btn-outline-dark btn-sm" (click)="modalService.openEnquiryModal('Notice: ' + sn.title)">
+            Enquire With Admissions Desk
+          </button>
+        </div>
+      </div>
+    } @else {
+      <!-- Notices List -->
+      <div class="row g-4">
+        @for (notice of notices(); track notice.id) {
+          <div class="col-lg-6 col-12">
+            <div class="card p-4 border-0 shadow-sm bg-white h-100 notice-card" (click)="selectNotice(notice)">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge bg-secondary bg-opacity-25 text-dark extra-small-para text-uppercase">
+                  Session 2026
+                </span>
+                @if (notice.data?.badge) {
+                  <span class="badge ks-badge-amber text-uppercase">
+                    {{ notice.data?.badge }}
+                  </span>
+                }
+              </div>
+
+              <h2 class="h5 fw-bold text-dark mb-2">{{ notice.title }}</h2>
+              <p class="text-muted small mb-3 flex-grow-1">{{ notice.content }}</p>
+
+              @if (notice.data?.lastDate) {
+                <div class="small text-muted mb-3">
+                  <strong>Last Date:</strong> {{ notice.data?.lastDate }}
+                </div>
+              }
+
+              <div class="border-top pt-3 d-flex justify-content-between align-items-center">
+                <span class="extra-small-para text-muted">Click to inspect full details</span>
+                <span class="text-warning fw-bold small">Read Full Circular &rarr;</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>

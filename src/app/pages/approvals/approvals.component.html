@@ -1,0 +1,105 @@
+<!-- Page Hero Banner -->
+<section class="page-hero-banner">
+  <div class="container">
+    <nav aria-label="Breadcrumb" class="mb-3">
+      <ol class="breadcrumb breadcrumb-dark mb-0">
+        <li class="breadcrumb-item"><a routerLink="/" class="breadcrumb-link">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Approvals &amp; Affiliations</li>
+      </ol>
+    </nav>
+    <h1 class="h1-heading white mb-2">Statutory Approvals &amp; Affiliations</h1>
+    <p class="para-white spaces">
+      Institutional compliance and regulatory affiliations governing our nursing education and clinical programs.
+    </p>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section class="general-section bg-stone">
+  <div class="container">
+    <!-- Notice Card -->
+    <div class="alert alert-warning p-4 rounded border mb-4">
+      <div class="d-flex align-items-start gap-3">
+        <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor" class="text-warning flex-shrink-0 mt-1">
+          <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </svg>
+        <div>
+          <h2 class="h6 fw-bold mb-1">Institutional Transparency Notice</h2>
+          <p class="small text-muted mb-0">
+            Kavya Shree Institute of Nursing operates under provisional institutional frameworks for the 2026 academic session. Official affiliation certificates and statutory inspection records are retained for inspection at the campus registrar office.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Approvals List -->
+    <div class="row g-4">
+      @for (item of approvals(); track item.id) {
+        <div class="col-lg-6 col-12">
+          <div class="card p-4 border-0 shadow-sm bg-white h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge bg-secondary bg-opacity-25 text-dark extra-small-para text-uppercase">
+                {{ item.data.authority }}
+              </span>
+              <span class="badge ks-badge-amber text-uppercase">
+                {{ item.data.status }}
+              </span>
+            </div>
+            <h2 class="h5 fw-bold text-dark mb-2">{{ item.title }}</h2>
+            <p class="text-muted small mb-3">{{ item.content }}</p>
+            @if (item.data.noticeText) {
+              <p class="extra-small-para text-muted border-start border-3 ps-2 py-1 mb-3">
+                {{ item.data.noticeText }}
+              </p>
+            }
+            <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+              <span class="small text-muted">{{ item.data.documentType || 'Official Document' }}</span>
+              <button type="button" class="btn btn-outline-dark btn-sm" (click)="viewDocument(item)">
+                View Document Notice &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Verification Helpdesk -->
+    <div class="mt-5 p-4 bg-white rounded border shadow-sm text-center">
+      <h3 class="h5 fw-bold mb-2">Have Regulatory or Affiliation Inquiries?</h3>
+      <p class="text-muted small mx-auto mb-3" style="max-width: 600px;">
+        Prospective students, parents, and government bodies may contact the registrar desk directly for affiliation inspection files.
+      </p>
+      <button type="button" class="btn btn-institutional-primary btn-sm px-4" (click)="modalService.openEnquiryModal('Affiliation Verification')">
+        Submit Verification Query &rarr;
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Document Viewer Modal -->
+@if (selectedDoc(); as doc) {
+  <div class="modal-backdrop fade show" (click)="closeDocument()"></div>
+  <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-dark text-white">
+          <h2 class="h6 modal-title mb-0">{{ doc.title }}</h2>
+          <button type="button" class="btn-close btn-close-white" (click)="closeDocument()"></button>
+        </div>
+        <div class="modal-body p-4 text-center">
+          <svg width="48" height="48" viewBox="0 0 16 16" fill="currentColor" class="text-warning mb-3">
+            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+          </svg>
+          <h3 class="h6 fw-bold mb-2">{{ doc.data.authority }}</h3>
+          <p class="small text-muted mb-3">{{ doc.data.noticeText }}</p>
+          <div class="alert alert-light border small text-muted mb-3">
+            Physical copies available for verification at the campus administrative desk during official hours.
+          </div>
+          <button type="button" class="btn btn-institutional-primary btn-sm" (click)="closeDocument()">
+            Close Viewer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

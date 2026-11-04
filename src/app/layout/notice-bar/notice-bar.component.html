@@ -1,0 +1,32 @@
+@if (activeNotice() && !isDismissed()) {
+  <aside class="ks-notice-bar py-2 px-3" aria-label="Official Admissions Announcement">
+    <div class="container d-flex justify-content-between align-items-center gap-2">
+      <div class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden">
+        <span class="badge ks-badge-amber text-uppercase flex-shrink-0">
+          {{ activeNotice()?.data?.badge || 'Intake 2026' }}
+        </span>
+        <span class="notice-text text-truncate small fw-medium">
+          {{ activeNotice()?.data?.bannerText || activeNotice()?.title }}
+        </span>
+        @if (activeNotice()?.data?.lastDate) {
+          <span class="d-none d-md-inline-block text-muted small ms-1 flex-shrink-0">
+            • Last Date: {{ activeNotice()?.data?.lastDate }}
+          </span>
+        }
+      </div>
+
+      <div class="d-flex align-items-center gap-2 flex-shrink-0">
+        <a routerLink="/apply" class="btn btn-sm btn-institutional-primary py-0 px-2 small apply-link">
+          {{ i18n.translate('action.applyOnline') }} &rarr;
+        </a>
+        <button
+          type="button"
+          class="btn-close btn-close-sm"
+          (click)="dismiss()"
+          aria-label="Dismiss admissions notice"
+          title="Dismiss notice for this session"
+        ></button>
+      </div>
+    </div>
+  </aside>
+}

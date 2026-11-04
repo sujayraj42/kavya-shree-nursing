@@ -1,0 +1,203 @@
+@if (isLoading()) {
+  <div class="general-section text-center py-5">
+    <div class="spinner-border text-warning mb-3" role="status"></div>
+    <p class="text-muted small">Loading course details...</p>
+  </div>
+} @else if (course(); as c) {
+  <!-- Page Hero Banner -->
+  <section class="page-hero-banner">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="mb-3">
+        <ol class="breadcrumb breadcrumb-dark mb-0">
+          <li class="breadcrumb-item"><a routerLink="/" class="breadcrumb-link">Home</a></li>
+          <li class="breadcrumb-item"><a routerLink="/programs" class="breadcrumb-link">Programs</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ c.data.code }}</li>
+        </ol>
+      </nav>
+
+      <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+          <span class="badge ks-badge-amber text-uppercase mb-2">{{ c.data.level }}</span>
+          <h1 class="h1-heading white mb-2">{{ c.title }}</h1>
+          <p class="para-white mb-3" style="max-width: 650px;">
+            {{ c.content }}
+          </p>
+          <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-institutional-primary px-4 py-2" (click)="openEnquiry()">
+              {{ i18n.translate('action.sendEnquiry') }}
+            </button>
+            <a routerLink="/apply" class="btn btn-outline-light px-4 py-2">
+              {{ i18n.translate('action.applyOnline') }} &rarr;
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <!-- Quick Facts Card -->
+          <div class="card ks-visual-card shadow-sm p-4 text-dark bg-white">
+            <h2 class="h5 fw-bold mb-3 border-bottom pb-2">Program Quick Facts</h2>
+            <dl class="mb-0 small text-muted">
+              <div class="d-flex justify-content-between py-2 border-bottom">
+                <dt class="fw-normal">Duration:</dt>
+                <dd class="mb-0 fw-bold text-dark">{{ c.data.duration }}</dd>
+              </div>
+              <div class="d-flex justify-content-between py-2 border-bottom">
+                <dt class="fw-normal">Eligibility:</dt>
+                <dd class="mb-0 fw-bold text-dark text-end" style="max-width: 60%;">{{ c.data.eligibility }}</dd>
+              </div>
+              <div class="d-flex justify-content-between py-2 border-bottom">
+                <dt class="fw-normal">Intake Seats:</dt>
+                <dd class="mb-0 fw-bold text-dark">{{ c.data.seats }}</dd>
+              </div>
+              <div class="d-flex justify-content-between py-2">
+                <dt class="fw-normal">Fee Structure:</dt>
+                <dd class="mb-0 fw-bold text-dark text-end" style="max-width: 60%;">{{ c.data.fees }}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detailed Sections (Syllabus, Careers, Eligibility) -->
+  <section class="general-section bg-stone">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <!-- Tabs -->
+          <div class="tabs-menu mb-4" role="tablist">
+            <button
+              type="button"
+              class="tab-key"
+              [class.w--current]="activeTab() === 'syllabus'"
+              (click)="setTab('syllabus')"
+            >
+              <span class="tab-key-text">Curriculum & Syllabus</span>
+            </button>
+            <button
+              type="button"
+              class="tab-key"
+              [class.w--current]="activeTab() === 'careers'"
+              (click)="setTab('careers')"
+            >
+              <span class="tab-key-text">Career Prospects</span>
+            </button>
+            <button
+              type="button"
+              class="tab-key"
+              [class.w--current]="activeTab() === 'eligibility'"
+              (click)="setTab('eligibility')"
+            >
+              <span class="tab-key-text">Admission Guidelines</span>
+            </button>
+          </div>
+
+          <!-- Tab Content: Syllabus -->
+          @if (activeTab() === 'syllabus') {
+            <div class="card p-4 border-0 shadow-sm bg-white mb-4">
+              <h2 class="h4-heading black mb-3">Academic Curriculum Outline</h2>
+              <p class="text-muted small mb-4">
+                The coursework follows comprehensive nursing education guidelines with balanced classroom theory and supervised clinical rotations.
+              </p>
+              <ul class="list-group list-group-flush">
+                @for (item of c.data.syllabus; track item) {
+                  <li class="list-group-item px-0 py-3 d-flex align-items-start gap-3">
+                    <span class="badge bg-secondary bg-opacity-25 text-dark mt-1">Year</span>
+                    <span class="text-dark small fw-medium">{{ item }}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          <!-- Tab Content: Careers -->
+          @if (activeTab() === 'careers') {
+            <div class="card p-4 border-0 shadow-sm bg-white mb-4">
+              <h2 class="h4-heading black mb-3">Graduate Employment Avenues</h2>
+              <p class="text-muted small mb-4">
+                Graduates from {{ c.title }} enjoy strong demand across state health departments, emergency care wards, and healthcare facilities.
+              </p>
+              <div class="row g-3">
+                @for (career of c.data.careerOptions; track career) {
+                  <div class="col-md-6">
+                    <div class="p-3 bg-light rounded border d-flex align-items-center gap-2">
+                      <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" class="text-warning flex-shrink-0">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                      </svg>
+                      <span class="small fw-semibold text-dark">{{ career }}</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Tab Content: Eligibility -->
+          @if (activeTab() === 'eligibility') {
+            <div class="card p-4 border-0 shadow-sm bg-white mb-4">
+              <h2 class="h4-heading black mb-3">Eligibility & Statutory Documentation</h2>
+              <div class="alert alert-warning small mb-4">
+                <strong>Statutory Note:</strong> Admissions criteria adhere to official regulatory council norms for the 2026 academic intake.
+              </div>
+              <p class="text-muted small mb-3">
+                <strong>Minimum Educational Requirement:</strong> {{ c.data.eligibility }}
+              </p>
+              <p class="text-muted small mb-0">
+                Candidates must submit attested copies of educational marksheets, age proof, character certificate, and passport photographs during in-person verification.
+              </p>
+            </div>
+          }
+        </div>
+
+        <div class="col-lg-4">
+          <!-- Consultation Card -->
+          <div class="card p-4 border-0 shadow-sm bg-white mb-4">
+            <h3 class="h5 fw-bold mb-2">Need Guidance?</h3>
+            <p class="text-muted small mb-3">
+              Talk directly to our academic admissions desk for seat eligibility review and campus visit arrangements.
+            </p>
+            <button type="button" class="btn btn-institutional-primary w-100 mb-2" (click)="openEnquiry()">
+              Schedule Consultation
+            </button>
+            <a routerLink="/contact" class="btn btn-outline-secondary btn-sm w-100">
+              View Campus Location
+            </a>
+          </div>
+
+          <!-- Other Programs Links -->
+          <div class="card p-4 border-0 shadow-sm bg-white">
+            <h3 class="h6 fw-bold mb-3 border-bottom pb-2">Explore Other Disciplines</h3>
+            <ul class="list-unstyled mb-0 d-flex flex-column gap-2 small">
+              <li><a routerLink="/programs/anm" class="text-decoration-none text-dark fw-medium">Auxiliary Nurse Midwifery (ANM) &rarr;</a></li>
+              <li><a routerLink="/programs/gnm" class="text-decoration-none text-dark fw-medium">General Nursing & Midwifery (GNM) &rarr;</a></li>
+              <li><a routerLink="/programs/bsc-nursing" class="text-decoration-none text-dark fw-medium">B.Sc. Nursing (4 Years) &rarr;</a></li>
+              <li><a routerLink="/programs/post-basic-bsc" class="text-decoration-none text-dark fw-medium">Post Basic B.Sc. Nursing &rarr;</a></li>
+              <li><a routerLink="/programs/msc-nursing" class="text-decoration-none text-dark fw-medium">M.Sc. Nursing (2 Years) &rarr;</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sticky Mobile Apply Button -->
+  <div class="d-md-none sticky-bottom bg-white p-3 border-top shadow-lg">
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-outline-dark btn-sm flex-fill" (click)="openEnquiry()">
+        Enquiry
+      </button>
+      <a routerLink="/apply" class="btn btn-institutional-primary btn-sm flex-fill fw-bold">
+        Apply for 2026 &rarr;
+      </a>
+    </div>
+  </div>
+} @else {
+  <div class="general-section text-center py-5">
+    <h2 class="h3-heading mb-2">Course Not Found</h2>
+    <p class="text-muted small mb-4">The requested nursing curriculum is not recognized in our active catalog.</p>
+    <a routerLink="/programs" class="btn btn-institutional-primary btn-sm">
+      &larr; Return to Programs Catalog
+    </a>
+  </div>
+}

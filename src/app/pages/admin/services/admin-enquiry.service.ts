@@ -151,4 +151,29 @@ export class AdminEnquiryService {
 
     return result.data;
   }
+
+  /**
+   * Downloads official admissions enquiries as a standardized CSV file.
+   */
+  public async exportEnquiriesCsv(): Promise<void> {
+    const url = `${environment.apiBaseUrl}/admin/enquiries/export`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: this.authService.getAuthorizedHeaders(url)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to export enquiries (HTTP status ${response.status})`);
+    }
+
+    const blob = await response.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = `kavya_shree_enquiries_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(downloadUrl);
+  }
 }

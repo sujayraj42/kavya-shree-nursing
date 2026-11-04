@@ -32,6 +32,11 @@ export const ADMIN_ROUTES: Routes = [
             title: 'Admissions Enquiry Management | Kavya Shree Institute of Nursing'
           },
           {
+            path: 'applications',
+            loadComponent: () => import('./applications/admin-application-list.component').then(m => m.AdminApplicationListComponent),
+            title: 'Online Applications Management | Kavya Shree Institute of Nursing'
+          },
+          {
             path: 'enquiries/:id',
             loadComponent: () => import('./enquiries/admin-enquiry-detail.component').then(m => m.AdminEnquiryDetailComponent),
             title: 'Candidate Dossier | Kavya Shree Institute of Nursing'

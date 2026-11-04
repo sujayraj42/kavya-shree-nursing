@@ -5,6 +5,9 @@ import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
 import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
+import { NoticeBarComponent } from './layout/notice-bar/notice-bar.component';
+import { FloatingActionsComponent } from './layout/floating-actions/floating-actions.component';
+import { EnquiryModalComponent } from './shared/enquiry-modal/enquiry-modal.component';
 import { SeoService } from './core/services/seo.service';
 import { environment } from '../environments/environment';
 
@@ -12,7 +15,7 @@ const KEEP_ALIVE_INTERVAL_MS = 10 * 60 * 1000;
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, NoticeBarComponent, FloatingActionsComponent, EnquiryModalComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

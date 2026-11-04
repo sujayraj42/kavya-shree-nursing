@@ -1,0 +1,105 @@
+<!-- Page Hero Banner -->
+<section class="page-hero-banner">
+  <div class="container">
+    <nav aria-label="Breadcrumb" class="mb-3">
+      <ol class="breadcrumb breadcrumb-dark mb-0">
+        <li class="breadcrumb-item"><a routerLink="/" class="breadcrumb-link">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Faculty &amp; Hospital Tie-ups</li>
+      </ol>
+    </nav>
+    <h1 class="h1-heading white mb-2">Faculty Mentors &amp; Clinical Hospital Network</h1>
+    <p class="para-white spaces">
+      Dedicated nursing educators and affiliated clinical medical hospitals providing comprehensive bedside education.
+    </p>
+  </div>
+</section>
+
+<!-- Faculty Mentorship Section -->
+<section class="general-section bg-stone">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="ks-section-kicker">Academic Department</div>
+      <h2 class="h2-heading black mb-3">Nursing Faculty &amp; Clinical Mentors</h2>
+      <p class="paragraph mx-auto text-center" style="max-width: 650px;">
+        Instructional faculty holding postgraduate degrees in specialized nursing fields supervise clinical simulations and theoretical lectures.
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      @for (fac of facultyList(); track fac.id) {
+        @if (fac.title) {
+          <div class="col-lg-6 col-md-6 col-12">
+            <div class="card p-4 border-0 shadow-sm bg-white h-100">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="faculty-avatar-circle flex-shrink-0">
+                  <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor" class="text-white">
+                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="h6 fw-bold text-dark mb-0">{{ fac.title }}</h3>
+                  <span class="small text-warning fw-semibold">{{ fac.data.role }}</span>
+                </div>
+              </div>
+              <p class="text-muted small mb-2">{{ fac.content }}</p>
+              <div class="small text-muted border-top pt-2 mt-auto">
+                <strong>Qualification:</strong> {{ fac.data.qualification }}
+              </div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Clinical Hospital Tie-ups Section -->
+<section class="general-section bg-white">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="ks-section-kicker">Clinical Affiliations</div>
+      <h2 class="h2-heading black mb-3">Hospital Rotations &amp; Practical Training</h2>
+      <p class="paragraph mx-auto text-center" style="max-width: 650px;">
+        Students undergo mandatory inpatient bedside training across regional medical facilities and public healthcare centers.
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      @for (hosp of hospitalList(); track hosp.id) {
+        @if (hosp.title) {
+          <div class="col-lg-6 col-12">
+            <div class="card p-4 border rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge bg-secondary bg-opacity-25 text-dark extra-small-para text-uppercase">
+                  {{ hosp.data.location }}
+                </span>
+                <span class="badge ks-badge-amber text-uppercase">
+                  {{ hosp.data.bedCapacity }}
+                </span>
+              </div>
+              <h3 class="h5 fw-bold text-dark mb-2">{{ hosp.title }}</h3>
+              <p class="text-muted small mb-3">{{ hosp.content }}</p>
+
+              <div class="border-top pt-3 mt-auto">
+                <span class="extra-small-para text-uppercase fw-semibold text-muted d-block mb-2">Key Training Specialties:</span>
+                <div class="d-flex flex-wrap gap-1">
+                  @for (spec of hosp.data.specialties; track spec) {
+                    <span class="badge bg-light text-dark border extra-small-para">{{ spec }}</span>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <div class="mt-5 p-4 bg-light rounded text-center">
+      <h4 class="h6 fw-bold mb-1">Interested in Clinical Internship Regulations?</h4>
+      <p class="small text-muted mb-3">All hospital rotation schedules comply with curriculum mandates for each academic semester.</p>
+      <a routerLink="/admissions" class="btn btn-institutional-primary btn-sm px-4">
+        Consult Admissions Desk &rarr;
+      </a>
+    </div>
+  </div>
+</section>

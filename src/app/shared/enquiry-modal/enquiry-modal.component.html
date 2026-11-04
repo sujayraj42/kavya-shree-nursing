@@ -1,0 +1,178 @@
+@if (modalService.isEnquiryModalOpen()) {
+  <!-- Backdrop -->
+  <div class="modal-backdrop fade show" (click)="close()"></div>
+
+  <!-- Modal Dialog -->
+  <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="enquiryModalTitle">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content ks-modal-content border-0 shadow-lg">
+        <!-- Header -->
+        <div class="modal-header ks-modal-header text-white">
+          <div>
+            <span class="badge bg-warning text-dark text-uppercase extra-small-para fw-bold mb-1">
+              Admissions 2026
+            </span>
+            <h2 class="h5 modal-title mb-0" id="enquiryModalTitle">
+              Admissions Consultation Enquiry
+            </h2>
+          </div>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            (click)="close()"
+            aria-label="Close consultation modal"
+          ></button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body p-4">
+          @if (successMessage()) {
+            <div class="alert alert-success p-3 text-center mb-0" role="status">
+              <svg width="36" height="36" viewBox="0 0 16 16" fill="currentColor" class="text-success mx-auto mb-2 d-block">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+              </svg>
+              <h3 class="h6 fw-bold mb-1">Enquiry Registered!</h3>
+              <p class="small text-muted mb-3">{{ successMessage() }}</p>
+              <p class="extra-small-para text-muted mb-3">Our counseling desk will review your details and reach out.</p>
+              <button type="button" class="btn btn-institutional-primary btn-sm" (click)="close()">
+                Done
+              </button>
+            </div>
+          } @else {
+            @if (errorMessage()) {
+              <div class="alert alert-danger p-2 small mb-3" role="alert">
+                {{ errorMessage() }}
+              </div>
+            }
+
+            <form (ngSubmit)="onSubmit()" novalidate>
+              <!-- Candidate Name -->
+              <div class="mb-3">
+                <label for="modalCandidateName" class="form-label small fw-semibold">
+                  {{ i18n.translate('form.name') }} <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="modalCandidateName"
+                  class="form-control"
+                  [class.is-invalid]="nameError()"
+                  placeholder="e.g. Ananya Kumari"
+                  [ngModel]="name()"
+                  (ngModelChange)="name.set($event)"
+                  maxlength="100"
+                  required
+                />
+                @if (nameError()) {
+                  <div class="invalid-feedback extra-small-para">{{ nameError() }}</div>
+                }
+              </div>
+
+              <!-- Contact Phone -->
+              <div class="mb-3">
+                <label for="modalCandidatePhone" class="form-label small fw-semibold">
+                  {{ i18n.translate('form.phone') }} <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="tel"
+                  id="modalCandidatePhone"
+                  class="form-control"
+                  [class.is-invalid]="phoneError()"
+                  placeholder="e.g. 9876543210"
+                  [ngModel]="phone()"
+                  (ngModelChange)="phone.set($event)"
+                  maxlength="15"
+                  required
+                />
+                @if (phoneError()) {
+                  <div class="invalid-feedback extra-small-para">{{ phoneError() }}</div>
+                }
+              </div>
+
+              <!-- Program Selector -->
+              <div class="mb-3">
+                <label for="modalProgramSelect" class="form-label small fw-semibold">
+                  {{ i18n.translate('form.program') }} <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="modalProgramSelect"
+                  class="form-select"
+                  [ngModel]="modalService.selectedProgram()"
+                  (ngModelChange)="modalService.selectedProgram.set($event)"
+                >
+                  @for (p of programs; track p) {
+                    <option [value]="p">{{ p }}</option>
+                  }
+                </select>
+              </div>
+
+              <!-- Optional Email -->
+              <div class="mb-3">
+                <label for="modalCandidateEmail" class="form-label small fw-semibold">
+                  {{ i18n.translate('form.email') }}
+                </label>
+                <input
+                  type="email"
+                  id="modalCandidateEmail"
+                  class="form-control"
+                  [class.is-invalid]="emailError()"
+                  placeholder="e.g. candidate@example.com"
+                  [ngModel]="email()"
+                  (ngModelChange)="email.set($event)"
+                  maxlength="255"
+                />
+                @if (emailError()) {
+                  <div class="invalid-feedback extra-small-para">{{ emailError() }}</div>
+                }
+              </div>
+
+              <!-- Message -->
+              <div class="mb-3">
+                <label for="modalMessage" class="form-label small fw-semibold">
+                  {{ i18n.translate('form.message') }}
+                </label>
+                <textarea
+                  id="modalMessage"
+                  rows="2"
+                  class="form-control"
+                  placeholder="Questions regarding fees, hostel, eligibility..."
+                  [ngModel]="message()"
+                  (ngModelChange)="message.set($event)"
+                  maxlength="1000"
+                ></textarea>
+              </div>
+
+              <!-- Consent Checkbox -->
+              <div class="form-check mb-4">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="modalConsentCheck"
+                  [ngModel]="consent()"
+                  (ngModelChange)="consent.set($event)"
+                  required
+                />
+                <label class="form-check-label extra-small-para text-muted" for="modalConsentCheck">
+                  {{ i18n.translate('form.consent') }}
+                </label>
+              </div>
+
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                class="btn btn-institutional-primary w-100 py-2 fw-semibold"
+                [disabled]="isSubmitting()"
+              >
+                @if (isSubmitting()) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  {{ i18n.translate('action.submitting') }}
+                } @else {
+                  {{ i18n.translate('action.sendEnquiry') }} &rarr;
+                }
+              </button>
+            </form>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

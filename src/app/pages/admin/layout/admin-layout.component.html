@@ -46,6 +46,17 @@
           </svg>
           <span class="fw-semibold">All Enquiries</span>
         </a>
+
+        <a
+          routerLink="/admin/applications"
+          [class.active-sidebar-item]="isActive('/admin/applications')"
+          class="sidebar-nav-link d-flex align-items-center gap-3 px-3 py-2 text-decoration-none rounded"
+        >
+          <svg class="flex-shrink-0" width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+          </svg>
+          <span class="fw-semibold">Online Applications</span>
+        </a>
       </nav>
 
       <div class="sidebar-section-label text-uppercase text-white-50 extra-small-para fw-semibold mb-2 px-2">
@@ -124,6 +135,18 @@
           <span class="badge bg-warning text-dark text-uppercase extra-small-para">{{ user.role }}</span>
         </div>
       }
+
+      <button
+        type="button"
+        class="btn btn-outline-light btn-sm w-100 d-flex align-items-center justify-content-center gap-2 mb-2"
+        (click)="openPasswordModal()"
+        aria-label="Change administrator password"
+      >
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+        </svg>
+        <span class="fw-semibold">Change Password</span>
+      </button>
 
       <button
         type="button"
@@ -225,6 +248,21 @@
               All Enquiries
             </a>
             <a
+              routerLink="/admin/applications"
+              [class.active-sidebar-item]="isActive('/admin/applications')"
+              (click)="closeMobileMenu()"
+              class="sidebar-nav-link text-decoration-none px-3 py-2 text-white rounded"
+            >
+              Online Applications
+            </a>
+            <button
+              type="button"
+              (click)="closeMobileMenu(); openPasswordModal()"
+              class="sidebar-nav-link text-start border-0 bg-transparent text-decoration-none px-3 py-2 text-white rounded w-100"
+            >
+              Change Password
+            </button>
+            <a
               routerLink="/"
               target="_blank"
               rel="noopener"
@@ -262,4 +300,73 @@
       </div>
     </footer>
   </div>
+
+  <!-- Change Password Modal -->
+  @if (isPasswordModalOpen()) {
+    <div class="modal show d-block" tabindex="-1" style="background: rgba(0,0,0,0.6);" role="dialog">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title h6 fw-bold">Update Administrator Password</h5>
+            <button type="button" class="btn-close btn-close-white" (click)="closePasswordModal()"></button>
+          </div>
+          <div class="modal-body p-4">
+            @if (passwordError()) {
+              <div class="alert alert-danger p-2 small mb-3">{{ passwordError() }}</div>
+            }
+            @if (passwordSuccess()) {
+              <div class="alert alert-success p-2 small mb-3">{{ passwordSuccess() }}</div>
+            }
+
+            <div class="mb-3">
+              <label for="currentAdminPassword" class="form-label small fw-semibold">Current Password</label>
+              <input
+                type="password"
+                id="currentAdminPassword"
+                class="form-control"
+                [ngModel]="currentPassword()"
+                (ngModelChange)="currentPassword.set($event)"
+                placeholder="Enter current password"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="newAdminPassword" class="form-label small fw-semibold">New Password (min 8 chars)</label>
+              <input
+                type="password"
+                id="newAdminPassword"
+                class="form-control"
+                [ngModel]="newPassword()"
+                (ngModelChange)="newPassword.set($event)"
+                placeholder="Enter new strong password"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="confirmAdminPassword" class="form-label small fw-semibold">Confirm New Password</label>
+              <input
+                type="password"
+                id="confirmAdminPassword"
+                class="form-control"
+                [ngModel]="confirmPassword()"
+                (ngModelChange)="confirmPassword.set($event)"
+                placeholder="Re-type new password"
+              />
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-sm btn-secondary" (click)="closePasswordModal()">Cancel</button>
+            <button
+              type="button"
+              class="btn btn-sm btn-primary"
+              [disabled]="isChangingPassword() || !currentPassword() || !newPassword()"
+              (click)="submitChangePassword()"
+            >
+              {{ isChangingPassword() ? 'Saving...' : 'Update Password' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </div>

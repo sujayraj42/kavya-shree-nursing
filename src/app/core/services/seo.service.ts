@@ -91,6 +91,169 @@ export const ROUTE_SEO_MAP: Record<string, RouteSeoConfig> = {
     robots: DEFAULT_ROBOTS_INDEX,
     schemaType: 'ContactPage',
     breadcrumbLabel: 'Contact Us'
+  },
+  '/apply': {
+    title: 'Formal Online Application 2026 | Kavya Shree Institute of Nursing',
+    description:
+      'Candidate online registration portal for ANM, GNM, and B.Sc. Nursing disciplines for academic intake session 2026.',
+    keywords:
+      'Nursing Application Form 2026, Apply ANM GNM Patna, B.Sc Nursing Registration Bihar, Kavya Shree Online Admission',
+    canonicalPath: '/apply',
+    image: 'logo.png',
+    imageAlt: 'Online Application Portal — Kavya Shree Institute of Nursing',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'WebPage',
+    breadcrumbLabel: 'Online Application'
+  },
+  '/approvals': {
+    title: 'Recognitions & Regulatory Approvals | Kavya Shree Institute of Nursing',
+    description:
+      'Statutory regulatory framework, Indian Nursing Council (INC) syllabus alignment, Bihar Nursing Registration Council (BNRC), and university affiliations.',
+    keywords:
+      'INC Approved Nursing College Patna, BNRC Recognized Nursing Bihar, Affiliated Nursing Institute Patna, Kavya Shree Approvals',
+    canonicalPath: '/approvals',
+    image: 'logo.png',
+    imageAlt: 'Regulatory Recognitions and Approvals — Kavya Shree Institute of Nursing',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'ItemPage',
+    breadcrumbLabel: 'Approvals & Recognitions'
+  },
+  '/gallery': {
+    title: 'Campus, Labs & Clinical Gallery | Kavya Shree Institute of Nursing',
+    description:
+      'Explore institutional infrastructure including nursing simulation labs, hospital clinical rotations, lecture theaters, and health sciences library.',
+    keywords:
+      'Nursing College Campus Photos, Simulation Lab Photos Patna, Clinical Ward Training Pictures, Kavya Shree Campus Gallery',
+    canonicalPath: '/gallery',
+    image: 'logo.png',
+    imageAlt: 'Campus & Clinical Training Gallery — Kavya Shree Institute of Nursing',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'ImageGallery',
+    breadcrumbLabel: 'Campus Gallery'
+  },
+  '/faculty': {
+    title: 'Faculty Mentors & Hospital Partners | Kavya Shree Institute of Nursing',
+    description:
+      'Meet nursing department educators and explore affiliations with multi-specialty civil hospitals and rural primary health centers.',
+    keywords:
+      'Nursing Faculty Patna, Clinical Mentors Bihar, Hospital Affiliation Nursing College, Kavya Shree Faculty',
+    canonicalPath: '/faculty',
+    image: 'logo.png',
+    imageAlt: 'Faculty Mentors & Hospital Tie-Ups — Kavya Shree Institute of Nursing',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'AboutPage',
+    breadcrumbLabel: 'Faculty & Hospital Tie-Ups'
+  },
+  '/faqs': {
+    title: 'Frequently Asked Questions | Kavya Shree Institute of Nursing',
+    description:
+      'Official answers regarding nursing eligibility, 10+2 PCB criteria, hostel accommodation, fee structures, and admissions counseling.',
+    keywords:
+      'Nursing Admission FAQs Patna, B.Sc Nursing Eligibility Bihar, GNM Admission Questions, Kavya Shree FAQs',
+    canonicalPath: '/faqs',
+    image: 'logo.png',
+    imageAlt: 'Admissions & Academic FAQs — Kavya Shree Institute of Nursing',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'FAQPage',
+    breadcrumbLabel: 'FAQs'
+  },
+  '/notices': {
+    title: 'Notices & Announcements | Kavya Shree Institute of Nursing',
+    description:
+      'Latest administrative circulars, session 2026 admission deadlines, counseling schedules, and examination announcements.',
+    keywords:
+      'Nursing Admission Notices Patna, Counseling Schedule Bihar 2026, Kavya Shree Circulars, Nursing Exam Dates',
+    canonicalPath: '/notices',
+    image: 'logo.png',
+    imageAlt: 'Notices & Circulars — Kavya Shree Institute of Nursing',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'CollectionPage',
+    breadcrumbLabel: 'Notices & News'
+  },
+  '/downloads': {
+    title: 'Prospectus & Form Downloads | Kavya Shree Institute of Nursing',
+    description:
+      'Download session 2026 official institutional prospectus, offline admission application forms, and curriculum syllabus outlines.',
+    keywords:
+      'Download Nursing Prospectus Patna, Nursing Admission Form PDF, Syllabus Download ANM GNM B.Sc, Kavya Shree Downloads',
+    canonicalPath: '/downloads',
+    image: 'logo.png',
+    imageAlt: 'Prospectus and Application Downloads — Kavya Shree Institute of Nursing',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'CollectionPage',
+    breadcrumbLabel: 'Downloads & Prospectus'
+  },
+  '/programs/anm': {
+    title: 'ANM (Auxiliary Nursing & Midwifery) Course | Kavya Shree Institute of Nursing',
+    description:
+      '2-Year full-time diploma in Auxiliary Nursing & Midwifery (ANM). Primary healthcare, maternal & child care, community immunization training in Patna.',
+    keywords: 'ANM Course Patna, ANM Nursing Bihar, Auxiliary Nurse Midwifery Admission, ANM Fee Structure Patna',
+    canonicalPath: '/programs/anm',
+    image: 'logo.png',
+    imageAlt: 'ANM Nursing Program at Kavya Shree Institute of Nursing',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'Course',
+    breadcrumbLabel: 'ANM Program'
+  },
+  '/programs/gnm': {
+    title: 'GNM (General Nursing & Midwifery) Course | Kavya Shree Institute of Nursing',
+    description:
+      '3-Year full-time diploma with mandatory 6-month clinical internship. Medical-surgical, psychiatric, and bedside patient care training in Patna.',
+    keywords: 'GNM Course Patna, GNM Nursing Bihar, General Nursing Midwifery Admission, GNM Clinical Internship Patna',
+    canonicalPath: '/programs/gnm',
+    image: 'logo.png',
+    imageAlt: 'GNM Nursing Program at Kavya Shree Institute of Nursing',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'Course',
+    breadcrumbLabel: 'GNM Program'
+  },
+  '/programs/bsc-nursing': {
+    title: 'B.Sc. Nursing (Bachelor of Science) | Kavya Shree Institute of Nursing',
+    description:
+      '4-Year professional university undergraduate degree. Advanced critical care, pharmacology, nursing administration, and hospital rotations in Patna.',
+    keywords: 'B.Sc Nursing Patna, B.Sc Nursing College Bihar, Bachelor of Science Nursing Admission 2026, Nursing Degree Patna',
+    canonicalPath: '/programs/bsc-nursing',
+    image: 'logo.png',
+    imageAlt: 'B.Sc. Nursing Degree Program at Kavya Shree Institute of Nursing',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'Course',
+    breadcrumbLabel: 'B.Sc. Nursing'
+  },
+  '/programs/post-basic-bsc': {
+    title: 'Post Basic B.Sc. Nursing Course | Kavya Shree Institute of Nursing',
+    description:
+      '2-Year degree program for registered GNM nurses. Advance clinical competence, teaching skills, and healthcare supervisory roles.',
+    keywords: 'Post Basic B.Sc Nursing Patna, PB B.Sc Nursing Bihar, Registered Nurse Degree Upgrade',
+    canonicalPath: '/programs/post-basic-bsc',
+    image: 'logo.png',
+    imageAlt: 'Post Basic B.Sc. Nursing at Kavya Shree Institute of Nursing',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'Course',
+    breadcrumbLabel: 'Post Basic B.Sc.'
+  },
+  '/programs/msc-nursing': {
+    title: 'M.Sc. Nursing (Master of Science) | Kavya Shree Institute of Nursing',
+    description:
+      '2-Year postgraduate specialization in health sciences. Clinical leadership, evidence-based research, and nursing collegiate education.',
+    keywords: 'M.Sc Nursing Patna, Master of Science Nursing Bihar, Nursing Post Graduation, Nursing Leadership',
+    canonicalPath: '/programs/msc-nursing',
+    image: 'logo.png',
+    imageAlt: 'M.Sc. Nursing Degree Program at Kavya Shree Institute of Nursing',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'Course',
+    breadcrumbLabel: 'M.Sc. Nursing'
   }
 };
 
@@ -186,6 +349,22 @@ export class SeoService {
     }
   }
 
+  public updateTags(tags: Partial<RouteSeoConfig>): void {
+    if (tags.title) {
+      this.titleService.setTitle(tags.title);
+      this.metaService.updateTag({ property: 'og:title', content: tags.title });
+      this.metaService.updateTag({ name: 'twitter:title', content: tags.title });
+    }
+    if (tags.description) {
+      this.metaService.updateTag({ name: 'description', content: tags.description });
+      this.metaService.updateTag({ property: 'og:description', content: tags.description });
+      this.metaService.updateTag({ name: 'twitter:description', content: tags.description });
+    }
+    if (tags.keywords) {
+      this.metaService.updateTag({ name: 'keywords', content: tags.keywords });
+    }
+  }
+
   private updateCanonicalLink(canonicalUrl: string): void {
     const head = this.document?.head;
     if (!head) {
@@ -246,7 +425,22 @@ export class SeoService {
           '@type': 'BreadcrumbList',
           '@id': `${canonicalUrl}#breadcrumb`,
           itemListElement: breadcrumbItems
-        }
+        },
+        ...(config.schemaType === 'Course'
+          ? [
+              {
+                '@type': 'Course',
+                '@id': `${canonicalUrl}#course`,
+                name: config.title,
+                description: config.description,
+                provider: {
+                  '@type': 'EducationalOrganization',
+                  name: 'Kavya Shree Institute of Nursing',
+                  sameAs: SITE_BASE_URL
+                }
+              }
+            ]
+          : [])
       ]
     };
 

@@ -206,6 +206,31 @@ export class AdminAuthService {
     }
   }
 
+  /**
+   * Updates administrator password using current password verification.
+   */
+  public async changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; message: string }> {
+    const url = `${environment.apiBaseUrl}/admin/me/password`;
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: this.getAuthorizedHeaders(url),
+      body: JSON.stringify({ currentPassword, newPassword })
+    });
+
+    let data: any = null;
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
+
+    if (!response.ok || !data?.success) {
+      throw new Error(data?.error || 'Failed to update administrator password.');
+    }
+
+    return data;
+  }
+
   private setSession(token: string, user: AdminUser): void {
     try {
       sessionStorage.setItem(TOKEN_STORAGE_KEY, token);

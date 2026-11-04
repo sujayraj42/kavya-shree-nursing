@@ -1,0 +1,50 @@
+.ks-notice-bar {
+  background-color: var(--ks-provisional-bg, #fff9ed);
+  border-bottom: 1px solid var(--ks-provisional-border, #fed89b);
+  color: var(--ks-provisional-text, #7a4b04);
+  font-family: var(--font--sans);
+  z-index: 1040;
+  position: relative;
+}
+
+.ks-badge-amber {
+  background-color: var(--color--carrot-orange, #eb9624);
+  color: #181818;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--round-4, 4px);
+}
+
+.notice-text {
+  color: #5c3803;
+}
+
+.apply-link {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background-color: var(--color--carrot-orange, #eb9624);
+  color: #181818;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: var(--round-4, 4px);
+  text-decoration: none;
+  line-height: 1.6;
+}
+
+.apply-link:hover {
+  background-color: #d88214;
+  color: #000000;
+}
+
+.btn-close-sm {
+  width: 0.65rem;
+  height: 0.65rem;
+  padding: 0.25rem;
+  opacity: 0.7;
+}
+
+.btn-close-sm:hover {
+  opacity: 1;
+}
