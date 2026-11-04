@@ -3,7 +3,8 @@ import { environment } from '../../../environments/environment';
 import {
   FALLBACK_COURSES,
   FALLBACK_NOTICES,
-  FALLBACK_GALLERY
+  FALLBACK_GALLERY,
+  FALLBACK_FACULTY
 } from '../data/fallback-content';
 
 export interface NoticeItem {
@@ -38,6 +39,19 @@ export interface CourseItem {
   };
 }
 
+export interface GalleryItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  content: string;
+  data: {
+    category: string;
+    imageUrl: string;
+    thumbnailUrl: string;
+    alt: string;
+  };
+}
+
 export interface ApprovalItem {
   id: string;
   title: string;
@@ -60,6 +74,7 @@ export interface FacultyItem {
   data: {
     role: string;
     qualification: string;
+    imageUrl?: string;
     isPlaceholder?: boolean;
     notice?: string;
   };
@@ -77,25 +92,14 @@ export interface HospitalTieupItem {
   };
 }
 
-export interface GalleryItem {
+export interface FaqItem {
   id: string;
   title: string;
   subtitle?: string;
   content: string;
   data: {
-    category: 'Campus' | 'Labs' | 'Clinical' | 'Classroom' | 'Hostel';
-    imageUrl: string;
-    thumbnailUrl: string;
-    alt: string;
-  };
-}
-
-export interface FaqItem {
-  id: string;
-  title: string;
-  content: string;
-  data?: {
-    category?: string;
+    category: string;
+    order?: number;
   };
 }
 
@@ -146,7 +150,8 @@ export class ContentService {
   }
 
   public async getFaculty(): Promise<FacultyItem[]> {
-    return this.fetchContent<FacultyItem[]>('/content/faculty', []);
+    const data = await this.fetchContent<FacultyItem[]>('/content/faculty', FALLBACK_FACULTY);
+    return data && data.length > 0 ? data : FALLBACK_FACULTY;
   }
 
   public async getHospitalTieups(): Promise<HospitalTieupItem[]> {

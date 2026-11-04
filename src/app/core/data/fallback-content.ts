@@ -1,91 +1,96 @@
-import { CourseItem, NoticeItem, ApprovalItem, FacultyItem, HospitalTieupItem, GalleryItem, FaqItem, DownloadItem } from '../services/content.service';
+import {
+  NoticeItem,
+  CourseItem,
+  GalleryItem,
+  FacultyItem
+} from '../services/content.service';
 
 export const FALLBACK_COURSES: CourseItem[] = [
   {
     id: 'anm',
     title: 'Auxiliary Nursing & Midwifery (ANM)',
-    subtitle: '2-Year Diploma Program',
-    content: 'Foundational healthcare diploma program preparing female candidates in maternal and child healthcare, community health, and first aid.',
+    subtitle: '2-Year Diploma Discipline',
+    content: 'Foundational clinical nursing discipline covering maternal health, infant care, and community healthcare.',
     data: {
       code: 'ANM',
       duration: '2 Years (Full Time)',
       level: 'Diploma',
-      eligibility: '10+2 passed in Arts or Science with minimum 40-45% marks. Minimum age 17 years.',
+      eligibility: '10+2 in Arts/Science/Commerce with minimum aggregate marks as per statutory guidelines.',
       seats: 'As per regulatory council notification',
       fees: 'Contact admissions desk for transparent institutional fee schedule',
       careerOptions: [
-        'Primary Health Centre (PHC) Nurse',
-        'Community Health Worker',
-        'Maternal & Child Health Assistant',
-        'Rural Health Sub-Center Incharge'
+        'Primary Health Center (PHC) Nurse',
+        'Community Health Worker / ASHA Coordinator',
+        'Maternity & Child Health Assistant',
+        'Rural Wellness Clinic Staff'
       ],
       syllabus: [
-        'Community Health Nursing, Health Promotion, Primary Health Care Nursing',
-        'Child Health Nursing, Midwifery, Health Center Management'
+        'Year 1: Community Health Nursing, Health Promotion, Primary Healthcare Nursing, Child Health Nursing',
+        'Year 2: Midwifery, Health Center Management, Clinical Field Practical Internship'
       ]
     }
   },
   {
     id: 'gnm',
     title: 'General Nursing & Midwifery (GNM)',
-    subtitle: '3-Year Diploma with 6-Month Internship',
-    content: 'Comprehensive clinical nursing program equipping students with in-depth knowledge of bedside patient care, medical-surgical nursing, and pediatric healthcare.',
+    subtitle: '3-Year Diploma with Clinical Rotation',
+    content: 'Comprehensive general nursing education preparing healthcare professionals for bedside patient management, medical-surgical nursing, and intensive hospital care.',
     data: {
       code: 'GNM',
       duration: '3 Years (Full Time)',
       level: 'Diploma',
-      eligibility: '10+2 with English and 40% aggregate in qualifying examination (Science PCB preferred).',
+      eligibility: '10+2 with English, Physics, Chemistry, Biology (PCB) or aggregate equivalent as per council directives.',
       seats: 'As per regulatory council notification',
       fees: 'Contact admissions desk for transparent institutional fee schedule',
       careerOptions: [
-        'Staff Nurse in Government & Private Hospitals',
-        'Intensive Care Unit (ICU) Specialist Nurse',
-        'Industrial Nurse',
+        'Staff Nurse in Super-Speciality Hospitals',
+        'ICU / Emergency Critical Care Nurse',
+        'Operation Theatre (OT) Nursing Specialist',
         'State Healthcare Department Nurse'
       ],
       syllabus: [
-        'Year 1: Bio-Sciences, Behavioral Sciences, Nursing Foundations, Community Health',
-        'Year 2: Medical-Surgical Nursing I & II, Pharmacology, Mental Health Nursing',
-        'Year 3: Midwifery & Gynaecological Nursing, Community Health II, 6-Month Mandatory Clinical Internship'
+        'Year 1: Bio-Sciences, Behavioral Sciences, Nursing Foundations, Community Health Nursing',
+        'Year 2: Medical-Surgical Nursing I & II, Mental Health Nursing, Child Health Nursing',
+        'Year 3: Midwifery & Gynaecological Nursing, Community Health Nursing II, Clinical Internship'
       ]
     }
   },
   {
     id: 'bsc-nursing',
     title: 'Bachelor of Science in Nursing (B.Sc.)',
-    subtitle: '4-Year Professional University Degree',
-    content: 'Premier undergraduate degree combining biological sciences, advanced nursing clinical procedures, pharmacology, community health research, and hospital administration.',
+    subtitle: '4-Year Professional Undergraduate Degree',
+    content: 'Four-year degree curriculum integrating clinical nursing expertise, advanced biomedical sciences, research principles, and leadership competencies.',
     data: {
       code: 'B.Sc. Nursing',
       duration: '4 Years (Full Time)',
       level: 'Undergraduate Degree',
-      eligibility: '10+2 passed with Physics, Chemistry, Biology (PCB) and English with statutory minimum percentage.',
+      eligibility: '10+2 with Physics, Chemistry, Biology and English with minimum 45% aggregate (40% for reserved categories).',
       seats: 'As per regulatory council notification',
       fees: 'Contact admissions desk for transparent institutional fee schedule',
       careerOptions: [
-        'Clinical Nursing Officer (Govt & Private Hospitals)',
-        'Nursing Supervisor / Ward Administrator',
-        'Military & Railway Nursing Services',
-        'International Healthcare Professional'
+        'Registered Nurse (RN) in Corporate / Govt Hospitals',
+        'Clinical Nursing Supervisor',
+        'Nurse Educator / Academic Tutor',
+        'Military Nursing Services (MNS)'
       ],
       syllabus: [
-        'Year 1: Anatomy & Physiology, Nutrition & Biochemistry, Nursing Foundations, Psychology',
+        'Year 1: Anatomy & Physiology, Nutrition & Biochemistry, Nursing Foundation, Psychology',
         'Year 2: Pharmacology, Pathology & Genetics, Medical-Surgical Nursing I, Sociology',
-        'Year 3: Medical-Surgical II, Child Health Nursing, Mental Health Nursing, Nursing Research',
-        'Year 4: Midwifery, Community Health Nursing II, Nursing Management, Clinical Internship'
+        'Year 3: Medical-Surgical Nursing II, Child Health Nursing, Mental Health Nursing, Research Introduction',
+        'Year 4: Midwifery & Obstetrical Nursing, Community Health Nursing II, Management, Practical Internship'
       ]
     }
   },
   {
     id: 'post-basic-bsc',
     title: 'Post Basic B.Sc. Nursing',
-    subtitle: '2-Year Bridge Degree for Registered GNM Nurses',
-    content: 'Advanced degree enabling diploma-qualified registered nurses to elevate clinical skills, administrative competencies, and educational qualifications to a degree standard.',
+    subtitle: '2-Year Bridge Degree for GNM Graduates',
+    content: 'Specialized bridge degree empowering working GNM diploma nurses to upgrade their academic qualification to a recognized bachelor of science.',
     data: {
-      code: 'P.B. B.Sc.',
+      code: 'Post Basic B.Sc.',
       duration: '2 Years (Full Time)',
-      level: 'Post-Diploma Degree',
-      eligibility: 'Registered GNM (General Nursing & Midwifery) with State Nursing Registration Council.',
+      level: 'Undergraduate Degree',
+      eligibility: 'Passed Higher Secondary (10+2) and completed recognized GNM course with State Nursing Council registration.',
       seats: 'As per regulatory council notification',
       fees: 'Contact admissions desk for transparent institutional fee schedule',
       careerOptions: [
@@ -148,7 +153,7 @@ export const FALLBACK_GALLERY: GalleryItem[] = [
     id: 'gal-01',
     title: 'Campus Architecture & Academic Building',
     subtitle: 'Illustrative images',
-    content: 'Modern academic campus equipped with lecture theaters, administrative offices, and library.',
+    content: 'Modern multi-story academic campus equipped with lecture theaters, administrative offices, and library.',
     data: {
       category: 'Campus',
       imageUrl: 'images/generated/campus-hero-1600w.webp',
@@ -167,6 +172,108 @@ export const FALLBACK_GALLERY: GalleryItem[] = [
       thumbnailUrl: 'images/generated/skills-lab-800w.webp',
       alt: 'Nursing students in clinical simulation laboratory'
     }
+  },
+  {
+    id: 'gal-03',
+    title: 'Clinical Ward Practice & Bedside Care',
+    subtitle: 'Illustrative images',
+    content: 'Supervised clinical rotations under experienced nursing mentors in active multi-specialty hospital wards.',
+    data: {
+      category: 'Clinical',
+      imageUrl: 'images/generated/clinical-training-1600w.webp',
+      thumbnailUrl: 'images/generated/clinical-training-800w.webp',
+      alt: 'Supervised clinical instruction and bedside patient care monitoring'
+    }
+  },
+  {
+    id: 'gal-04',
+    title: 'Academic Classrooms & Audio-Visual Lectures',
+    subtitle: 'Illustrative images',
+    content: 'Well-ventilated lecture halls equipped with anatomical models and digital learning aids.',
+    data: {
+      category: 'Classroom',
+      imageUrl: 'images/generated/classroom-1600w.webp',
+      thumbnailUrl: 'images/generated/classroom-800w.webp',
+      alt: 'Nursing lecture hall and interactive classroom'
+    }
+  },
+  {
+    id: 'gal-05',
+    title: 'Health Sciences Library & Study Space',
+    subtitle: 'Illustrative images',
+    content: 'Extensive collection of nursing textbooks, medical journals, and quiet collaborative reading zones.',
+    data: {
+      category: 'Campus',
+      imageUrl: 'images/generated/library-1600w.webp',
+      thumbnailUrl: 'images/generated/library-800w.webp',
+      alt: 'Students studying medical textbooks and journals in reading room'
+    }
+  },
+  {
+    id: 'gal-06',
+    title: 'Residential Life & Campus Grounds',
+    subtitle: 'Illustrative images',
+    content: 'Student residential life, recreation, and collaborative peer discussions on campus grounds.',
+    data: {
+      category: 'Hostel',
+      imageUrl: 'images/generated/campus-life-1600w.webp',
+      thumbnailUrl: 'images/generated/campus-life-800w.webp',
+      alt: 'Student residential life and collaborative peer study on campus'
+    }
   }
 ];
 
+export const FALLBACK_FACULTY: FacultyItem[] = [
+  {
+    id: 'fac-01',
+    title: 'Department of Medical-Surgical Nursing',
+    subtitle: 'Advanced Clinical Simulation & Critical Care',
+    content: 'Instructional faculty mentoring students in patient management, intensive care units, and clinical simulation protocols.',
+    data: {
+      role: 'Associate Professor & Clinical Coordinator',
+      qualification: 'M.Sc. Nursing (Medical-Surgical Speciality)',
+      imageUrl: 'images/generated/faculty-1.webp',
+      isPlaceholder: false,
+      notice: 'Academic mentor'
+    }
+  },
+  {
+    id: 'fac-02',
+    title: 'Department of Community Health Nursing',
+    subtitle: 'Public Health, Rural Outreach & Prevention',
+    content: 'Guiding healthcare outreach, community health centers (CHCs), maternal health, and pulse polio drives.',
+    data: {
+      role: 'Assistant Professor & Field Coordinator',
+      qualification: 'M.Sc. Nursing (Community Health Speciality)',
+      imageUrl: 'images/generated/faculty-2.webp',
+      isPlaceholder: false,
+      notice: 'Academic mentor'
+    }
+  },
+  {
+    id: 'fac-03',
+    title: 'Department of Obstetrics & Gynecological Nursing',
+    subtitle: 'Maternal Care & Midwifery Training',
+    content: 'Specialized clinical instruction in antenatal protocols, labour room techniques, and neonatal bedside nursing.',
+    data: {
+      role: 'Senior Tutor & Midwifery Specialist',
+      qualification: 'M.Sc. Nursing (OBG Speciality)',
+      imageUrl: 'images/generated/faculty-3.webp',
+      isPlaceholder: false,
+      notice: 'Academic mentor'
+    }
+  },
+  {
+    id: 'fac-04',
+    title: 'Department of Child Health (Pediatric) Nursing',
+    subtitle: 'Neonatal & Pediatric Care Foundations',
+    content: 'Educator mentoring pediatric resuscitation, developmental assessments, and child healthcare immunization schedules.',
+    data: {
+      role: 'Clinical Instructor & Pediatric Coordinator',
+      qualification: 'M.Sc. Nursing (Pediatric Speciality)',
+      imageUrl: 'images/generated/faculty-4.webp',
+      isPlaceholder: false,
+      notice: 'Academic mentor'
+    }
+  }
+];

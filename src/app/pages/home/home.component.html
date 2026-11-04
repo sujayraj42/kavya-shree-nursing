@@ -809,44 +809,80 @@
 
     <div class="row g-4">
       <div class="col-lg-4 col-md-6">
-        <div class="tab-card round-4 bg-white p-4 h-100 border shadow-sm">
-          <div class="facility-icon mb-3">
-            <span class="badge bg-primary text-white p-2 round-4">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-            </span>
+        <div class="tab-card round-4 bg-white overflow-hidden h-100 border shadow-sm d-flex flex-column">
+          <img
+            src="images/generated/skills-lab-800w.webp"
+            alt="Nursing foundation and skills simulation laboratory"
+            class="w-100 object-fit-cover"
+            style="aspect-ratio: 16/10;"
+            loading="lazy"
+          />
+          <div class="p-4 d-flex flex-column flex-grow-1">
+            <div class="facility-icon mb-2">
+              <span class="badge bg-primary text-white p-2 round-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              </span>
+            </div>
+            <h3 class="h4-heading black mb-2">Nursing Foundation Lab</h3>
+            <p class="paragraph small mb-0">
+              Proposed equipment profile: patient manikins, clinical beds, vital-sign instruments, injection simulators, and wound-dressing sets.
+            </p>
           </div>
-          <h3 class="h4-heading black mb-2">Nursing Foundation Lab</h3>
-          <p class="paragraph small mb-0">
-            Proposed equipment profile: patient manikins, clinical beds, vital-sign instruments, injection simulators, and wound-dressing sets.
-          </p>
         </div>
       </div>
       <div class="col-lg-4 col-md-6">
-        <div class="tab-card round-4 bg-white p-4 h-100 border shadow-sm">
-          <div class="facility-icon mb-3">
-            <span class="badge bg-secondary text-white p-2 round-4">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            </span>
+        <div class="tab-card round-4 bg-white overflow-hidden h-100 border shadow-sm d-flex flex-column">
+          <img
+            src="images/generated/library-800w.webp"
+            alt="Health sciences reference library and study reading room"
+            class="w-100 object-fit-cover"
+            style="aspect-ratio: 16/10;"
+            loading="lazy"
+          />
+          <div class="p-4 d-flex flex-column flex-grow-1">
+            <div class="facility-icon mb-2">
+              <span class="badge bg-secondary text-white p-2 round-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              </span>
+            </div>
+            <h3 class="h4-heading black mb-2">Health Sciences Library</h3>
+            <p class="paragraph small mb-0">
+              Proposed resource profile: medical textbooks, nursing research journals, clinical guidelines, and digital research access.
+            </p>
           </div>
-          <h3 class="h4-heading black mb-2">Health Sciences Library</h3>
-          <p class="paragraph small mb-0">
-            Proposed resource profile: medical textbooks, nursing research journals, clinical guidelines, and digital research access.
-          </p>
         </div>
       </div>
       <div class="col-lg-4 col-md-6">
-        <div class="tab-card round-4 bg-white p-4 h-100 border shadow-sm">
-          <div class="facility-icon mb-3">
-            <span class="badge bg-warning text-dark p-2 round-4">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-            </span>
+        <div class="tab-card round-4 bg-white overflow-hidden h-100 border shadow-sm d-flex flex-column">
+          <img
+            src="images/generated/clinical-training-800w.webp"
+            alt="Hospital ward clinical bedside rotations and training"
+            class="w-100 object-fit-cover"
+            style="aspect-ratio: 16/10;"
+            loading="lazy"
+          />
+          <div class="p-4 d-flex flex-column flex-grow-1">
+            <div class="facility-icon mb-2">
+              <span class="badge bg-warning text-dark p-2 round-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              </span>
+            </div>
+            <h3 class="h4-heading black mb-2">Clinical Hospital Rotations</h3>
+            <p class="paragraph small mb-0">
+              Inpatient clinical training: vital-sign monitoring, medical-surgical bedside care, and supervised clinical rotations.
+            </p>
           </div>
-          <h3 class="h4-heading black mb-2">Pre-Clinical Science Labs</h3>
-          <p class="paragraph small mb-0">
-            Proposed laboratory profile: anatomy, physiology, and microbiology learning resources, including models and microscopes.
-          </p>
         </div>
       </div>
+    </div>
+
+    <!-- View Full Facilities Gallery Link -->
+    <div class="text-center mt-5">
+      <a routerLink="/gallery" class="primary-btn d-inline-flex align-items-center gap-2 px-4 py-2 text-decoration-none">
+        <span>Explore Full Campus &amp; Clinical Labs Gallery</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
+      </a>
+      <p class="extra-small-para text-muted mt-2 mb-0">* Photographs illustrate representative clinical environments &amp; instructional infrastructure.</p>
     </div>
   </div>
 </section>
