@@ -9,9 +9,9 @@ let isDevStorageActive = false;
 /**
  * Connects to MongoDB.
  * The local dev store fallback is used only when ALL of these hold:
- *  - not production
+ *  - not production (config.isProduction is false)
  *  - no MONGODB_URI was explicitly configured (a configured but unreachable
- *    database is a real error and must not be masked by sample data)
+ *    database in production or strict mode is a real error and must not be masked)
  *  - the caller allows it (the admin seed script must target a real database)
  */
 async function connectDB({ allowDevStore = true } = {}) {
@@ -19,16 +19,25 @@ async function connectDB({ allowDevStore = true } = {}) {
     return;
   }
 
-  const strictProd = config.isProduction && process.env.STRICT_PRODUCTION_CONFIG === 'true';
+  const canUseDevStore = allowDevStore && !config.isProduction;
 
-  if (!config.mongodbUriConfigured && allowDevStore && !strictProd) {
+  if (!config.mongodbUriConfigured) {
+    if (!canUseDevStore) {
+      const err = new Error('Missing MONGODB_URI configuration for database connection.');
+      console.error('[FATAL] Cannot operate without a configured database URI:', err.message);
+      if (config.strictProductionConfig) {
+        process.exit(1);
+      }
+      throw err;
+    }
+
     const { activateDevStorage } = require('./devStorage');
     const { Admin } = require('../models/Admin');
     const { Enquiry } = require('../models/Enquiry');
     activateDevStorage(Admin, Enquiry);
     isDevStorageActive = true;
     isConnected = true;
-    console.log('[INFO] Embedded Data Store active (no external MONGODB_URI configured).');
+    console.log('[INFO] Embedded Data Store active (development mode, no external MONGODB_URI configured).');
     return;
   }
 
@@ -44,17 +53,15 @@ async function connectDB({ allowDevStore = true } = {}) {
   } catch (error) {
     console.error('[ERROR] Database connection failed:', error.message);
 
-    const canUseDevStore = allowDevStore && !strictProd;
-
     if (!canUseDevStore) {
-      if (strictProd) {
-        console.error('[FATAL] Cannot operate in strict production without a working database connection');
+      if (config.strictProductionConfig) {
+        console.error('[FATAL] Cannot operate in production without a working database connection');
         process.exit(1);
       }
       throw error;
     }
 
-    console.log('[INFO] MongoDB instance not reachable. Enabling Fallback Data Store...');
+    console.log('[INFO] MongoDB instance not reachable in development. Enabling Fallback Data Store...');
     const { activateDevStorage } = require('./devStorage');
     const { Admin } = require('../models/Admin');
     const { Enquiry } = require('../models/Enquiry');
@@ -75,20 +82,8 @@ async function ensureInitialMongoSetup() {
       Admin.syncIndexes().catch(() => {}),
       Enquiry.syncIndexes().catch(() => {})
     ]);
-
-    // Clean up any legacy sample/dummy enquiries that were previously seeded
-    await Enquiry.deleteMany({
-      $or: [
-        { email: /@example\.com$/i },
-        {
-          name: 'Sneha Patel',
-          phone: '9876543214',
-          message: 'Interested in pediatric and community nursing specializations.'
-        }
-      ]
-    }).catch(() => {});
   } catch (err) {
-    console.warn('[WARN] Initial MongoDB setup check skipped:', err.message);
+    console.warn('[WARN] Initial MongoDB index verification skipped:', err.message);
   }
 }
 

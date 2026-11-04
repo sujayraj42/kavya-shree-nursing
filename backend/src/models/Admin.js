@@ -23,8 +23,7 @@ const adminSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, 'Password hash is required'],
-      minlength: [8, 'Password must be at least 8 characters']
+      required: [true, 'Password hash is required']
     },
     name: {
       type: String,
@@ -73,6 +72,10 @@ adminSchema.pre('save', async function (next) {
   // If already a valid bcrypt hash, do not re-hash
   if (/^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/.test(this.password)) {
     return next();
+  }
+
+  if (this.password.length < 8) {
+    return next(new Error('Password must be at least 8 characters long'));
   }
 
   try {

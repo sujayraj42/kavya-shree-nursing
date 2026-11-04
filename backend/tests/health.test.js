@@ -38,6 +38,22 @@ describe('Health and System Endpoints', () => {
     assert.equal(res.body.database, 'disconnected');
   });
 
+  it('GET /api/health should return 503 in production when local-dev-store is active', async () => {
+    const config = require('../src/config/env');
+    const prevProd = config.isProduction;
+    try {
+      config.isProduction = true;
+      mock.method(db, 'getDatabaseStatus', () => 'connected (local-dev-store)');
+
+      const res = await request(app).get('/api/health');
+
+      assert.equal(res.status, 503);
+      assert.equal(res.body.status, 'unhealthy');
+    } finally {
+      config.isProduction = prevProd;
+    }
+  });
+
   it('GET /api/nonexistent should return 404 with structured error', async () => {
     const res = await request(app).get('/api/nonexistent');
 

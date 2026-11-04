@@ -59,19 +59,19 @@ async function login(req, res, next) {
       });
     }
 
-    if (admin.isActive === false) {
-      return res.status(401).json({
-        success: false,
-        error: 'Administrator account is inactive or disabled'
-      });
-    }
-
     const isMatch = await admin.comparePassword(password);
     if (!isMatch) {
       // Generic error: do not disclose password mismatch
       return res.status(401).json({
         success: false,
         error: 'Invalid email or password'
+      });
+    }
+
+    if (admin.isActive === false) {
+      return res.status(401).json({
+        success: false,
+        error: 'Administrator account is inactive or disabled'
       });
     }
 

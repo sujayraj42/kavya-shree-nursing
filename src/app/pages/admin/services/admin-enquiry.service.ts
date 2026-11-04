@@ -138,49 +138,17 @@ export class AdminEnquiryService {
 
   /**
    * Fetches data to compile genuine dashboard statistics without fabricating metrics.
-   * Utilizes high-performance database aggregation with fallback to pagination scan.
+   * Utilizes high-performance database aggregation on the backend.
    */
   public async getDashboardData(): Promise<{
     stats: DashboardStats;
     recentEnquiries: AdminEnquiry[];
   }> {
-    try {
-      const result = await this.request<{
-        success: boolean;
-        data: { stats: DashboardStats; recentEnquiries: AdminEnquiry[] };
-      }>('/admin/stats', { method: 'GET' });
+    const result = await this.request<{
+      success: boolean;
+      data: { stats: DashboardStats; recentEnquiries: AdminEnquiry[] };
+    }>('/admin/stats', { method: 'GET' });
 
-      if (result && result.data && result.data.stats) {
-        return result.data;
-      }
-    } catch {
-      // Fallback gracefully to paginated calculation if stats endpoint is unreachable
-    }
-
-    // Fallback: Retrieve the first page of 100 records to calculate counts
-    const result = await this.listEnquiries({ page: 1, limit: 100 });
-    const enquiries = result.enquiries;
-    const total = result.pagination.total;
-
-    const stats: DashboardStats = {
-      total,
-      new: 0,
-      contacted: 0,
-      in_review: 0,
-      admitted: 0,
-      closed: 0,
-      archived: 0
-    };
-
-    for (const item of enquiries) {
-      if (stats[item.status] !== undefined) {
-        stats[item.status]++;
-      }
-    }
-
-    return {
-      stats,
-      recentEnquiries: enquiries.slice(0, 5)
-    };
+    return result.data;
   }
 }

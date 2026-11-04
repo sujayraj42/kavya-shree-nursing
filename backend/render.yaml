@@ -11,6 +11,10 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: STRICT_PRODUCTION_CONFIG
+        value: "true"
+      - key: TRUST_PROXY
+        value: "1"
       - key: HOST
         value: 0.0.0.0
       - key: PORT
@@ -32,6 +36,6 @@ services:
       - key: ADMIN_LOGIN_RATE_LIMIT_MAX
         value: "5"
       - key: KEEP_ALIVE_ENABLED
-        value: "true"
+        value: "false"
       - key: KEEP_ALIVE_INTERVAL_MS
         value: "600000"

@@ -856,6 +856,17 @@ textarea:focus-visible {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.breadcrumb-dark {
+  --bs-breadcrumb-padding-x: 0;
+  --bs-breadcrumb-padding-y: 0;
+  --bs-breadcrumb-margin-bottom: 0;
+  --bs-breadcrumb-divider-color: rgba(255, 255, 255, 0.4);
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
 .breadcrumb-dark .breadcrumb-item {
   font-size: 0.875rem;
   font-family: var(--font--jakarta-sans);

@@ -64,15 +64,15 @@ export class AdminAuthService {
     try {
       const parts = token.split('.');
       if (parts.length !== 3) {
-        return false;
+        return true;
       }
       const payload = JSON.parse(atob(parts[1]));
       if (!payload.exp) {
-        return false;
+        return true;
       }
       return Date.now() >= payload.exp * 1000;
     } catch {
-      return false;
+      return true;
     }
   }
 

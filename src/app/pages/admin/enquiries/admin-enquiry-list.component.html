@@ -43,7 +43,7 @@
             id="enquirySearchInput"
             type="search"
             class="form-control border-start-0 ps-1"
-            placeholder="Search candidate name, phone, email, or remarks..."
+            placeholder="Search by candidate name, phone, or email..."
             [ngModel]="searchQuery()"
             (ngModelChange)="searchQuery.set($event)"
             (keyup.enter)="onSearch()"

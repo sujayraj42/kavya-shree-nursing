@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { AdminAuthService } from '../services/admin-auth.service';
 
@@ -8,11 +8,15 @@ import { AdminAuthService } from '../services/admin-auth.service';
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.css'
 })
-export class AdminLayoutComponent {
+export class AdminLayoutComponent implements OnInit {
   private readonly router = inject(Router);
   protected readonly authService = inject(AdminAuthService);
   protected readonly isMobileMenuOpen = signal(false);
   protected readonly currentYear = new Date().getFullYear();
+
+  public ngOnInit(): void {
+    this.authService.verifyProfile();
+  }
 
   protected isActive(path: string): boolean {
     return this.router.url.startsWith(path);

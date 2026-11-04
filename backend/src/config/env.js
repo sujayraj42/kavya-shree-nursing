@@ -10,50 +10,87 @@ dotenv.config();
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const isProduction = NODE_ENV === 'production';
 
-// Production configuration validation
-if (isProduction) {
+/**
+ * Validates required production environment variables.
+ * Returns { valid: boolean, missing: string[], errors: string[] }.
+ */
+function validateProductionEnv(env = process.env) {
   const missing = [];
-  if (!process.env.MONGODB_URI) {
+  const errors = [];
+
+  const rawUri = env.MONGODB_URI || env.MONGO_URI || env.DATABASE_URL || '';
+  if (!rawUri) {
     missing.push('MONGODB_URI');
   }
-  if (!process.env.FRONTEND_ORIGIN) {
+  if (!env.FRONTEND_ORIGIN) {
     missing.push('FRONTEND_ORIGIN');
   }
-  if (!process.env.JWT_SECRET) {
+  if (!env.JWT_SECRET) {
     missing.push('JWT_SECRET');
+  } else if (String(env.JWT_SECRET).length < 32) {
+    errors.push('JWT_SECRET must be at least 32 characters in production.');
   }
 
   if (missing.length > 0) {
-    if (process.env.STRICT_PRODUCTION_CONFIG === 'true') {
-      console.error(
-        `[FATAL] Startup failure: Missing required production configuration: ${missing.join(', ')}`
-      );
+    errors.unshift(`Missing required production configuration: ${missing.join(', ')}`);
+  }
+
+  return {
+    valid: missing.length === 0 && errors.length === 0,
+    missing,
+    errors
+  };
+}
+
+// Production configuration validation (strict by default in production)
+if (isProduction) {
+  const strictProd = process.env.STRICT_PRODUCTION_CONFIG !== 'false';
+  const validation = validateProductionEnv(process.env);
+
+  if (!validation.valid) {
+    if (strictProd) {
+      for (const err of validation.errors) {
+        console.error(`[FATAL] Startup failure: ${err}`);
+      }
       process.exit(1);
     } else {
       console.warn(
-        `[WARN] Production environment variables not configured (${missing.join(', ')}). Using built-in fallback configuration.`
+        `[WARN] Production environment validation warnings: ${validation.errors.join(' | ')}`
       );
     }
-  } else if (process.env.JWT_SECRET.length < 32 && process.env.STRICT_PRODUCTION_CONFIG === 'true') {
-    console.error('[FATAL] Startup failure: JWT_SECRET must be at least 32 characters in production.');
-    process.exit(1);
   }
 }
 
 const rawMongoUri =
   process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL || '';
 
+function resolveTrustProxy() {
+  if (process.env.TRUST_PROXY !== undefined && process.env.TRUST_PROXY !== '') {
+    const num = Number(process.env.TRUST_PROXY);
+    if (!Number.isNaN(num)) {
+      return num;
+    }
+    return process.env.TRUST_PROXY === 'true';
+  }
+  return isProduction ? 1 : false;
+}
+
 const config = {
   env: NODE_ENV,
   isProduction,
+  strictProductionConfig: isProduction && process.env.STRICT_PRODUCTION_CONFIG !== 'false',
+  trustProxy: resolveTrustProxy(),
   port: parseInt(process.env.PORT, 10) || 5000,
   host: process.env.HOST || '0.0.0.0',
-  mongodbUri: rawMongoUri || 'mongodb://127.0.0.1:27017/kavya_shree_nursing_dev',
+  mongodbUri: rawMongoUri || (isProduction ? '' : 'mongodb://127.0.0.1:27017/kavya_shree_nursing_dev'),
   mongodbDbName: process.env.MONGODB_DB_NAME || 'kavya_shree_nursing',
   // True only when a database URI was explicitly provided via environment.
   mongodbUriConfigured: Boolean(rawMongoUri),
   frontendOrigin: process.env.FRONTEND_ORIGIN || 'http://localhost:4200',
-  jwtSecret: process.env.JWT_SECRET || 'dev-kavya-shree-jwt-secret-do-not-use-in-production',
+  // Never fall back to a static predictable secret in production
+  jwtSecret:
+    process.env.JWT_SECRET ||
+    (isProduction ? '' : 'dev-kavya-shree-jwt-secret-do-not-use-in-production'),
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '8h',
   rateLimitWindowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 15 * 60 * 1000,
   rateLimitMaxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10) || 100,
@@ -67,7 +104,8 @@ const config = {
   )
     .trim()
     .replace(/\/+$/, ''),
-  keepAliveIntervalMs: parseInt(process.env.KEEP_ALIVE_INTERVAL_MS, 10) || 10 * 60 * 1000
+  keepAliveIntervalMs: parseInt(process.env.KEEP_ALIVE_INTERVAL_MS, 10) || 10 * 60 * 1000,
+  validateProductionEnv
 };
 
 module.exports = config;

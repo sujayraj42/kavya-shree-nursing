@@ -75,10 +75,22 @@ describe('Admin Authentication and Security', () => {
     assert.equal(decoded.id, mockAdminId);
   });
 
-  it('POST /api/admin/login should reject inactive admin account with 401', async () => {
+  it('POST /api/admin/login should reject inactive admin account with 401 when password is valid, and not leak status on wrong password', async () => {
     mockAdminDoc.isActive = false;
     mock.method(Admin, 'findOne', async () => mockAdminDoc);
 
+    // Wrong password on inactive account must return generic 401 without disclosing inactive status
+    const wrongPassRes = await request(app)
+      .post('/api/admin/login')
+      .send({
+        email: mockAdminEmail,
+        password: 'WrongPassword123!'
+      });
+
+    assert.equal(wrongPassRes.status, 401);
+    assert.equal(wrongPassRes.body.error, 'Invalid email or password');
+
+    // Valid password on inactive account returns 401 inactive message
     const res = await request(app)
       .post('/api/admin/login')
       .send({
@@ -639,23 +651,34 @@ describe('Rate Limiter and Environment Security Configuration', () => {
     assert.ok(limitRes.body.error.includes('Too many login attempts'));
   });
 
-  it('Production startup environment validator should detect missing JWT_SECRET', () => {
-    const originalEnv = process.env.NODE_ENV;
-    const originalSecret = process.env.JWT_SECRET;
-
-    const missingInProd = [];
-    const testEnv = {
+  it('Production startup environment validator should detect missing or short JWT_SECRET', () => {
+    const resultMissing = config.validateProductionEnv({
       NODE_ENV: 'production',
       MONGODB_URI: 'mongodb://localhost:27017',
-      FRONTEND_ORIGIN: 'http://localhost:4200'
+      FRONTEND_ORIGIN: 'https://kavya-shree-nursing.vercel.app'
       // JWT_SECRET is intentionally omitted
-    };
+    });
 
-    if (!testEnv.MONGODB_URI) missingInProd.push('MONGODB_URI');
-    if (!testEnv.FRONTEND_ORIGIN) missingInProd.push('FRONTEND_ORIGIN');
-    if (!testEnv.JWT_SECRET) missingInProd.push('JWT_SECRET');
+    assert.equal(resultMissing.valid, false);
+    assert.equal(resultMissing.missing.includes('JWT_SECRET'), true);
 
-    assert.equal(missingInProd.includes('JWT_SECRET'), true);
-    assert.equal(missingInProd.length, 1);
+    const resultShort = config.validateProductionEnv({
+      NODE_ENV: 'production',
+      MONGODB_URI: 'mongodb://localhost:27017',
+      FRONTEND_ORIGIN: 'https://kavya-shree-nursing.vercel.app',
+      JWT_SECRET: 'too-short-secret'
+    });
+
+    assert.equal(resultShort.valid, false);
+    assert.ok(resultShort.errors.some(e => e.includes('at least 32 characters')));
+
+    const resultValid = config.validateProductionEnv({
+      NODE_ENV: 'production',
+      MONGODB_URI: 'mongodb://localhost:27017',
+      FRONTEND_ORIGIN: 'https://kavya-shree-nursing.vercel.app',
+      JWT_SECRET: 'a-very-strong-production-jwt-secret-over-32-chars'
+    });
+
+    assert.equal(resultValid.valid, true);
   });
 });

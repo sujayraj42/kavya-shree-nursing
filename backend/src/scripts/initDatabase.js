@@ -7,19 +7,21 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config();
 
 const mongoose = require('mongoose');
+const config = require('../config/env');
 const { connectDB, disconnectDB, getDatabaseStatus } = require('../config/database');
-const { Admin } = require('../models/Admin');
+const { Admin, EMAIL_REGEX } = require('../models/Admin');
 const { Enquiry } = require('../models/Enquiry');
 
 /**
  * Idempotent MongoDB Database Initialization Script.
- * - Connects to MongoDB Atlas (when MONGODB_URI is set) or local embedded store
+ * - Connects to MongoDB Atlas (when MONGODB_URI is set) or local embedded store (development only)
+ * - Never falls back to the local file store when MONGODB_URI is configured
  * - Creates 'admins' and 'enquiries' collections and builds all schema indexes
  * - Seeds initial administrator account only if ADMIN_SEED_EMAIL and ADMIN_SEED_PASSWORD are set
  */
 async function initDatabase() {
   console.log('[INFO] Starting database initialization for Kavya Shree Institute of Nursing...');
-  await connectDB({ allowDevStore: true });
+  await connectDB({ allowDevStore: !config.mongodbUriConfigured && !config.isProduction });
 
   const status = getDatabaseStatus();
   console.log(`[INFO] Database connection status: ${status}`);
@@ -40,14 +42,22 @@ async function initDatabase() {
   const seedPassword = process.env.ADMIN_SEED_PASSWORD || '';
   const seedName = (process.env.ADMIN_SEED_NAME || 'Institute Administrator').trim();
 
-  if (seedEmail && seedPassword.length >= 8) {
+  if (seedEmail && seedPassword) {
+    if (!EMAIL_REGEX.test(seedEmail)) {
+      throw new Error('ADMIN_SEED_EMAIL is not a valid email address.');
+    }
+    if (seedPassword.length < 8) {
+      throw new Error('ADMIN_SEED_PASSWORD must be at least 8 characters long.');
+    }
+
     const existingAdmin = await Admin.findOne({ email: seedEmail });
     if (!existingAdmin) {
       await Admin.create({
         email: seedEmail,
         password: seedPassword,
         name: seedName,
-        role: 'superadmin'
+        role: 'superadmin',
+        isActive: true
       });
       console.log(`[SUCCESS] Provisioned superadmin account: ${seedEmail}`);
     } else {

@@ -52,10 +52,6 @@ export class AdminDashboardComponent implements OnInit {
     return getEnquiryBadgeClass(status);
   }
 
-  protected getStatusBadgeClass(status: string): string {
-    return getEnquiryBadgeClass(status);
-  }
-
   protected getStatusLabel(status: string): string {
     return getEnquiryStatusLabel(status);
   }

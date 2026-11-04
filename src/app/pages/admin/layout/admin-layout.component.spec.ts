@@ -12,6 +12,7 @@ describe('AdminLayoutComponent', () => {
     currentUser: ReturnType<typeof signal<AdminUser | null>>;
     isAuthenticated: ReturnType<typeof signal<boolean>>;
     logout: ReturnType<typeof vi.fn>;
+    verifyProfile: ReturnType<typeof vi.fn>;
   };
 
   const sampleUser: AdminUser = {
@@ -26,7 +27,8 @@ describe('AdminLayoutComponent', () => {
     mockAuthService = {
       currentUser: signal<AdminUser | null>(sampleUser),
       isAuthenticated: signal<boolean>(true),
-      logout: vi.fn()
+      logout: vi.fn(),
+      verifyProfile: vi.fn()
     };
 
     await TestBed.configureTestingModule({
@@ -42,8 +44,9 @@ describe('AdminLayoutComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create the admin layout component', () => {
+  it('should create the admin layout component and verify profile on init', () => {
     expect(component).toBeTruthy();
+    expect(mockAuthService.verifyProfile).toHaveBeenCalled();
   });
 
   it('should render administrator identity badge and navigation links', () => {

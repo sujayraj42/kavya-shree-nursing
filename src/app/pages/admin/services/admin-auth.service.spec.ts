@@ -38,8 +38,10 @@ describe('AdminAuthService', () => {
       name: 'Admissions Officer',
       role: 'admin' as const
     };
+    const futureExp = Math.floor(Date.now() / 1000) + 3600;
+    const validToken = `header.${btoa(JSON.stringify({ exp: futureExp }))}.sig`;
     sessionStorage.setItem('ks_admin_auth_user', JSON.stringify(mockUser));
-    sessionStorage.setItem('ks_admin_auth_token', 'mock-jwt-token-string');
+    sessionStorage.setItem('ks_admin_auth_token', validToken);
 
     service.restoreSession();
 
@@ -152,7 +154,14 @@ describe('AdminAuthService', () => {
     expect(service.hasAdminRole()).toBe(false);
   });
 
-  it('isTokenExpired should return true when token is absent or has passed exp', () => {
+  it('isTokenExpired should return true when token is absent, malformed, or has passed exp', () => {
+    expect(service.isTokenExpired()).toBe(true);
+
+    sessionStorage.setItem('ks_admin_auth_token', 'malformed-token');
+    expect(service.isTokenExpired()).toBe(true);
+
+    const noExpPayload = btoa(JSON.stringify({ sub: '123' }));
+    sessionStorage.setItem('ks_admin_auth_token', `header.${noExpPayload}.sig`);
     expect(service.isTokenExpired()).toBe(true);
 
     const futureExp = Math.floor(Date.now() / 1000) + 3600;

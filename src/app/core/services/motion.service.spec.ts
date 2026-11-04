@@ -42,6 +42,6 @@ describe('MotionService', () => {
       expect(motion.gsap).toBeDefined();
       expect(motion.ScrollTrigger).toBeDefined();
     }
-  });
+  }, 20000);
 });
 

@@ -40,7 +40,7 @@
         <span class="visually-hidden">Loading metrics...</span>
       </div>
       <div class="fw-semibold text-dark">Synchronizing Admissions Pipeline...</div>
-      <p class="text-muted small mb-0 mt-1">Connecting to MongoDB Atlas cluster for latest candidate activity.</p>
+      <p class="text-muted small mb-0 mt-1">Retrieving latest candidate activity from the admissions database.</p>
     </div>
   }
 
@@ -265,7 +265,7 @@
                     </span>
                   </td>
                   <td>
-                    <span [class]="getStatusBadgeClass(enquiry.status) + ' extra-small-para px-2 py-1 round-4'">
+                    <span [class]="getBadgeClass(enquiry.status) + ' extra-small-para px-2 py-1 round-4'">
                       {{ getStatusLabel(enquiry.status) }}
                     </span>
                   </td>

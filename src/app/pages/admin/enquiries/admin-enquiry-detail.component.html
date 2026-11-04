@@ -113,12 +113,16 @@
             <!-- Program Requested -->
             <div class="col-12">
               <span class="text-muted extra-small-para text-uppercase fw-semibold d-block mb-1">Academic Nursing Program Requested</span>
-              <div class="p-3 bg-light rounded border program-box d-flex align-items-center justify-content-between">
+              <div class="p-3 bg-light rounded border program-box d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div>
                   <div class="text-dark fw-bold">{{ item.program }}</div>
-                  <span class="extra-small-para text-muted">Institutional Academic Session 2026-2027</span>
+                  <span class="extra-small-para text-muted">Provisional Admissions Enquiry</span>
                 </div>
-                <span class="badge bg-white text-primary border">Direct Enrolment</span>
+                @if (item.consent) {
+                  <span class="badge bg-success-subtle text-success border border-success-subtle">Candidate Consent Granted</span>
+                } @else {
+                  <span class="badge bg-light text-muted border">General Enquiry</span>
+                }
               </div>
             </div>
 
@@ -147,64 +151,6 @@
             <div class="col-12 col-sm-6">
               <span class="text-muted extra-small-para text-uppercase fw-semibold d-block">Last Workflow Update</span>
               <span class="small text-dark font-monospace">{{ formatDate(item.updatedAt, true) }}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Admissions Eligibility & Verification Reference Matrix -->
-        <div class="card section-card border-0 shadow-sm p-4 mb-4">
-          <div class="section-card-header pb-2 mb-3 border-bottom d-flex justify-content-between align-items-center">
-            <h2 class="h5 fw-bold text-dark mb-0">Admissions Scrutiny Checklist</h2>
-            <span class="extra-small-para text-muted text-uppercase fw-semibold">INC & KNC Criteria</span>
-          </div>
-
-          <div class="row g-2 small">
-            <div class="col-12 col-md-6">
-              <div class="p-2 bg-light rounded border d-flex align-items-start gap-2">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="text-primary flex-shrink-0 mt-1">
-                  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
-                </svg>
-                <div>
-                  <div class="fw-semibold text-dark">10+2 / PUC Eligibility</div>
-                  <span class="extra-small-para text-muted">Physics, Chemistry, Biology & English (Min 45% aggregate)</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-12 col-md-6">
-              <div class="p-2 bg-light rounded border d-flex align-items-start gap-2">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="text-primary flex-shrink-0 mt-1">
-                  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
-                </svg>
-                <div>
-                  <div class="fw-semibold text-dark">Age Verification</div>
-                  <span class="extra-small-para text-muted">Minimum 17 years completed on or before 31st December</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-12 col-md-6">
-              <div class="p-2 bg-light rounded border d-flex align-items-start gap-2">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="text-primary flex-shrink-0 mt-1">
-                  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
-                </svg>
-                <div>
-                  <div class="fw-semibold text-dark">Original Certificates</div>
-                  <span class="extra-small-para text-muted">Marksheets, Transfer & Conduct certificates required at interview</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-12 col-md-6">
-              <div class="p-2 bg-light rounded border d-flex align-items-start gap-2">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="text-primary flex-shrink-0 mt-1">
-                  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
-                </svg>
-                <div>
-                  <div class="fw-semibold text-dark">Medical Fitness Certificate</div>
-                  <span class="extra-small-para text-muted">Issued by a Registered Medical Practitioner (Govt. certified)</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -378,7 +324,7 @@
               <li class="mb-1"><strong class="text-dark">New:</strong> Initial online submission; awaiting outreach</li>
               <li class="mb-1"><strong class="text-dark">Contacted:</strong> Staff communicated via phone or WhatsApp</li>
               <li class="mb-1"><strong class="text-dark">In Review:</strong> Academic certificates undergoing scrutiny</li>
-              <li class="mb-1"><strong class="text-dark">Admitted:</strong> Seat confirmed for Academic Session 2026</li>
+              <li class="mb-1"><strong class="text-dark">Admitted:</strong> Candidate approved for admission processing</li>
               <li class="mb-1"><strong class="text-dark">Closed:</strong> Candidate declined or opted out</li>
               <li class="mb-0"><strong class="text-dark">Archived:</strong> Record preserved for institutional audit</li>
             </ul>

@@ -13,15 +13,17 @@ const adminRoutes = require('./routes/admin.routes');
 
 const app = express();
 
-// Express proxy trust: trust first proxy when deployed behind Render / reverse proxy
-if (config.isProduction) {
-  app.set('trust proxy', 1);
+// Express proxy trust: configurable via TRUST_PROXY (defaults to 1 in production behind Render)
+if (config.trustProxy !== false) {
+  app.set('trust proxy', config.trustProxy);
 }
 
 // Security HTTP headers
 app.use(helmet());
 
-// CORS configuration: restricted to FRONTEND_ORIGIN when explicitly configured in production
+const VERCEL_PROJECT_ORIGIN_REGEX = /^https:\/\/kavya-shree-nursing(-[a-z0-9-]+)?\.vercel\.app$/i;
+
+// CORS configuration: restricted to FRONTEND_ORIGIN and project Vercel previews in production
 const corsOptions = {
   origin: function (origin, callback) {
     if (config.isProduction && process.env.FRONTEND_ORIGIN) {
@@ -31,11 +33,11 @@ const corsOptions = {
 
       const normalizedOrigin = (origin || '').replace(/\/+$/, '').toLowerCase();
 
-      // If no origin (same-origin / server-to-server) or matches configured origin or Vercel preview
+      // Allow same-origin / server-to-server (no Origin header), configured origins, or project Vercel preview URLs
       if (
         !origin ||
         allowedOrigins.includes(normalizedOrigin) ||
-        normalizedOrigin.endsWith('.vercel.app')
+        VERCEL_PROJECT_ORIGIN_REGEX.test(normalizedOrigin)
       ) {
         return callback(null, true);
       }
@@ -44,12 +46,12 @@ const corsOptions = {
       return callback(corsError);
     }
 
-    // Allow same-origin and non-restricted requests
+    // Allow same-origin and non-restricted requests in development/test
     return callback(null, true);
   },
   methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  credentials: false,
   maxAge: 86400
 };
 
