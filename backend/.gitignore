@@ -24,6 +24,6 @@ Thumbs.db
 coverage/
 
 # Local Dev Data
-data/
+/data/
 *.dev-database.json
 .local-dev-db.json
