@@ -25,3 +25,4 @@ describe('AdminApplicationService', () => {
     expect(service).toBeTruthy();
   });
 });
+

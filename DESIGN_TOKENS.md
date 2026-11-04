@@ -92,3 +92,4 @@
 - `.ks-section-kicker`: Uppercase, tracking-wide, bold, carrot orange text (`--color--carrot-orange`), font size `0.8125rem`.
 - `.ks-badge-provisional`: Yellow-amber badge with dark amber text.
 - `.badge`: Crisp pill or rounded badge with uppercase tracking.
+

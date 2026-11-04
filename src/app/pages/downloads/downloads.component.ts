@@ -29,3 +29,4 @@ export class DownloadsComponent implements OnInit {
     this.downloads.set(data);
   }
 }
+

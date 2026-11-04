@@ -138,3 +138,4 @@ A comprehensive, production-grade upgrade has been designed and implemented acro
    - Upload scanned PDF/image copies of INC and BNRC recognition letters in `/public/assets/` and link them in the Approvals section.
 4. **Prospectus PDF:**
    - Place the finalized 2026 academic prospectus PDF into `/public/` to replace the temporary download link in `/downloads`.
+

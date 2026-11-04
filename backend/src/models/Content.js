@@ -59,3 +59,4 @@ const ContentItem = mongoose.model('ContentItem', contentItemSchema);
 module.exports = {
   ContentItem
 };
+

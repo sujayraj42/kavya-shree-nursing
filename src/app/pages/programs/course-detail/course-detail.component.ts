@@ -51,3 +51,4 @@ export class CourseDetailComponent implements OnInit {
     this.modalService.openEnquiryModal(title);
   }
 }
+

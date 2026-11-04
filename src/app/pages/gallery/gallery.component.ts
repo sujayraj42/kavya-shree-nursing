@@ -76,3 +76,4 @@ export class GalleryComponent implements OnInit {
     this.selectedItem.set(list[prevIdx]);
   }
 }
+

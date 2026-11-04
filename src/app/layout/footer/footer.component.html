@@ -33,9 +33,14 @@
           <li class="mb-2"><a routerLink="/" class="footer-link">Home</a></li>
           <li class="mb-2"><a routerLink="/about" class="footer-link">About Us</a></li>
           <li class="mb-2"><a routerLink="/programs" class="footer-link">Academic Programs</a></li>
-          <li class="mb-2"><a routerLink="/admissions" class="footer-link">Admissions</a></li>
-          <li class="mb-2"><a [routerLink]="['/']" [fragment]="'strengths'" class="footer-link">Standards</a></li>
-          <li class="mb-2"><a [routerLink]="['/']" [fragment]="'facilities'" class="footer-link">Facilities</a></li>
+          <li class="mb-2"><a routerLink="/apply" class="footer-link text-warning fw-semibold">Apply Online 2026</a></li>
+          <li class="mb-2"><a routerLink="/admissions" class="footer-link">Admissions Enquiry</a></li>
+          <li class="mb-2"><a routerLink="/approvals" class="footer-link">Approvals &amp; Affiliations</a></li>
+          <li class="mb-2"><a routerLink="/gallery" class="footer-link">Campus Gallery</a></li>
+          <li class="mb-2"><a routerLink="/faculty" class="footer-link">Faculty Mentors</a></li>
+          <li class="mb-2"><a routerLink="/notices" class="footer-link">Notices &amp; News</a></li>
+          <li class="mb-2"><a routerLink="/downloads" class="footer-link">Prospectus Downloads</a></li>
+          <li class="mb-2"><a routerLink="/faqs" class="footer-link">Admissions FAQs</a></li>
           <li class="mb-2"><a routerLink="/contact" class="footer-link">Contact Us</a></li>
         </ul>
       </div>
@@ -45,34 +50,39 @@
         <h3 class="h4-heading white mb-3">Nursing Programs</h3>
         <ul class="list-unstyled footer-program-list mb-0">
           <li class="mb-2">
-            <a routerLink="/programs" class="text-white text-decoration-none d-block fw-semibold">
+            <a routerLink="/programs/anm" class="text-white text-decoration-none d-block fw-semibold">
               ANM (Auxiliary Nursing &amp; Midwifery)
             </a>
-            <small class="para-white">2-Year Diploma &bull; [Provisional]</small>
+            <small class="para-white">2-Year Diploma &bull; <a routerLink="/programs/anm" class="text-warning text-decoration-none">Syllabus</a></small>
           </li>
           <li class="mb-2">
-            <a routerLink="/programs" class="text-white text-decoration-none d-block fw-semibold">
+            <a routerLink="/programs/gnm" class="text-white text-decoration-none d-block fw-semibold">
               GNM (General Nursing &amp; Midwifery)
             </a>
-            <small class="para-white">3-Year Diploma &bull; [Provisional]</small>
+            <small class="para-white">3-Year Diploma &bull; <a routerLink="/programs/gnm" class="text-warning text-decoration-none">Syllabus</a></small>
           </li>
           <li class="mb-2">
-            <a routerLink="/programs" class="text-white text-decoration-none d-block fw-semibold">
+            <a routerLink="/programs/bsc-nursing" class="text-white text-decoration-none d-block fw-semibold">
               B.Sc. Nursing
             </a>
-            <small class="para-white">4-Year Degree &bull; [Provisional]</small>
+            <small class="para-white">4-Year Degree &bull; <a routerLink="/programs/bsc-nursing" class="text-warning text-decoration-none">Syllabus</a></small>
           </li>
           <li class="mb-2">
-            <a routerLink="/programs" class="text-white text-decoration-none d-block fw-semibold">
+            <a routerLink="/programs/post-basic-bsc" class="text-white text-decoration-none d-block fw-semibold">
               Post Basic B.Sc. Nursing
             </a>
-            <small class="para-white">2-Year Degree &bull; [Provisional]</small>
+            <small class="para-white">2-Year Degree &bull; <a routerLink="/programs/post-basic-bsc" class="text-warning text-decoration-none">Syllabus</a></small>
           </li>
-          <li class="mb-0">
-            <a routerLink="/programs" class="text-white text-decoration-none d-block fw-semibold">
+          <li class="mb-3">
+            <a routerLink="/programs/msc-nursing" class="text-white text-decoration-none d-block fw-semibold">
               M.Sc. Nursing
             </a>
-            <small class="para-white">2-Year PG Degree &bull; [Provisional]</small>
+            <small class="para-white">2-Year PG Degree &bull; <a routerLink="/programs/msc-nursing" class="text-warning text-decoration-none">Syllabus</a></small>
+          </li>
+          <li class="mb-0">
+            <a routerLink="/programs" class="btn btn-outline-light btn-sm text-decoration-none">
+              View All Programs &rarr;
+            </a>
           </li>
         </ul>
       </div>
@@ -99,10 +109,15 @@
         </ul>
 
         <h4 class="extra-small-para text-uppercase text-white-50 fw-semibold mb-2">Consultation Hours</h4>
-        <p class="small para-white mb-2">Monday – Saturday: 9:00 AM – 5:00 PM IST</p>
-        <a routerLink="/admissions" class="btn btn-sm btn-outline-light fw-semibold">
-          Register Online Enquiry &rarr;
-        </a>
+        <p class="small para-white mb-3">Monday – Saturday: 9:00 AM – 5:00 PM IST</p>
+        <div class="d-flex flex-column gap-2">
+          <a routerLink="/apply" class="btn btn-sm btn-warning text-dark fw-bold">
+            Formal Online Application 2026 &rarr;
+          </a>
+          <a routerLink="/admissions" class="btn btn-sm btn-outline-light fw-semibold">
+            Register Online Enquiry
+          </a>
+        </div>
       </div>
     </div>
 

@@ -192,3 +192,4 @@ HTTP status codes used:
 - `429 Too Many Requests` (rate limiter triggered)
 - `500 Internal Server Error` (unexpected crash)
 - `503 Service Unavailable` (database unreachable)
+

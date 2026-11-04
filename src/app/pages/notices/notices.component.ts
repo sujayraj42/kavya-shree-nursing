@@ -38,3 +38,4 @@ export class NoticesComponent implements OnInit {
     this.selectedNotice.set(null);
   }
 }
+

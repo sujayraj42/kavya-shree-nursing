@@ -33,3 +33,4 @@ export class FacultyComponent implements OnInit {
     this.hospitalList.set(hospitals);
   }
 }
+

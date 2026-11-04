@@ -52,3 +52,4 @@ export class FaqsComponent implements OnInit {
     return this.openFaqId() === id;
   }
 }
+

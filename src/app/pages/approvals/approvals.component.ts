@@ -38,3 +38,4 @@ export class ApprovalsComponent implements OnInit {
     this.selectedDoc.set(null);
   }
 }
+

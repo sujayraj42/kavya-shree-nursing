@@ -160,3 +160,4 @@ describe('Online Applications API', () => {
     assert.match(res.text, /Suman Kumari/);
   });
 });
+

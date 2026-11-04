@@ -178,3 +178,4 @@ export class AdminApplicationListComponent implements OnInit {
     }
   }
 }
+

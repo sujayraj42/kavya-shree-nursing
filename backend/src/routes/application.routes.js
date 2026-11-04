@@ -19,3 +19,4 @@ router.post('/admin/:id/notes', authenticateAdmin, applicationController.addAppl
 router.delete('/admin/:id', authenticateAdmin, applicationController.deleteApplication);
 
 module.exports = router;
+

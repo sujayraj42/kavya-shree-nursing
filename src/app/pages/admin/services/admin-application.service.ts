@@ -159,3 +159,4 @@ export class AdminApplicationService {
     window.URL.revokeObjectURL(downloadUrl);
   }
 }
+

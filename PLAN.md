@@ -110,3 +110,4 @@
   - Clean illustrative WebP images with single configurable JSON mapping
 - **Workstream 7 (QA, SEO, SSR & Final Polish):**
   - JSON-LD, meta tags, sitemap, test suites, accessibility check
+

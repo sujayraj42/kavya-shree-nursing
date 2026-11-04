@@ -25,3 +25,4 @@ export class FloatingActionsComponent {
     return `https://wa.me/${this.config.whatsappNumber}?text=${encoded}`;
   }
 }
+

@@ -63,3 +63,4 @@ describe('Public Content API', () => {
     assert.ok(res.body.data.length >= 2);
   });
 });
+

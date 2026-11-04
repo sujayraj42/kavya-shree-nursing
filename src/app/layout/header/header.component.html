@@ -18,6 +18,9 @@
         </span>
       </div>
       <div class="d-flex align-items-center gap-3">
+        <a routerLink="/downloads" class="ks-topbar-link small text-decoration-none d-none d-xxl-inline-block">
+          &darr; Prospectus 2026
+        </a>
         <button
           type="button"
           class="btn btn-sm btn-outline-light py-0 px-2 extra-small-para ks-lang-btn"
@@ -77,7 +80,7 @@
         <ul class="navbar-nav ms-auto mb-2 mb-xl-0 align-items-xl-center">
           <li class="nav-item">
             <a
-              class="nav-link px-3"
+              class="nav-link px-2 px-xxl-3"
               [class.active]="activeSection() === 'home'"
               routerLink="/"
               (click)="selectSection('home')"
@@ -87,7 +90,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link px-3"
+              class="nav-link px-2 px-xxl-3"
               [class.active]="activeSection() === 'about'"
               routerLink="/about"
               (click)="selectSection('about')"
@@ -97,39 +100,77 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link px-3"
+              class="nav-link px-2 px-xxl-3"
               [class.active]="activeSection() === 'courses' || activeSection() === 'programs'"
               routerLink="/programs"
-              (click)="selectSection('courses')"
+              (click)="selectSection('programs')"
             >
               Academic Programs
             </a>
           </li>
           <li class="nav-item">
             <a
-              class="nav-link px-3"
-              [class.active]="activeSection() === 'strengths'"
-              [routerLink]="['/']"
-              [fragment]="'strengths'"
-              (click)="selectSection('strengths')"
+              class="nav-link px-2 px-xxl-3"
+              [class.active]="activeSection() === 'approvals'"
+              routerLink="/approvals"
+              (click)="selectSection('approvals')"
             >
-              Educational Standards
+              Approvals
             </a>
           </li>
           <li class="nav-item">
             <a
-              class="nav-link px-3"
-              [class.active]="activeSection() === 'facilities'"
-              [routerLink]="['/']"
-              [fragment]="'facilities'"
-              (click)="selectSection('facilities')"
+              class="nav-link px-2 px-xxl-3"
+              [class.active]="activeSection() === 'gallery'"
+              routerLink="/gallery"
+              (click)="selectSection('gallery')"
             >
-              Facilities
+              Gallery
             </a>
           </li>
           <li class="nav-item">
             <a
-              class="nav-link px-3"
+              class="nav-link px-2 px-xxl-3"
+              [class.active]="activeSection() === 'faculty'"
+              routerLink="/faculty"
+              (click)="selectSection('faculty')"
+            >
+              Faculty
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link px-2 px-xxl-3"
+              [class.active]="activeSection() === 'notices'"
+              routerLink="/notices"
+              (click)="selectSection('notices')"
+            >
+              Notices
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link px-2 px-xxl-3"
+              [class.active]="activeSection() === 'downloads'"
+              routerLink="/downloads"
+              (click)="selectSection('downloads')"
+            >
+              Downloads
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link px-2 px-xxl-3"
+              [class.active]="activeSection() === 'faqs'"
+              routerLink="/faqs"
+              (click)="selectSection('faqs')"
+            >
+              FAQs
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link px-2 px-xxl-3"
               [class.active]="activeSection() === 'contact'"
               routerLink="/contact"
               (click)="selectSection('contact')"
@@ -137,13 +178,22 @@
               Contact Us
             </a>
           </li>
-          <li class="nav-item ms-xl-3 my-2 my-xl-0">
+          <li class="nav-item ms-xl-2 my-2 my-xl-0 d-flex gap-2">
+            <a
+              class="btn btn-outline-warning btn-sm d-none d-xxl-inline-flex align-items-center"
+              routerLink="/admissions"
+              (click)="selectSection('admissions')"
+              title="Admissions Consultation Desk"
+            >
+              Enquire
+            </a>
             <a
               class="primary-btn header-cta-btn w-100"
-              routerLink="/admissions"
-              (click)="selectSection('admissions-enquiry')"
+              routerLink="/apply"
+              (click)="selectSection('apply')"
+              title="Submit formal candidate application online"
             >
-              <span>Admission Enquiry</span>
+              <span>Apply Online 2026</span>
               <svg class="cta-arrow" width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                 <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
               </svg>
@@ -151,7 +201,7 @@
           </li>
         </ul>
 
-        <!-- Mobile Drawer Quick Helpline -->
+        <!-- Mobile Drawer Quick Navigation & Helpline -->
         <div class="mobile-drawer-contact mt-3 pt-3 border-top border-secondary border-opacity-25 d-xl-none">
           <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom border-secondary border-opacity-25">
             <span class="text-white-50 small">Language / भाषा:</span>
@@ -164,6 +214,24 @@
               <span class="fw-bold">{{ i18n.currentLang() === 'en' ? 'हिन्दी में देखें' : 'View in English' }}</span>
             </button>
           </div>
+
+          <div class="d-grid gap-2 mb-3">
+            <a
+              routerLink="/admissions"
+              (click)="selectSection('admissions')"
+              class="btn btn-outline-light btn-sm text-center"
+            >
+              Admission Enquiry Desk
+            </a>
+            <a
+              routerLink="/apply"
+              (click)="selectSection('apply')"
+              class="btn btn-warning text-dark fw-bold btn-sm text-center"
+            >
+              Formal Online Application 2026 &rarr;
+            </a>
+          </div>
+
           <div class="d-flex flex-column gap-2">
             <div class="d-flex align-items-center justify-content-between">
               <span class="text-white-50 small">Admissions Helpline:</span>

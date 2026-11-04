@@ -391,3 +391,4 @@ module.exports = {
   exportApplications,
   deleteApplication
 };
+

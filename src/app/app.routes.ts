@@ -70,6 +70,22 @@ export const routes: Routes = [
     path: 'admin',
     loadChildren: () => import('./pages/admin/admin.routes').then(m => m.ADMIN_ROUTES)
   },
+
+  // Alias & Redirect Routes for common navigational shortcuts and legacy paths
+  { path: 'courses', redirectTo: 'programs', pathMatch: 'full' },
+  { path: 'courses/:id', redirectTo: 'programs/:id', pathMatch: 'full' },
+  { path: 'admission', redirectTo: 'admissions', pathMatch: 'full' },
+  { path: 'enquiry', redirectTo: 'admissions', pathMatch: 'full' },
+  { path: 'faq', redirectTo: 'faqs', pathMatch: 'full' },
+  { path: 'notice', redirectTo: 'notices', pathMatch: 'full' },
+  { path: 'download', redirectTo: 'downloads', pathMatch: 'full' },
+  { path: 'prospectus', redirectTo: 'downloads', pathMatch: 'full' },
+  { path: 'application', redirectTo: 'apply', pathMatch: 'full' },
+  { path: 'register', redirectTo: 'apply', pathMatch: 'full' },
+  { path: 'affiliation', redirectTo: 'approvals', pathMatch: 'full' },
+  { path: 'affiliations', redirectTo: 'approvals', pathMatch: 'full' },
+  { path: 'hospital-tieups', redirectTo: 'faculty', pathMatch: 'full' },
+
   {
     path: '**',
     loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent),
