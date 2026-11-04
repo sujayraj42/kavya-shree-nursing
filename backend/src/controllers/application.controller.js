@@ -3,6 +3,8 @@
 const mongoose = require('mongoose');
 const { Application, VALID_APPLICATION_STATUSES } = require('../models/Application');
 const { VALID_PROGRAMS } = require('../models/Enquiry');
+const { notifyNewApplication, notifyStatusTransition } = require('../services/automation.service');
+const { generateApplicationReceiptHtml } = require('../services/receipt.service');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^[6-9]\d{9}$/;
@@ -132,6 +134,9 @@ async function submitApplication(req, res, next) {
       status: 'submitted'
     });
 
+    // Trigger non-blocking automated notifications (Telegram, Webhook, CRM)
+    notifyNewApplication(newApp);
+
     res.status(201).json({
       success: true,
       message: 'Admissions application submitted successfully',
@@ -248,8 +253,20 @@ async function updateApplicationStatus(req, res, next) {
       return res.status(404).json({ success: false, error: 'Application record not found' });
     }
 
+    const previousStatus = application.status;
     application.status = status;
     await application.save();
+
+    notifyStatusTransition({
+      entityType: 'Application',
+      id: application.id || application._id.toString(),
+      referenceNumber: application.applicationNumber,
+      previousStatus,
+      newStatus: status,
+      candidateName: application.applicantName,
+      candidatePhone: application.phone,
+      adminUser: req.admin
+    });
 
     res.status(200).json({
       success: true,
@@ -382,11 +399,40 @@ async function deleteApplication(req, res, next) {
   }
 }
 
+
+async function getApplicationReceipt(req, res, next) {
+  try {
+    const rawParam = String(req.params.appNumber || req.params.id || '').trim();
+    if (!rawParam) {
+      return res.status(400).send('Application number or ID is required');
+    }
+
+    let application = null;
+    if (mongoose.Types.ObjectId.isValid(rawParam)) {
+      application = await Application.findOne({ _id: rawParam, deletedAt: null });
+    }
+    if (!application) {
+      application = await Application.findOne({ applicationNumber: rawParam, deletedAt: null });
+    }
+
+    if (!application) {
+      return res.status(404).send('<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;padding:50px;"><h2>Application Not Found</h2><p>The requested application reference does not exist or has been archived.</p></body></html>');
+    }
+
+    const html = generateApplicationReceiptHtml(application);
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.status(200).send(html);
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   submitApplication,
   listApplications,
   getApplicationById,
   updateApplicationStatus,
+  getApplicationReceipt,
   addApplicationNote,
   exportApplications,
   deleteApplication

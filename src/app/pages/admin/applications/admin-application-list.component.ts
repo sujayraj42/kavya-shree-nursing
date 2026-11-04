@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AdminApplicationService, AdminApplication } from '../services/admin-application.service';
+import { environment } from '../../../../environments/environment';
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'All Statuses' },
@@ -153,6 +154,14 @@ export class AdminApplicationListComponent implements OnInit {
       this.errorMessage.set(err?.message || 'Failed to export applications CSV.');
     } finally {
       this.isExporting.set(false);
+    }
+  }
+
+  protected printReceipt(app: AdminApplication): void {
+    if (!app || !app.applicationNumber) return;
+    const url = `${environment.apiBaseUrl}/applications/${app.applicationNumber}/receipt`;
+    if (typeof window !== 'undefined') {
+      window.open(url, '_blank');
     }
   }
 

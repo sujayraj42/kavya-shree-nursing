@@ -379,6 +379,7 @@ function activateDevStorage(AdminModel, EnquiryModel, ApplicationModel, ContentI
       const data = loadData();
       const item = data.applications.find(a => {
         if (query._id && a._id !== query._id && a.id !== query._id) return false;
+        if (query.applicationNumber && a.applicationNumber !== query.applicationNumber) return false;
         if (query.deletedAt === null && a.deletedAt) return false;
         return true;
       });

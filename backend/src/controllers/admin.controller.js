@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const config = require('../config/env');
 const { Admin } = require('../models/Admin');
 const { Enquiry, VALID_STATUSES, ALL_ALLOWED_STATUSES, normalizeStatus } = require('../models/Enquiry');
+const { notifyStatusTransition } = require('../services/automation.service');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

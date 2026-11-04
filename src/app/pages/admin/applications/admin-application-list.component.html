@@ -171,13 +171,23 @@
                   {{ app.createdAt | date:'dd MMM yyyy' }}
                 </td>
                 <td class="text-end pe-3">
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-outline-primary"
-                    (click)="openDetail(app)"
-                  >
-                    View Details
-                  </button>
+                  <div class="d-inline-flex gap-1">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      title="Print Official Slip"
+                      (click)="printReceipt(app)"
+                    >
+                      Slip
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-primary"
+                      (click)="openDetail(app)"
+                    >
+                      View
+                    </button>
+                  </div>
                 </td>
               </tr>
             }
@@ -286,7 +296,14 @@
             </div>
           </div>
 
-          <div class="modal-footer bg-light">
+          <div class="modal-footer bg-light d-flex justify-content-between">
+            <button type="button" class="btn btn-sm btn-outline-dark d-inline-flex align-items-center gap-1" (click)="printReceipt(app)">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+              </svg>
+              Print Official Slip
+            </button>
             <button type="button" class="btn btn-sm btn-secondary" (click)="closeDetail()">Close</button>
           </div>
         </div>

@@ -55,7 +55,17 @@
           <strong>Next Steps:</strong> Please keep original 10th &amp; 12th certificates ready for document scrutiny. Our counselor will contact your registered phone number.
         </div>
 
-        <div class="d-flex justify-content-center gap-3">
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+          <a [href]="apiBaseUrl + '/applications/' + sub.applicationNumber + '/receipt'"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="btn btn-warning btn-sm px-4 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+              <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+            </svg>
+            Print / Download Application Slip (PDF)
+          </a>
           <a routerLink="/" class="btn btn-outline-dark btn-sm px-4">
             Return to Home
           </a>

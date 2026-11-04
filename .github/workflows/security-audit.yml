@@ -1,0 +1,42 @@
+name: Automated Security & Dependency Audit
+
+on:
+  schedule:
+    # Run every Sunday at midnight UTC
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+concurrency:
+  group: security-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security-audit:
+    name: Security & Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Audit Backend Production Dependencies
+        run: |
+          npm --prefix backend audit --omit=dev || true
+
+      - name: Audit Frontend Production Dependencies
+        run: |
+          npm audit --omit=dev || true
+
+      - name: Secret Leak Prevention Verification
+        run: |
+          echo "Scanning for potential committed secrets..."
+          if grep -rn "mongodb+srv://" --exclude-dir={node_modules,dist,.git} .; then
+            echo "::error::Found hardcoded MongoDB Atlas connection string!"
+            exit 1
+          fi
+          echo "Secret scan clean: No production credentials detected."

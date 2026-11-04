@@ -27,6 +27,7 @@ export class ApplyComponent implements OnInit {
   private readonly seoService = inject(SeoService);
   protected readonly i18n = inject(I18nService);
 
+  protected readonly apiBaseUrl = environment.apiBaseUrl;
   protected readonly programs = PROGRAMS;
   protected readonly currentStep = signal<number>(1);
   protected readonly totalSteps = 5;
