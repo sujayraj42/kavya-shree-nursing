@@ -11,20 +11,20 @@ const { Admin } = require('../models/Admin');
  */
 async function authenticateAdmin(req, res, next) {
   try {
+    let token = null;
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({
-        success: false,
-        error: 'Authentication required. Missing or malformed authorization header.'
-      });
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7).trim();
+    } else if (req.headers.cookie) {
+      const match = req.headers.cookie.match(/ks_admin_token=([^;]+)/);
+      if (match) token = match[1].trim();
     }
 
-    const token = authHeader.substring(7).trim();
     if (!token) {
       return res.status(401).json({
         success: false,
-        error: 'Authentication token is empty.'
+        error: 'Authentication required. Missing or malformed authorization header.'
       });
     }
 

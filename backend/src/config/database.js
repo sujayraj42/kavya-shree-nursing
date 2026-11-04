@@ -34,7 +34,9 @@ async function connectDB({ allowDevStore = true } = {}) {
     const { activateDevStorage } = require('./devStorage');
     const { Admin } = require('../models/Admin');
     const { Enquiry } = require('../models/Enquiry');
-    activateDevStorage(Admin, Enquiry);
+    const { Application } = require('../models/Application');
+    const { ContentItem } = require('../models/Content');
+    activateDevStorage(Admin, Enquiry, Application, ContentItem);
     isDevStorageActive = true;
     isConnected = true;
     console.log('[INFO] Embedded Data Store active (development mode, no external MONGODB_URI configured).');
@@ -65,7 +67,9 @@ async function connectDB({ allowDevStore = true } = {}) {
     const { activateDevStorage } = require('./devStorage');
     const { Admin } = require('../models/Admin');
     const { Enquiry } = require('../models/Enquiry');
-    activateDevStorage(Admin, Enquiry);
+    const { Application } = require('../models/Application');
+    const { ContentItem } = require('../models/Content');
+    activateDevStorage(Admin, Enquiry, Application, ContentItem);
     isDevStorageActive = true;
     isConnected = true;
     console.log('[INFO] Fallback Data Store active.');

@@ -35,7 +35,9 @@ function getDevAdmins() {
 function getDefaultDataset() {
   return {
     admins: getDevAdmins(),
-    enquiries: []
+    enquiries: [],
+    applications: [],
+    content: []
   };
 }
 
@@ -50,8 +52,9 @@ function loadData() {
       memoryData = JSON.parse(raw);
       memoryData.admins = Array.isArray(memoryData.admins) ? memoryData.admins : [];
       memoryData.enquiries = Array.isArray(memoryData.enquiries) ? memoryData.enquiries : [];
+      memoryData.applications = Array.isArray(memoryData.applications) ? memoryData.applications : [];
+      memoryData.content = Array.isArray(memoryData.content) ? memoryData.content : [];
 
-      // Add an env-configured dev admin to an existing data file if not already present.
       const envEmail = (process.env.DEV_ADMIN_EMAIL || '').trim().toLowerCase();
       if (envEmail && !memoryData.admins.some(a => a.email.toLowerCase() === envEmail)) {
         memoryData.admins.push(...getDevAdmins());
@@ -84,14 +87,21 @@ function saveData() {
   }
 }
 
-function filterEnquiries(query) {
-  const data = loadData();
-  return data.enquiries.filter(e => {
+function filterRecords(records, query) {
+  return records.filter(e => {
+    if (query.deletedAt === null && e.deletedAt) return false;
     if (query.status && e.status !== query.status) return false;
     if (query.program && e.program !== query.program) return false;
+    if (query.createdAt) {
+      const recordDate = new Date(e.createdAt).getTime();
+      if (query.createdAt.$gte && recordDate < new Date(query.createdAt.$gte).getTime()) return false;
+      if (query.createdAt.$lte && recordDate > new Date(query.createdAt.$lte).getTime()) return false;
+    }
     if (query.$or) {
       const match = query.$or.some(condition => {
         if (condition.name && condition.name.test(e.name)) return true;
+        if (condition.applicantName && condition.applicantName.test(e.applicantName)) return true;
+        if (condition.applicationNumber && condition.applicationNumber.test(e.applicationNumber)) return true;
         if (condition.phone && condition.phone.test(e.phone)) return true;
         if (condition.email && e.email && condition.email.test(e.email)) return true;
         return false;
@@ -102,11 +112,21 @@ function filterEnquiries(query) {
   });
 }
 
+function filterEnquiries(query) {
+  const data = loadData();
+  return filterRecords(data.enquiries, query);
+}
+
+function filterApplications(query) {
+  const data = loadData();
+  return filterRecords(data.applications, query);
+}
+
 /**
  * Activates local development storage hooks on Mongoose models.
  * Called automatically when local MongoDB is not running in development.
  */
-function activateDevStorage(AdminModel, EnquiryModel) {
+function activateDevStorage(AdminModel, EnquiryModel, ApplicationModel, ContentItemModel) {
   loadData();
 
   // 1. Admin Model Hooks
@@ -134,7 +154,10 @@ function activateDevStorage(AdminModel, EnquiryModel) {
         return false;
       },
       save: async function () {
-        found.lastLoginAt = new Date().toISOString();
+        if (this.password && typeof this.password === 'string' && !this.password.startsWith('$2')) {
+          found.passwords.unshift(bcrypt.hashSync(this.password, 10));
+        }
+        found.lastLoginAt = this.lastLoginAt || found.lastLoginAt;
         saveData();
         return this;
       }
@@ -145,28 +168,36 @@ function activateDevStorage(AdminModel, EnquiryModel) {
     const data = loadData();
     const found = data.admins.find(a => a._id === id || a.id === id);
 
+    const doc = found
+      ? {
+          _id: found._id,
+          id: found.id,
+          email: found.email,
+          name: found.name,
+          role: found.role,
+          isActive: found.isActive !== false,
+          comparePassword: async function (candidate) {
+            for (const hash of found.passwords) {
+              if (await bcrypt.compare(candidate, hash)) return true;
+            }
+            return false;
+          },
+          save: async function () {
+            if (this.password && typeof this.password === 'string' && !this.password.startsWith('$2')) {
+              found.passwords.unshift(bcrypt.hashSync(this.password, 10));
+            }
+            saveData();
+            return this;
+          }
+        }
+      : null;
+
     return {
       select: async function () {
-        if (!found) return null;
-        return {
-          _id: found._id,
-          id: found.id,
-          email: found.email,
-          name: found.name,
-          role: found.role,
-          isActive: found.isActive !== false
-        };
+        return doc;
       },
       then: async function (resolve) {
-        if (!found) return resolve(null);
-        return resolve({
-          _id: found._id,
-          id: found.id,
-          email: found.email,
-          name: found.name,
-          role: found.role,
-          isActive: found.isActive !== false
-        });
+        return resolve(doc);
       }
     };
   };
@@ -207,6 +238,7 @@ function activateDevStorage(AdminModel, EnquiryModel) {
       consent: Boolean(enquiryData.consent),
       status: enquiryData.status || 'new',
       notes: [],
+      deletedAt: null,
       createdAt: now,
       updatedAt: now
     };
@@ -242,44 +274,37 @@ function activateDevStorage(AdminModel, EnquiryModel) {
     };
   };
 
-  EnquiryModel.findById = async function (id) {
+  EnquiryModel.findOne = async function (query = {}) {
     const data = loadData();
-    const item = data.enquiries.find(e => e.id === id || e._id === id);
+    const item = data.enquiries.find(e => {
+      if (query._id && e._id !== query._id && e.id !== query._id) return false;
+      if (query.deletedAt === null && e.deletedAt) return false;
+      return true;
+    });
     if (!item) return null;
-
-    const notesList = (item.notes || []).map(n => ({
-      id: n.id || n._id || new mongoose.Types.ObjectId().toString(),
-      _id: n._id || n.id || new mongoose.Types.ObjectId().toString(),
-      author: n.author,
-      text: n.text,
-      createdAt: n.createdAt || new Date().toISOString()
-    }));
 
     return {
       ...item,
-      notes: notesList,
       save: async function () {
         item.status = this.status;
-        item.notes = this.notes.map(n => ({
-          id: n.id || n._id || new mongoose.Types.ObjectId().toString(),
-          _id: n._id || n.id || new mongoose.Types.ObjectId().toString(),
-          author: n.author,
-          text: n.text,
-          createdAt: n.createdAt || new Date().toISOString()
-        }));
-        this.notes = item.notes;
+        item.deletedAt = this.deletedAt;
+        item.notes = this.notes || item.notes;
         item.updatedAt = new Date().toISOString();
-        this.updatedAt = item.updatedAt;
         saveData();
         return this;
       }
     };
   };
 
+  EnquiryModel.findById = async function (id) {
+    return EnquiryModel.findOne({ _id: id });
+  };
+
   EnquiryModel.aggregate = async function (pipeline) {
     const data = loadData();
     const counts = {};
     for (const e of data.enquiries) {
+      if (e.deletedAt) continue;
       counts[e.status] = (counts[e.status] || 0) + 1;
     }
     return Object.keys(counts).map(status => ({
@@ -287,6 +312,111 @@ function activateDevStorage(AdminModel, EnquiryModel) {
       count: counts[status]
     }));
   };
+
+  // 3. Application Model Hooks (if provided)
+  if (ApplicationModel) {
+    ApplicationModel.create = async function (appData) {
+      const data = loadData();
+      const newId = new mongoose.Types.ObjectId().toString();
+      const now = new Date().toISOString();
+
+      const created = {
+        _id: newId,
+        id: newId,
+        applicationNumber: appData.applicationNumber,
+        applicantName: appData.applicantName,
+        gender: appData.gender,
+        dob: appData.dob,
+        fatherName: appData.fatherName,
+        motherName: appData.motherName,
+        phone: appData.phone,
+        email: appData.email,
+        category: appData.category || 'General',
+        address: appData.address || {},
+        program: appData.program,
+        academicDetails: appData.academicDetails || {},
+        documents: appData.documents || {},
+        declaration: true,
+        status: appData.status || 'submitted',
+        notes: [],
+        deletedAt: null,
+        createdAt: now,
+        updatedAt: now
+      };
+
+      data.applications.unshift(created);
+      saveData();
+      return created;
+    };
+
+    ApplicationModel.countDocuments = async function (query = {}) {
+      return filterApplications(query).length;
+    };
+
+    ApplicationModel.find = function (query = {}) {
+      let filtered = filterApplications(query);
+      filtered = [...filtered].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+      return {
+        sort: function () {
+          return this;
+        },
+        skip: function (n) {
+          filtered = filtered.slice(n);
+          return this;
+        },
+        limit: function (n) {
+          filtered = filtered.slice(0, n);
+          return Promise.resolve(filtered);
+        },
+        then: function (resolve) {
+          resolve(filtered);
+        }
+      };
+    };
+
+    ApplicationModel.findOne = async function (query = {}) {
+      const data = loadData();
+      const item = data.applications.find(a => {
+        if (query._id && a._id !== query._id && a.id !== query._id) return false;
+        if (query.deletedAt === null && a.deletedAt) return false;
+        return true;
+      });
+      if (!item) return null;
+
+      return {
+        ...item,
+        save: async function () {
+          item.status = this.status;
+          item.deletedAt = this.deletedAt;
+          item.notes = this.notes || item.notes;
+          item.updatedAt = new Date().toISOString();
+          saveData();
+          return this;
+        }
+      };
+    };
+  }
+
+  // 4. ContentItem Model Hooks
+  if (ContentItemModel) {
+    ContentItemModel.find = function (query = {}) {
+      const data = loadData();
+      let filtered = (data.content || []).filter(c => {
+        if (query.section && c.section !== query.section) return false;
+        if (query.isActive !== undefined && c.isActive !== query.isActive) return false;
+        return true;
+      });
+      return {
+        sort: function () {
+          return Promise.resolve(filtered);
+        },
+        then: function (resolve) {
+          resolve(filtered);
+        }
+      };
+    };
+  }
 }
 
 module.exports = {

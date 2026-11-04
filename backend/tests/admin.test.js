@@ -608,6 +608,156 @@ describe('Admin Enquiry Management Endpoints', () => {
     assert.equal(res.body.error, 'Note text must not exceed 1000 characters');
   });
 
+  it('GET /api/admin/enquiries/export should stream CSV records', async () => {
+    mock.method(Enquiry, 'find', () => ({
+      sort: async () => [
+        {
+          id: mockEnquiryId,
+          createdAt: new Date(),
+          name: 'Pooja Kumari',
+          phone: '9876543210',
+          email: 'pooja@example.com',
+          program: 'General Nursing & Midwifery (GNM)',
+          status: 'contacted',
+          consent: true,
+          notes: [{ text: 'Followed up' }],
+          message: 'Interested in hostel'
+        }
+      ]
+    }));
+
+    const res = await request(app)
+      .get('/api/admin/enquiries/export')
+      .set('Authorization', `Bearer ${validToken}`);
+
+    assert.equal(res.status, 200);
+    assert.match(res.headers['content-type'], /text\/csv/);
+    assert.match(res.text, /Reference ID/);
+    assert.match(res.text, /Pooja Kumari/);
+  });
+
+  it('DELETE /api/admin/enquiries/:id should soft delete enquiry when role is superadmin', async () => {
+    let saved = false;
+    const superadminToken = jwt.sign(
+      { id: mockAdminId, email: 'admin@kavyashreenursing.edu.in', role: 'superadmin' },
+      config.jwtSecret,
+      { expiresIn: '8h' }
+    );
+    mock.method(Admin, 'findById', () => ({
+      select: async () => ({
+        id: mockAdminId,
+        email: 'admin@kavyashreenursing.edu.in',
+        name: 'Super Admin',
+        role: 'superadmin',
+        isActive: true
+      })
+    }));
+
+    mock.method(Enquiry, 'findById', async () => ({
+      _id: mockEnquiryId,
+      deletedAt: null,
+      save: async function () {
+        saved = true;
+        return this;
+      }
+    }));
+
+    const res = await request(app)
+      .delete(`/api/admin/enquiries/${mockEnquiryId}`)
+      .set('Authorization', `Bearer ${superadminToken}`);
+
+    assert.equal(res.status, 200);
+    assert.equal(res.body.success, true);
+    assert.equal(saved, true);
+  });
+
+  it('DELETE /api/admin/enquiries/:id should return 403 for regular admin', async () => {
+    const regularToken = jwt.sign(
+      { id: mockAdminId, email: 'admin@kavyashreenursing.edu.in', role: 'admin' },
+      config.jwtSecret,
+      { expiresIn: '8h' }
+    );
+    mock.method(Admin, 'findById', () => ({
+      select: async () => ({
+        id: mockAdminId,
+        email: 'admin@kavyashreenursing.edu.in',
+        name: 'Regular Admin',
+        role: 'admin',
+        isActive: true
+      })
+    }));
+
+    const res = await request(app)
+      .delete(`/api/admin/enquiries/${mockEnquiryId}`)
+      .set('Authorization', `Bearer ${regularToken}`);
+
+    assert.equal(res.status, 403);
+    assert.equal(res.body.success, false);
+  });
+
+  it('PATCH /api/admin/me/password should change password with valid current credentials', async () => {
+    let saved = false;
+    const adminDoc = {
+      id: mockAdminId,
+      email: 'admin@kavyashreenursing.edu.in',
+      name: 'Admissions Officer',
+      role: 'admin',
+      isActive: true,
+      comparePassword: async (p) => p === 'OldValidPassword123!',
+      save: async function () {
+        saved = true;
+        return this;
+      }
+    };
+
+    mock.method(Admin, 'findById', () => ({
+      ...adminDoc,
+      select: async () => adminDoc,
+      then: async (resolve) => resolve(adminDoc)
+    }));
+
+    const res = await request(app)
+      .patch('/api/admin/me/password')
+      .set('Authorization', `Bearer ${validToken}`)
+      .send({
+        currentPassword: 'OldValidPassword123!',
+        newPassword: 'BrandNewSecurePassword456!'
+      });
+
+    assert.equal(res.status, 200);
+    assert.equal(res.body.success, true);
+    assert.equal(saved, true);
+  });
+
+  it('PATCH /api/admin/me/password should reject incorrect current password with 400', async () => {
+    const adminDoc = {
+      id: mockAdminId,
+      email: 'admin@kavyashreenursing.edu.in',
+      name: 'Admissions Officer',
+      role: 'admin',
+      isActive: true,
+      comparePassword: async () => false
+    };
+
+    mock.method(Admin, 'findById', () => ({
+      ...adminDoc,
+      select: async () => adminDoc,
+      then: async (resolve) => resolve(adminDoc)
+    }));
+
+    const res = await request(app)
+      .patch('/api/admin/me/password')
+      .set('Authorization', `Bearer ${validToken}`)
+      .send({
+        currentPassword: 'WrongPassword123!',
+        newPassword: 'BrandNewSecurePassword456!'
+      });
+
+    assert.equal(res.status, 400);
+    assert.equal(res.body.success, false);
+    assert.match(res.body.error, /Current password does not match/i);
+  });
+
   it('Status Enum & Compatibility: verifies standard active statuses and legacy normalization', () => {
     // 6 agreed standard statuses
     assert.deepEqual(VALID_STATUSES, ['new', 'contacted', 'in_review', 'admitted', 'closed', 'archived']);

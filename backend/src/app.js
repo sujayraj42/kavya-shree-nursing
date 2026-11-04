@@ -10,6 +10,8 @@ const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 const healthRoutes = require('./routes/health.routes');
 const enquiryRoutes = require('./routes/enquiry.routes');
 const adminRoutes = require('./routes/admin.routes');
+const applicationRoutes = require('./routes/application.routes');
+const contentRoutes = require('./routes/content.routes');
 
 const app = express();
 
@@ -49,17 +51,17 @@ const corsOptions = {
     // Allow same-origin and non-restricted requests in development/test
     return callback(null, true);
   },
-  methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: false,
+  credentials: true,
   maxAge: 86400
 };
 
 app.use(cors(corsOptions));
 
 // Request body payload limits
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: false, limit: '10kb' }));
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: false, limit: '2mb' }));
 
 // Global rate limiting on API endpoints
 app.use('/api', globalLimiter);
@@ -68,6 +70,8 @@ app.use('/api', globalLimiter);
 app.use('/api', healthRoutes);
 app.use('/api', enquiryRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/applications', applicationRoutes);
+app.use('/api/content', contentRoutes);
 
 // Catch-all 404 handler
 app.use(notFoundHandler);

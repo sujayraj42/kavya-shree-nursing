@@ -89,6 +89,13 @@ async function login(req, res, next) {
       { expiresIn: config.jwtExpiresIn, algorithm: 'HS256' }
     );
 
+    res.cookie('ks_admin_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 8 * 60 * 60 * 1000
+    });
+
     res.status(200).json({
       success: true,
       message: 'Authentication successful',
@@ -121,9 +128,9 @@ async function getMe(req, res) {
  */
 async function listEnquiries(req, res, next) {
   try {
-    const { status, program, search } = req.query;
+    const { status, program, search, dateFrom, dateTo } = req.query;
 
-    const query = {};
+    const query = { deletedAt: null };
 
     if (status && typeof status === 'string' && status.trim()) {
       const trimmedStatus = status.trim().toLowerCase();
@@ -150,6 +157,23 @@ async function listEnquiries(req, res, next) {
         { phone: searchRegex },
         { email: searchRegex }
       ];
+    }
+
+    if (dateFrom || dateTo) {
+      query.createdAt = {};
+      if (dateFrom && typeof dateFrom === 'string') {
+        const fromDate = new Date(dateFrom);
+        if (!isNaN(fromDate.getTime())) {
+          query.createdAt.$gte = fromDate;
+        }
+      }
+      if (dateTo && typeof dateTo === 'string') {
+        const toDate = new Date(dateTo);
+        if (!isNaN(toDate.getTime())) {
+          toDate.setHours(23, 59, 59, 999);
+          query.createdAt.$lte = toDate;
+        }
+      }
     }
 
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -198,7 +222,7 @@ async function getEnquiryById(req, res, next) {
     }
 
     const enquiry = await Enquiry.findById(id);
-    if (!enquiry) {
+    if (!enquiry || enquiry.deletedAt) {
       return res.status(404).json({
         success: false,
         error: 'Enquiry not found'
@@ -246,7 +270,7 @@ async function updateEnquiryStatus(req, res, next) {
     }
 
     const enquiry = await Enquiry.findById(id);
-    if (!enquiry) {
+    if (!enquiry || enquiry.deletedAt) {
       return res.status(404).json({
         success: false,
         error: 'Enquiry not found'
@@ -302,7 +326,7 @@ async function addEnquiryNote(req, res, next) {
     }
 
     const enquiry = await Enquiry.findById(id);
-    if (!enquiry) {
+    if (!enquiry || enquiry.deletedAt) {
       return res.status(404).json({
         success: false,
         error: 'Enquiry not found'
@@ -338,6 +362,7 @@ async function getDashboardStats(req, res, next) {
   try {
     const [statusAggregation, total, recentEnquiries] = await Promise.all([
       Enquiry.aggregate([
+        { $match: { deletedAt: null } },
         {
           $group: {
             _id: '$status',
@@ -345,8 +370,8 @@ async function getDashboardStats(req, res, next) {
           }
         }
       ]),
-      Enquiry.countDocuments(),
-      Enquiry.find()
+      Enquiry.countDocuments({ deletedAt: null }),
+      Enquiry.find({ deletedAt: null })
         .sort({ createdAt: -1 })
         .limit(5)
     ]);
@@ -382,12 +407,211 @@ async function getDashboardStats(req, res, next) {
   }
 }
 
+function escapeCsvCell(cell) {
+  if (cell === null || cell === undefined) return '""';
+  const str = String(cell);
+  if (str.includes('"') || str.includes(',') || str.includes('\n') || str.includes('\r')) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return `"${str}"`;
+}
+
+/**
+ * Streams or sends enquiry records as CSV for reporting and compliance audits.
+ */
+async function exportEnquiries(req, res, next) {
+  try {
+    const query = { deletedAt: null };
+
+    if (req.query.status && req.query.status !== 'all') {
+      const trimmed = req.query.status.trim().toLowerCase();
+      if (ALL_ALLOWED_STATUSES.includes(trimmed)) {
+        query.status = trimmed;
+      }
+    }
+    if (req.query.program && req.query.program !== 'all') {
+      query.program = req.query.program.trim();
+    }
+    if (req.query.search && String(req.query.search).trim()) {
+      const clean = String(req.query.search).trim().slice(0, 100);
+      const searchRegex = new RegExp(escapeRegex(clean), 'i');
+      query.$or = [
+        { name: searchRegex },
+        { phone: searchRegex },
+        { email: searchRegex }
+      ];
+    }
+    if (req.query.dateFrom || req.query.dateTo) {
+      query.createdAt = {};
+      if (req.query.dateFrom) {
+        const d = new Date(req.query.dateFrom);
+        if (!isNaN(d.getTime())) query.createdAt.$gte = d;
+      }
+      if (req.query.dateTo) {
+        const d = new Date(req.query.dateTo);
+        if (!isNaN(d.getTime())) {
+          d.setHours(23, 59, 59, 999);
+          query.createdAt.$lte = d;
+        }
+      }
+    }
+
+    const enquiries = await Enquiry.find(query).sort({ createdAt: -1 });
+
+    const headers = [
+      'Reference ID',
+      'Submission Date',
+      'Candidate Name',
+      'Phone',
+      'Email',
+      'Program',
+      'Status',
+      'Consent',
+      'Notes Count',
+      'Message'
+    ];
+
+    const rows = enquiries.map(e => [
+      escapeCsvCell(e.id || e._id ? (e.id || e._id).toString().slice(-6).toUpperCase() : ''),
+      escapeCsvCell(e.createdAt ? new Date(e.createdAt).toISOString().slice(0, 10) : ''),
+      escapeCsvCell(e.name),
+      escapeCsvCell(e.phone),
+      escapeCsvCell(e.email || ''),
+      escapeCsvCell(e.program),
+      escapeCsvCell(e.status),
+      escapeCsvCell(e.consent ? 'Yes' : 'No'),
+      escapeCsvCell(Array.isArray(e.notes) ? e.notes.length : 0),
+      escapeCsvCell(e.message || '')
+    ]);
+
+    const csvContent = [headers.map(escapeCsvCell).join(','), ...rows.map(r => r.join(','))].join('\r\n');
+    const filename = `kavya-shree-enquiries-${new Date().toISOString().slice(0, 10)}.csv`;
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.status(200).send(csvContent);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Soft deletes an admissions enquiry. Accessible only to superadmin role.
+ */
+async function deleteEnquiry(req, res, next) {
+  try {
+    if (req.admin?.role !== 'superadmin') {
+      return res.status(403).json({
+        success: false,
+        error: 'Access denied. Only superadmin accounts can delete enquiries'
+      });
+    }
+
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, error: 'Invalid enquiry ID format' });
+    }
+
+    const enquiry = await Enquiry.findById(id);
+    if (!enquiry || enquiry.deletedAt) {
+      return res.status(404).json({ success: false, error: 'Enquiry not found' });
+    }
+
+    enquiry.deletedAt = new Date();
+    await enquiry.save();
+
+    res.status(200).json({ success: true, message: 'Enquiry deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Updates administrator password. Requires existing password confirmation and min 8 characters.
+ */
+async function changePassword(req, res, next) {
+  try {
+    const { currentPassword, newPassword } = req.body || {};
+
+    if (!currentPassword || typeof currentPassword !== 'string' || !newPassword || typeof newPassword !== 'string') {
+      return res.status(400).json({
+        success: false,
+        error: 'Current password and new password are required'
+      });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        error: 'New password must be at least 8 characters long'
+      });
+    }
+    if (newPassword.length > 128) {
+      return res.status(400).json({
+        success: false,
+        error: 'New password must not exceed 128 characters'
+      });
+    }
+    if (currentPassword === newPassword) {
+      return res.status(400).json({
+        success: false,
+        error: 'New password must be different from current password'
+      });
+    }
+
+    const admin = await Admin.findById(req.admin.id);
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        error: 'Administrator account not found'
+      });
+    }
+
+    const isMatch = await admin.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        error: 'Current password does not match'
+      });
+    }
+
+    admin.password = newPassword;
+    await admin.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password updated successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Administrator session termination. Clears httpOnly authentication cookie.
+ */
+async function logout(req, res) {
+  res.clearCookie('ks_admin_token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax'
+  });
+  res.status(200).json({
+    success: true,
+    message: 'Logged out successfully'
+  });
+}
+
 module.exports = {
   login,
+  logout,
   getMe,
   getDashboardStats,
   listEnquiries,
+  exportEnquiries,
   getEnquiryById,
   updateEnquiryStatus,
-  addEnquiryNote
+  addEnquiryNote,
+  deleteEnquiry,
+  changePassword
 };
