@@ -2,45 +2,64 @@
   <!-- Top Institutional Bar (Admissions Helpline, Notices, Downloads, Language, Session) -->
   <div class="ks-top-bar py-1 d-none d-lg-block">
     <div class="container-fluid container-xxl d-flex justify-content-between align-items-center">
-      <div class="d-flex align-items-center gap-4 small">
-        <span class="d-inline-flex align-items-center">
-          <svg class="me-1 text-accent opacity-75" width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <!-- Left: Helpline & Campus Location -->
+      <div class="d-flex align-items-center gap-3 small">
+        <span class="d-inline-flex align-items-center text-white-50">
+          <svg class="me-1 text-warning opacity-90" width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
           </svg>
           <strong class="text-white-50 me-1">Admissions Helpline:</strong>
-          <a href="tel:+919661666485" class="ks-topbar-link text-decoration-none">+91 96616 66485</a>
-          <span class="mx-1 text-white-50">/</span>
-          <a href="tel:+916287879239" class="ks-topbar-link text-decoration-none">62878 79239</a>
+          <a href="tel:+919661666485" class="ks-topbar-link text-decoration-none fw-semibold">+91 96616 66485</a>
+          <span class="mx-1 text-white-50 opacity-50">/</span>
+          <a href="tel:+916287879239" class="ks-topbar-link text-decoration-none fw-semibold">62878 79239</a>
+        </span>
+        <span class="text-white-50 opacity-25 d-none d-xl-inline">|</span>
+        <span class="d-none d-xl-inline-flex align-items-center text-white-50">
+          <svg class="me-1 text-white-50" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span>Punpun, Patna, Bihar</span>
         </span>
       </div>
+
+      <!-- Right: Utility Links, Language Toggle, and Session Badge -->
       <div class="d-flex align-items-center gap-3">
         <a routerLink="/notices" class="ks-topbar-link small text-decoration-none d-flex align-items-center gap-1">
           <span class="ks-pulse-dot" aria-hidden="true"></span>
-          Notices &amp; News
+          <span>Notices &amp; News</span>
         </a>
-        <span class="text-white-50 opacity-50">&bull;</span>
-        <a routerLink="/downloads" class="ks-topbar-link small text-decoration-none">
-          Prospectus 2026
+        <span class="text-white-50 opacity-25">&bull;</span>
+        <a routerLink="/downloads" class="ks-topbar-link small text-decoration-none d-inline-flex align-items-center gap-1">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" class="text-warning opacity-75" aria-hidden="true">
+            <path d="M.5 9.9a.5.5 0 0 1 .5-.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+          </svg>
+          <span>Prospectus 2026</span>
         </a>
-        <span class="text-white-50 opacity-50">&bull;</span>
+        <span class="text-white-50 opacity-25 d-none d-xl-inline">&bull;</span>
         <a routerLink="/faculty" class="ks-topbar-link small text-decoration-none d-none d-xl-inline-block">
           Faculty Mentors
         </a>
-        <span class="text-white-50 opacity-50 d-none d-xl-inline-block">&bull;</span>
+        <span class="text-white-50 opacity-25 d-none d-xl-inline">&bull;</span>
         <a routerLink="/faqs" class="ks-topbar-link small text-decoration-none d-none d-xl-inline-block">
           FAQs
         </a>
-        <span class="text-white-50 opacity-50">&bull;</span>
+        <span class="text-white-50 opacity-25">&bull;</span>
+        <!-- Language Switcher Pill -->
         <button
           type="button"
-          class="btn btn-sm btn-outline-light py-0 px-2 extra-small-para ks-lang-btn"
+          class="btn btn-sm btn-outline-light py-0 px-2 extra-small-para ks-lang-btn d-inline-flex align-items-center gap-1"
           (click)="i18n.toggleLanguage()"
           [attr.aria-label]="'Switch language to ' + (i18n.currentLang() === 'en' ? 'Hindi' : 'English')"
           title="Switch Language"
         >
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855A7.97 7.97 0 0 0 5.145 4H7.5V1.077zM4.09 4a9.267 9.267 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.025 7.025 0 0 0 2.255 4H4.09zm-.582 3.5c.03-.878.138-1.71.31-2.5H1.415a7.03 7.03 0 0 0 0 2.5h2.093zM8.5 1.077V4h2.355a7.97 7.97 0 0 0-.468-1.068C9.835 1.897 9.17 1.282 8.5 1.077zM11.91 4h1.835a7.025 7.025 0 0 0-3.072-2.472c.218.284.418.598.597.933.255.474.47 1 .64 1.539zm.582 3.5h2.093a7.03 7.03 0 0 0 0-2.5h-2.093c.172.79.28 1.622.31 2.5z"/>
+          </svg>
           <span class="fw-bold">{{ i18n.currentLang() === 'en' ? 'हिन्दी' : 'English' }}</span>
         </button>
-        <span class="ks-badge-header">Academic Session 2026</span>
+        <!-- Academic Session Badge -->
+        <span class="ks-badge-header">Academic Session 2026-27</span>
       </div>
     </div>
   </div>
@@ -90,7 +109,7 @@
         <ul class="navbar-nav ms-auto mb-2 mb-xl-0 align-items-xl-center">
           <li class="nav-item">
             <a
-              class="nav-link px-2 px-xxl-3"
+              class="nav-link"
               [class.active]="activeSection() === 'home'"
               routerLink="/"
               (click)="selectSection('home')"
@@ -100,7 +119,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link px-2 px-xxl-3"
+              class="nav-link"
               [class.active]="activeSection() === 'about'"
               routerLink="/about"
               (click)="selectSection('about')"
@@ -110,7 +129,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link px-2 px-xxl-3"
+              class="nav-link"
               [class.active]="activeSection() === 'courses' || activeSection() === 'programs'"
               routerLink="/programs"
               (click)="selectSection('courses')"
@@ -120,7 +139,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link px-2 px-xxl-3"
+              class="nav-link"
               [class.active]="activeSection() === 'strengths' || activeSection() === 'approvals'"
               routerLink="/approvals"
               (click)="selectSection('approvals')"
@@ -130,7 +149,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link px-2 px-xxl-3"
+              class="nav-link"
               [class.active]="activeSection() === 'facilities' || activeSection() === 'gallery'"
               routerLink="/gallery"
               (click)="selectSection('facilities')"
@@ -140,7 +159,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link px-2 px-xxl-3"
+              class="nav-link"
               [class.active]="activeSection() === 'admissions-enquiry' || activeSection() === 'admissions'"
               routerLink="/admissions"
               (click)="selectSection('admissions')"
@@ -150,7 +169,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link px-2 px-xxl-3"
+              class="nav-link"
               [class.active]="activeSection() === 'contact'"
               routerLink="/contact"
               (click)="selectSection('contact')"
@@ -158,14 +177,15 @@
               Contact Us
             </a>
           </li>
-          <li class="nav-item ms-xl-3 my-2 my-xl-0">
+          <!-- Primary CTA Action Button -->
+          <li class="nav-item ms-xl-2 ms-xxl-3 my-2 my-xl-0">
             <a
-              class="primary-btn header-cta-btn w-100"
+              class="header-cta-btn"
               routerLink="/apply"
               (click)="selectSection('apply')"
-              title="Submit formal candidate application online"
+              title="Submit formal candidate application online for Session 2026-27"
             >
-              <span>Apply Online 2026</span>
+              <span class="cta-btn-text">Apply Online 2026</span>
               <svg class="cta-arrow" width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                 <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
               </svg>
@@ -179,23 +199,27 @@
             <span class="text-white-50 small">Language / भाषा:</span>
             <button
               type="button"
-              class="btn btn-sm btn-outline-light py-0 px-2 extra-small-para ks-lang-btn"
+              class="btn btn-sm btn-outline-light py-0 px-2 extra-small-para ks-lang-btn d-inline-flex align-items-center gap-1"
               (click)="i18n.toggleLanguage()"
               [attr.aria-label]="'Switch language to ' + (i18n.currentLang() === 'en' ? 'Hindi' : 'English')"
             >
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855A7.97 7.97 0 0 0 5.145 4H7.5V1.077zM4.09 4a9.267 9.267 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.025 7.025 0 0 0 2.255 4H4.09zm-.582 3.5c.03-.878.138-1.71.31-2.5H1.415a7.03 7.03 0 0 0 0 2.5h2.093zM8.5 1.077V4h2.355a7.97 7.97 0 0 0-.468-1.068C9.835 1.897 9.17 1.282 8.5 1.077zM11.91 4h1.835a7.025 7.025 0 0 0-3.072-2.472c.218.284.418.598.597.933.255.474.47 1 .64 1.539zm.582 3.5h2.093a7.03 7.03 0 0 0 0-2.5h-2.093c.172.79.28 1.622.31 2.5z"/>
+              </svg>
               <span class="fw-bold">{{ i18n.currentLang() === 'en' ? 'हिन्दी में देखें' : 'View in English' }}</span>
             </button>
           </div>
 
-          <!-- Secondary Mobile Links Grid -->
+          <!-- Quick Secondary Mobile Grid -->
           <div class="row g-2 mb-3">
             <div class="col-6">
               <a
                 routerLink="/notices"
                 (click)="selectSection('notices')"
-                class="btn btn-outline-light btn-sm w-100 text-start text-truncate py-2"
+                class="btn btn-outline-light btn-sm w-100 text-start text-truncate py-2 d-flex align-items-center gap-1"
               >
-                &bull; Official Notices
+                <span class="ks-pulse-dot flex-shrink-0" aria-hidden="true"></span>
+                <span>Notices &amp; News</span>
               </a>
             </div>
             <div class="col-6">
@@ -231,20 +255,20 @@
             <a
               routerLink="/apply"
               (click)="selectSection('apply')"
-              class="primary-btn text-center justify-content-center"
+              class="primary-btn text-center justify-content-center py-2 fw-bold"
             >
               <span>Formal Online Application 2026 &rarr;</span>
             </a>
             <a
               routerLink="/admissions"
               (click)="selectSection('admissions')"
-              class="btn btn-outline-light btn-sm text-center"
+              class="btn btn-outline-light btn-sm text-center py-2"
             >
               Admission Enquiry Desk
             </a>
           </div>
 
-          <div class="d-flex flex-column gap-2">
+          <div class="d-flex flex-column gap-2 pt-2 border-top border-secondary border-opacity-25">
             <div class="d-flex align-items-center justify-content-between">
               <span class="text-white-50 small">Admissions Helpline:</span>
               <span class="small fw-semibold">

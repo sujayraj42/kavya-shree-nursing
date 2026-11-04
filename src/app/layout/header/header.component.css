@@ -16,47 +16,90 @@
   min-width: 0;
 }
 
+/* Pulsing Notification Indicator for Notices */
+.ks-pulse-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color--carrot-orange);
+  animation: ksPulseDot 2s infinite ease-in-out;
+}
+
+@keyframes ksPulseDot {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(235, 150, 36, 0.75);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 5px rgba(235, 150, 36, 0);
+  }
+  100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(235, 150, 36, 0);
+  }
+}
+
+/* Language Toggle Pill */
+.ks-lang-btn {
+  font-size: 0.75rem;
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  transition: all 0.18s ease;
+}
+
+.ks-lang-btn:hover {
+  background-color: var(--color--carrot-orange);
+  border-color: var(--color--carrot-orange);
+  color: #000000;
+  transform: translateY(-1px);
+}
+
+/* Desktop Navigation Links */
 @media (min-width: 1200px) {
   .navbar-nav {
-    gap: 2px;
+    gap: 1px;
   }
 
   .nav-link {
     color: rgba(255, 255, 255, 0.82);
     font-family: var(--font--sans);
-    font-size: 0.875rem;
+    font-size: 0.84375rem;
     font-weight: 500;
-    padding: 1.45rem 0.55rem;
+    padding: 1.45rem 0.45rem;
     min-height: 68px;
     display: inline-flex;
     align-items: center;
     position: relative;
-    text-transform: capitalize;
     white-space: nowrap;
     text-decoration: none;
-    transition: color 0.15s ease;
+    transition: color 0.18s ease, background-color 0.18s ease;
   }
 
   .nav-link::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 0.55rem;
-    right: 0.55rem;
+    left: 0.45rem;
+    right: 0.45rem;
     height: 3px;
     background-color: var(--color--carrot-orange);
-    border-radius: 2px 2px 0 0;
+    border-radius: 3px 3px 0 0;
     transform: scaleX(0);
     transform-origin: center;
-    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
   }
 
   .nav-link:hover {
     color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.04);
   }
 
   .nav-link:hover::after {
-    transform: scaleX(0.5);
+    transform: scaleX(0.4);
   }
 
   .nav-link.active {
@@ -66,89 +109,106 @@
 
   .nav-link.active::after {
     transform: scaleX(1);
+    box-shadow: 0 0 8px rgba(235, 150, 36, 0.6);
   }
 }
 
 @media (min-width: 1400px) {
   .navbar-nav {
-    gap: 6px;
+    gap: 4px;
   }
 
   .nav-link {
-    font-size: 0.90625rem;
-    padding: 1.45rem 0.75rem;
+    font-size: 0.890625rem;
+    padding: 1.45rem 0.7rem;
   }
 
   .nav-link::after {
-    left: 0.75rem;
-    right: 0.75rem;
+    left: 0.7rem;
+    right: 0.7rem;
   }
 }
 
-/* Pulse Dot for Official Notices */
-.ks-pulse-dot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: var(--color--carrot-orange);
-  animation: ksPulse 2s infinite;
-}
-
-@keyframes ksPulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(235, 150, 36, 0.7);
-  }
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 5px rgba(235, 150, 36, 0);
-  }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(235, 150, 36, 0);
-  }
-}
-
-.ks-topbar-link {
-  color: rgba(255, 255, 255, 0.85);
-  transition: color 0.15s ease;
-}
-
-.ks-topbar-link:hover {
-  color: var(--color--carrot-orange);
-}
-
-/* Accessibility Focus States */
-.nav-link:focus-visible,
-.navbar-brand:focus-visible,
-.header-cta-btn:focus-visible,
-.navbar-toggler:focus-visible {
-  outline: 2px solid var(--color--carrot-orange) !important;
-  outline-offset: 2px;
+/* Primary Header Action Button */
+.header-cta-btn {
+  background: linear-gradient(135deg, #f7a93b 0%, #eb9624 100%);
+  color: #0b1a2c !important;
+  font-family: var(--font--jakarta-sans);
+  font-size: 0.84375rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   border-radius: var(--round-4);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  min-height: 40px;
+  padding: 0.52rem 1.05rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(235, 150, 36, 0.28), 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+@media (min-width: 1400px) {
+  .header-cta-btn {
+    font-size: 0.875rem;
+    padding: 0.55rem 1.25rem;
+  }
+}
+
+.header-cta-btn:hover {
+  color: #0b1a2c !important;
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow: 0 4px 16px rgba(235, 150, 36, 0.42), 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.header-cta-btn:hover .cta-arrow {
+  transform: translateX(3px);
+}
+
+.header-cta-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(235, 150, 36, 0.2);
+}
+
+.cta-arrow {
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Mobile Toggler */
 .navbar-toggler {
-  background-color: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  background-color: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   border-radius: var(--round-4);
   min-width: 44px;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
 }
 
 .navbar-toggler:hover {
-  background-color: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.28) !important;
+  background-color: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.32) !important;
 }
 
 .navbar-toggler-icon {
   filter: invert(1);
   width: 22px;
   height: 22px;
+}
+
+/* Focus Indicator */
+.nav-link:focus-visible,
+.navbar-brand:focus-visible,
+.header-cta-btn:focus-visible,
+.navbar-toggler:focus-visible,
+.ks-lang-btn:focus-visible {
+  outline: 2px solid var(--color--carrot-orange) !important;
+  outline-offset: 2px;
+  border-radius: var(--round-4);
 }
