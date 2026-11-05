@@ -31,3 +31,4 @@ function setCorsHeaders(req, res) {
 module.exports = {
   setCorsHeaders
 };
+

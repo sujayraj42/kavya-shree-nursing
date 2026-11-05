@@ -412,6 +412,26 @@ textarea:focus-visible {
   padding: 0.2rem 0.6rem;
 }
 
+.ks-pulse-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color--carrot-orange);
+  animation: ksPulseDot 2s infinite ease-in-out;
+}
+
+@keyframes ksPulseDot {
+  0%, 100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(235, 150, 36, 0.75);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 5px rgba(235, 150, 36, 0);
+  }
+}
+
 .ks-nav-backdrop {
   position: fixed;
   inset: 0;
@@ -529,8 +549,9 @@ textarea:focus-visible {
     z-index: 1035;
   }
 
+  .navbar-nav .nav-link,
   .nav-link {
-    color: rgba(255, 255, 255, 0.88);
+    color: #ffffff !important;
     font-size: 0.95rem;
     font-weight: 500;
     padding: 0.75rem 1rem;
@@ -538,23 +559,26 @@ textarea:focus-visible {
     display: flex;
     align-items: center;
     border-radius: var(--round-4);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     text-decoration: none;
     transition: background-color 0.15s ease, color 0.15s ease, padding-left 0.15s ease;
   }
 
+  .navbar-nav .nav-link:hover,
+  .navbar-nav .nav-link:focus-visible,
   .nav-link:hover,
   .nav-link:focus-visible {
-    background-color: rgba(255, 255, 255, 0.06);
-    color: var(--color--carrot-orange);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff !important;
     padding-left: 1.25rem;
   }
 
+  .navbar-nav .nav-link.active,
   .nav-link.active {
-    color: var(--color--carrot-orange);
+    color: #ffffff !important;
     font-weight: 600;
-    background-color: rgba(235, 150, 36, 0.1);
-    border-left: 3px solid var(--color--carrot-orange);
+    background-color: rgba(235, 150, 36, 0.22) !important;
+    border-left: 4px solid var(--color--carrot-orange) !important;
     border-radius: 0 var(--round-4) var(--round-4) 0;
     padding-left: 1.15rem;
   }

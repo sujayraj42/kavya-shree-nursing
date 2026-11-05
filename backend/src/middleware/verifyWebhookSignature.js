@@ -58,3 +58,4 @@ function verifyWebhookSignature(secretEnvKey = 'WEBHOOK_SECRET') {
 module.exports = {
   verifyWebhookSignature
 };
+

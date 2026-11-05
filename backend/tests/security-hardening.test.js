@@ -174,3 +174,4 @@ describe('Security Hardening and Defensive Controls', () => {
     assert.notEqual(blockedHeaders['Access-Control-Allow-Origin'], 'https://malicious-phishing-site.example.com');
   });
 });
+

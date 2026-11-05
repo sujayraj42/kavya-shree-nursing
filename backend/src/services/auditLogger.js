@@ -31,3 +31,4 @@ function logAdminAction({ admin, action, targetType, targetId = null, details = 
 module.exports = {
   logAdminAction
 };
+

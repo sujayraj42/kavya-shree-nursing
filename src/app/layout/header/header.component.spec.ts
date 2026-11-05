@@ -89,4 +89,13 @@ describe('HeaderComponent', () => {
     );
     expect(aboutLink?.classList.contains('active')).toBe(true);
   });
+
+  it('should have navbar-dark class on navigation element for proper contrast in mobile drawer', async () => {
+    const fixture = TestBed.createComponent(HeaderComponent);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const navEl = compiled.querySelector('nav.navbar');
+    expect(navEl?.classList.contains('navbar-dark')).toBe(true);
+  });
 });
