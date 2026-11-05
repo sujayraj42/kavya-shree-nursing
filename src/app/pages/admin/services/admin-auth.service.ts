@@ -162,7 +162,10 @@ export class AdminAuthService {
     try {
       const parsedTarget = new URL(url, window.location.origin);
       const parsedTrusted = new URL(environment.apiBaseUrl, window.location.origin);
-      return parsedTarget.origin === parsedTrusted.origin;
+      return (
+        parsedTarget.origin === parsedTrusted.origin ||
+        (typeof window !== 'undefined' && parsedTarget.origin === window.location.origin)
+      );
     } catch {
       return false;
     }

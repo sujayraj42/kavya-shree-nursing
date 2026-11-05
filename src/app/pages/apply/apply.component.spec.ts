@@ -130,3 +130,4 @@ describe('ApplyComponent', () => {
     expect((component as any).submittedData()?.applicationNumber).toBe('KSIN-2026-APP-123456');
   });
 });
+

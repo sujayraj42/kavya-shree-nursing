@@ -134,7 +134,12 @@ export class ContentService {
 
   public async getCourseById(id: string): Promise<CourseItem | null> {
     try {
-      const res = await fetch(`${this.baseUrl}/content/courses/${id}`);
+      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      const timeoutId = controller ? setTimeout(() => controller.abort(), 4000) : null;
+      const res = await fetch(`${this.baseUrl}/content/courses/${id}`, {
+        signal: controller?.signal
+      });
+      if (timeoutId) clearTimeout(timeoutId);
       if (res.ok) {
         const json = await res.json();
         if (json.data) return json.data;
@@ -173,7 +178,12 @@ export class ContentService {
 
   private async fetchContent<T>(endpoint: string, fallback: T): Promise<T> {
     try {
-      const res = await fetch(`${this.baseUrl}${endpoint}`);
+      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      const timeoutId = controller ? setTimeout(() => controller.abort(), 4000) : null;
+      const res = await fetch(`${this.baseUrl}${endpoint}`, {
+        signal: controller?.signal
+      });
+      if (timeoutId) clearTimeout(timeoutId);
       if (!res.ok) return fallback;
       const json = await res.json();
       return (json.data as T) || fallback;
