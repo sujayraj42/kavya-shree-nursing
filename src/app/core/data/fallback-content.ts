@@ -2,7 +2,10 @@ import {
   NoticeItem,
   CourseItem,
   GalleryItem,
-  FacultyItem
+  FacultyItem,
+  HospitalTieupItem,
+  FaqItem,
+  DownloadItem
 } from '../services/content.service';
 
 export const FALLBACK_COURSES: CourseItem[] = [
@@ -274,6 +277,109 @@ export const FALLBACK_FACULTY: FacultyItem[] = [
       imageUrl: 'images/generated/faculty-4.webp',
       isPlaceholder: false,
       notice: 'Academic mentor'
+    }
+  }
+];
+
+export const FALLBACK_HOSPITAL_TIEUPS: HospitalTieupItem[] = [
+  {
+    id: 'hosp-01',
+    title: 'District Civil Hospital & Clinical Centers',
+    subtitle: 'In-Patient Medical & Surgical Training',
+    content: 'Comprehensive clinical rotations across General Medicine, General Surgery, Pediatrics, and Emergency Trauma Care.',
+    data: {
+      location: 'Bihar Region',
+      bedCapacity: '250+ Multi-Specialty Beds',
+      specialties: ['General Medicine', 'Surgical Wards', 'Maternity Ward', 'Emergency Care']
+    }
+  },
+  {
+    id: 'hosp-02',
+    title: 'Community Health Centers (CHCs) & Primary Centers',
+    subtitle: 'Public Health & Immunization Outreach',
+    content: 'Hands-on exposure to maternal health, pulse polio drives, adolescent nutrition, and rural healthcare delivery.',
+    data: {
+      location: 'Regional Primary Centers',
+      bedCapacity: 'Community Healthcare Units',
+      specialties: ['Primary Healthcare', 'Antenatal Care', 'Immunization', 'Family Welfare']
+    }
+  }
+];
+
+export const FALLBACK_FAQS: FaqItem[] = [
+  {
+    id: 'faq-01',
+    title: 'What are the recognized nursing courses offered for the 2026 session?',
+    content: 'Kavya Shree Institute advertises 5 core programs: ANM (2 Years Diploma), GNM (3 Years Diploma), B.Sc. Nursing (4 Years Degree), Post Basic B.Sc. Nursing (2 Years), and M.Sc. Nursing (2 Years). All curriculums follow statutory council norms.',
+    data: { category: 'Admissions', order: 1 }
+  },
+  {
+    id: 'faq-02',
+    title: 'What is the minimum eligibility criteria for B.Sc. Nursing and GNM?',
+    content: 'For B.Sc. Nursing, candidates must have passed 10+2 with Physics, Chemistry, Biology (PCB) and English. For GNM, 10+2 in Science is preferred, though Arts/Commerce candidates may be considered per council guidelines. Minimum age is 17 years.',
+    data: { category: 'Eligibility', order: 2 }
+  },
+  {
+    id: 'faq-03',
+    title: 'How can I submit my admission enquiry or application?',
+    content: 'You can submit an enquiry online via the Admissions page, fill out the comprehensive Online Application form on our website, or visit our campus admissions consultation desk in person.',
+    data: { category: 'Admissions', order: 3 }
+  },
+  {
+    id: 'faq-04',
+    title: 'Are separate hostel facilities available for female students?',
+    content: 'Yes, secure hostel accommodation with round-the-clock warden supervision, hygienic mess meals, and power backup is arranged for residential candidates.',
+    data: { category: 'Campus & Facilities', order: 4 }
+  },
+  {
+    id: 'faq-05',
+    title: 'Where do students receive practical clinical hospital training?',
+    content: 'Students undergo mandatory clinical rotations at affiliated multi-specialty district hospitals, sub-divisional medical centers, and community health centers in the region.',
+    data: { category: 'Clinical Training', order: 5 }
+  },
+  {
+    id: 'faq-06',
+    title: 'What documents are required during document verification?',
+    content: 'Candidates need: 10th and 12th original marksheets and passing certificates, Migration / Transfer certificate, Character certificate, Aadhaar card copy, recent passport-sized photographs, and Caste / Income certificate (if applicable).',
+    data: { category: 'Documentation', order: 6 }
+  }
+];
+
+export const FALLBACK_DOWNLOADS: DownloadItem[] = [
+  {
+    id: 'dl-01',
+    title: 'Official Academic Prospectus (Session 2026)',
+    subtitle: 'Complete institutional handbook, course curricula, and campus guide',
+    content: 'Comprehensive institutional overview containing program summaries, fee guidelines, code of conduct, and admissions process.',
+    data: {
+      fileType: 'PDF',
+      fileSize: '2.4 MB',
+      downloadUrl: 'assets/documents/prospectus-2026.pdf',
+      category: 'Prospectus'
+    }
+  },
+  {
+    id: 'dl-02',
+    title: 'Offline Admissions Application Form',
+    subtitle: 'Printable application form for postal or in-person submission',
+    content: 'Standard candidate admissions form for in-person submission at the college campus office.',
+    data: {
+      fileType: 'PDF',
+      fileSize: '850 KB',
+      downloadUrl: 'assets/documents/admission-form-2026.pdf',
+      category: 'Forms'
+    }
+  },
+  {
+    id: 'dl-03',
+    title: 'Syllabus & Course Structure Summary',
+    subtitle: 'ANM, GNM, and B.Sc. academic outlines',
+    content: 'Subject-wise breakdown and semester timetable outline for enrolled nursing students.',
+    data: {
+      fileType: 'PDF',
+      fileSize: '1.1 MB',
+      downloadUrl: 'assets/documents/syllabus-outline.pdf',
+      category: 'Academic'
     }
   }
 ];

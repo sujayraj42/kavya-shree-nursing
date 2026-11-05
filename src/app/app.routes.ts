@@ -67,6 +67,26 @@ export const routes: Routes = [
     title: 'Contact Admissions Desk | Kavya Shree Institute of Nursing'
   },
   {
+    path: 'privacy',
+    loadComponent: () => import('./pages/legal/privacy.component').then(m => m.PrivacyComponent),
+    title: 'Privacy Policy & DPDP Notice | Kavya Shree Institute of Nursing'
+  },
+  {
+    path: 'terms',
+    loadComponent: () => import('./pages/legal/terms.component').then(m => m.TermsComponent),
+    title: 'Terms of Use & Disclaimers | Kavya Shree Institute of Nursing'
+  },
+  {
+    path: 'refund-policy',
+    loadComponent: () => import('./pages/legal/refund-policy.component').then(m => m.RefundPolicyComponent),
+    title: 'Fee & Refund Policy | Kavya Shree Institute of Nursing'
+  },
+  {
+    path: 'anti-ragging',
+    loadComponent: () => import('./pages/legal/anti-ragging.component').then(m => m.AntiRaggingComponent),
+    title: 'Anti-Ragging Committee & Helpline | Kavya Shree Institute of Nursing'
+  },
+  {
     path: 'admin',
     loadChildren: () => import('./pages/admin/admin.routes').then(m => m.ADMIN_ROUTES)
   },
@@ -85,6 +105,11 @@ export const routes: Routes = [
   { path: 'affiliation', redirectTo: 'approvals', pathMatch: 'full' },
   { path: 'affiliations', redirectTo: 'approvals', pathMatch: 'full' },
   { path: 'hospital-tieups', redirectTo: 'faculty', pathMatch: 'full' },
+  { path: 'privacy-policy', redirectTo: 'privacy', pathMatch: 'full' },
+  { path: 'rules', redirectTo: 'terms', pathMatch: 'full' },
+  { path: 'refund', redirectTo: 'refund-policy', pathMatch: 'full' },
+  { path: 'ragging', redirectTo: 'anti-ragging', pathMatch: 'full' },
+  { path: 'antiragging', redirectTo: 'anti-ragging', pathMatch: 'full' },
 
   {
     path: '**',

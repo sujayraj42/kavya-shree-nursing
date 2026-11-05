@@ -254,6 +254,54 @@ export const ROUTE_SEO_MAP: Record<string, RouteSeoConfig> = {
     robots: DEFAULT_ROBOTS_INDEX,
     schemaType: 'Course',
     breadcrumbLabel: 'M.Sc. Nursing'
+  },
+  '/privacy': {
+    title: 'Digital Privacy Policy & DPDP Notice | Kavya Shree Institute of Nursing',
+    description: 'Official Privacy Policy compliant with Digital Personal Data Protection Act 2023 (DPDP Act) and IT Act 2000.',
+    keywords: 'privacy policy nursing institute, DPDP Act 2023 compliance Patna, student data protection Bihar',
+    canonicalPath: '/privacy',
+    image: 'logo.png',
+    imageAlt: 'Kavya Shree Institute of Nursing Privacy Policy',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'WebPage',
+    breadcrumbLabel: 'Privacy Policy'
+  },
+  '/terms': {
+    title: 'Terms of Use & Institutional Disclaimers | Kavya Shree Institute of Nursing',
+    description: 'Official Terms of Use, admissions portal guidelines, disclaimers, and jurisdiction at Patna, Bihar.',
+    keywords: 'terms of use, nursing admission rules, college guidelines Patna',
+    canonicalPath: '/terms',
+    image: 'logo.png',
+    imageAlt: 'Kavya Shree Institute of Nursing Terms of Use',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'WebPage',
+    breadcrumbLabel: 'Terms of Use'
+  },
+  '/refund-policy': {
+    title: 'Institutional Fee & Refund Policy | Kavya Shree Institute of Nursing',
+    description: 'Transparent guidelines governing tuition fees, seat withdrawal timelines, and statutory refund schedules.',
+    keywords: 'fee refund nursing, B.Sc nursing fee refund, college fee policy Bihar',
+    canonicalPath: '/refund-policy',
+    image: 'logo.png',
+    imageAlt: 'Kavya Shree Institute of Nursing Fee and Refund Policy',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'WebPage',
+    breadcrumbLabel: 'Fee & Refund Policy'
+  },
+  '/anti-ragging': {
+    title: 'Statutory Anti-Ragging Framework & 24x7 Helpline | Kavya Shree Institute of Nursing',
+    description: 'Zero-tolerance anti-ragging policy, institutional committee, and national toll-free helpline 1800-180-5522.',
+    keywords: 'anti ragging nursing college, anti ragging helpline 1800-180-5522, student safety Patna',
+    canonicalPath: '/anti-ragging',
+    image: 'logo.png',
+    imageAlt: 'Anti-Ragging Committee and Helpline',
+    ogType: 'website',
+    robots: DEFAULT_ROBOTS_INDEX,
+    schemaType: 'WebPage',
+    breadcrumbLabel: 'Anti-Ragging'
   }
 };
 

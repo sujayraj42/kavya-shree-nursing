@@ -4,7 +4,10 @@ import {
   FALLBACK_COURSES,
   FALLBACK_NOTICES,
   FALLBACK_GALLERY,
-  FALLBACK_FACULTY
+  FALLBACK_FACULTY,
+  FALLBACK_HOSPITAL_TIEUPS,
+  FALLBACK_FAQS,
+  FALLBACK_DOWNLOADS
 } from '../data/fallback-content';
 
 export interface NoticeItem {
@@ -160,7 +163,8 @@ export class ContentService {
   }
 
   public async getHospitalTieups(): Promise<HospitalTieupItem[]> {
-    return this.fetchContent<HospitalTieupItem[]>('/content/hospital-tieups', []);
+    const data = await this.fetchContent<HospitalTieupItem[]>('/content/hospital-tieups', FALLBACK_HOSPITAL_TIEUPS);
+    return data && data.length > 0 ? data : FALLBACK_HOSPITAL_TIEUPS;
   }
 
   public async getGallery(): Promise<GalleryItem[]> {
@@ -169,11 +173,13 @@ export class ContentService {
   }
 
   public async getFaqs(): Promise<FaqItem[]> {
-    return this.fetchContent<FaqItem[]>('/content/faqs', []);
+    const data = await this.fetchContent<FaqItem[]>('/content/faqs', FALLBACK_FAQS);
+    return data && data.length > 0 ? data : FALLBACK_FAQS;
   }
 
   public async getDownloads(): Promise<DownloadItem[]> {
-    return this.fetchContent<DownloadItem[]>('/content/downloads', []);
+    const data = await this.fetchContent<DownloadItem[]>('/content/downloads', FALLBACK_DOWNLOADS);
+    return data && data.length > 0 ? data : FALLBACK_DOWNLOADS;
   }
 
   private async fetchContent<T>(endpoint: string, fallback: T): Promise<T> {
