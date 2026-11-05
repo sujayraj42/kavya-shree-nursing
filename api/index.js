@@ -1,16 +1,35 @@
 'use strict';
 
 /**
- * Vercel Serverless Function Fallback
- * Seamlessly forwards API traffic to the live Render backend instance.
+ * Vercel Serverless Function: API Directory & Health Index
+ * Provides instant institutional API routing & health discovery.
  */
 module.exports = (req, res) => {
-  const targetPath = req.url || '/api/health';
-  const targetUrl = `https://kavya-shree-nursing.onrender.com${targetPath.startsWith('/') ? targetPath : `/${targetPath}`}`;
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  res.writeHead(307, {
-    'Location': targetUrl,
-    'Access-Control-Allow-Origin': '*'
-  });
-  res.end();
+  if (req.method === 'OPTIONS') {
+    res.statusCode = 204;
+    return res.end();
+  }
+
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify({
+    success: true,
+    name: 'Kavya Shree Institute of Nursing API',
+    institution: 'Kavya Shree Institute of Nursing',
+    accreditation: 'Recognized by Indian Nursing Council (INC) & Bihar Nursing Registration Council (BNRC)',
+    status: 'operational',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: '/api/health',
+      applications: '/api/applications',
+      enquiries: '/api/enquiries',
+      courses: '/api/content/courses',
+      notices: '/api/content/notices'
+    }
+  }));
 };

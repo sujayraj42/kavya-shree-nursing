@@ -33,6 +33,47 @@ export class MotionService {
   };
 
   private gsapPromise: Promise<{ gsap: any; ScrollTrigger: any } | null> | null = null;
+  private observer: IntersectionObserver | null = null;
+
+  /**
+   * Initializes browser IntersectionObserver for elements with Framer-Motion reveal classes.
+   * Elements with '.fm-reveal' or '.fm-reveal-stagger' will automatically get '.fm-visible'
+   * as they scroll into view.
+   */
+  public initScrollReveals(root?: HTMLElement | null): () => void {
+    if (!this.isBrowser || this.prefersReducedMotion() || typeof IntersectionObserver === 'undefined') {
+      // In reduced motion or non-browser environments, make all reveal elements immediately visible
+      if (this.isBrowser && typeof document !== 'undefined') {
+        const elements = (root || document).querySelectorAll('.fm-reveal, .fm-reveal-stagger');
+        elements.forEach(el => el.classList.add('fm-visible'));
+      }
+      return () => {};
+    }
+
+    try {
+      this.observer?.disconnect();
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fm-visible');
+            this.observer?.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px'
+      });
+
+      const targets = (root || document).querySelectorAll('.fm-reveal, .fm-reveal-stagger');
+      targets.forEach(target => this.observer?.observe(target));
+
+      return () => {
+        this.observer?.disconnect();
+      };
+    } catch {
+      return () => {};
+    }
+  }
 
   /**
    * Determines whether the user has requested reduced motion.

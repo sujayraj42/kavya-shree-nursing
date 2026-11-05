@@ -9,6 +9,7 @@ import { NoticeBarComponent } from './layout/notice-bar/notice-bar.component';
 import { FloatingActionsComponent } from './layout/floating-actions/floating-actions.component';
 import { EnquiryModalComponent } from './shared/enquiry-modal/enquiry-modal.component';
 import { SeoService } from './core/services/seo.service';
+import { MotionService } from './core/services/motion.service';
 import { environment } from '../environments/environment';
 
 const KEEP_ALIVE_INTERVAL_MS = 10 * 60 * 1000;
@@ -22,6 +23,7 @@ const KEEP_ALIVE_INTERVAL_MS = 10 * 60 * 1000;
 export class App implements OnInit {
   private readonly router = inject(Router);
   private readonly seoService = inject(SeoService);
+  private readonly motionService = inject(MotionService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly platformId = inject(PLATFORM_ID);
   protected readonly isAdminRoute = signal(false);
@@ -29,6 +31,7 @@ export class App implements OnInit {
   public ngOnInit(): void {
     this.seoService.initRouteTracking();
     this.isAdminRoute.set(this.router.url.startsWith('/admin'));
+    this.motionService.initScrollReveals();
     if (environment.production && isPlatformBrowser(this.platformId)) {
       this.startBackendKeepAlive();
     }
@@ -40,6 +43,9 @@ export class App implements OnInit {
       .subscribe((event) => {
         const targetUrl = event.urlAfterRedirects || event.url;
         this.isAdminRoute.set(targetUrl.startsWith('/admin'));
+        if (isPlatformBrowser(this.platformId)) {
+          setTimeout(() => this.motionService.initScrollReveals(), 60);
+        }
       });
   }
 

@@ -1,5 +1,5 @@
 <!-- Page Hero Banner -->
-<section class="page-hero-banner">
+<section class="page-hero-banner text-white">
   <div class="container">
     <nav aria-label="Breadcrumb" class="mb-3">
       <ol class="breadcrumb breadcrumb-dark mb-0">
@@ -7,336 +7,823 @@
         <li class="breadcrumb-item active" aria-current="page">Online Application</li>
       </ol>
     </nav>
-    <h1 class="h1-heading white mb-2">Formal Admissions Application 2026</h1>
-    <p class="para-white spaces">
-      Official candidate portal for registration across ANM, GNM, and B.Sc. Nursing disciplines.
-    </p>
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <div>
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-2 rounded-pill bg-warning-subtle text-warning-emphasis small fw-semibold">
+          <span class="badge bg-warning rounded-circle p-1"></span>
+          Academic Session 2026–2027 • Admissions Open
+        </div>
+        <h1 class="h2 fw-bold text-white mb-2">Formal Admissions Application Portal</h1>
+        <p class="text-white-50 mb-0 max-w-650">
+          Official candidate registration for INC &amp; BNRC recognized ANM, GNM, B.Sc. Nursing, and Post Basic nursing programs.
+        </p>
+      </div>
+      <div class="d-none d-md-flex align-items-center gap-3 bg-white bg-opacity-10 px-4 py-3 rounded-3 border border-white border-opacity-15">
+        <div class="text-center">
+          <div class="fs-4 fw-bold text-warning">100%</div>
+          <div class="small text-white-50">Clinical Training</div>
+        </div>
+        <div class="vr bg-white opacity-25"></div>
+        <div class="text-center">
+          <div class="fs-4 fw-bold text-warning">INC &amp; BNRC</div>
+          <div class="small text-white-50">Approved Campus</div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- Multi-Step Application Section -->
-<section class="general-section bg-stone">
-  <div class="container" style="max-width: 860px;">
+<section class="py-5 bg-stone">
+  <div class="container">
     @if (submittedData(); as sub) {
       <!-- Confirmation Screen -->
-      <div class="card p-5 border-0 shadow-sm bg-white text-center">
-        <div class="success-badge-circle mx-auto mb-3">
-          <svg width="40" height="40" viewBox="0 0 16 16" fill="currentColor" class="text-success">
+      <div class="card p-4 p-md-5 border-0 shadow-sm bg-white text-center mx-auto fm-scale-in" style="max-width: 780px;">
+        <div class="success-badge-circle mx-auto mb-3 fm-pulse-glow">
+          <svg width="36" height="36" viewBox="0 0 16 16" fill="currentColor" class="text-success">
             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
           </svg>
         </div>
 
-        <span class="badge ks-badge-amber text-uppercase mb-2 mx-auto">Application Successfully Submitted</span>
-        <h2 class="h3 fw-bold text-dark mb-2">Admissions Intake 2026</h2>
+        <span class="badge bg-warning text-dark px-3 py-2 text-uppercase mb-2 mx-auto fw-bold">
+          Application Successfully Registered
+        </span>
+        <h2 class="h3 fw-bold text-dark mb-2">Admissions Intake 2026–2027</h2>
         <p class="text-muted small mb-4">
-          Your formal application has been registered with the admissions desk. Please record your permanent application reference number:
+          Your formal application has been recorded with the admissions secretariat. Please save your permanent reference number for all future counseling and document scrutiny:
         </p>
 
-        <div class="p-3 bg-light rounded border d-inline-block mx-auto mb-4 font-monospace fs-4 fw-bold text-primary">
-          {{ sub.applicationNumber }}
+        <!-- Reference Box with Copy Feature -->
+        <div class="d-inline-flex flex-wrap align-items-center justify-content-center gap-2 p-3 bg-light rounded-3 border mx-auto mb-4">
+          <span class="font-monospace fs-4 fw-bold text-primary">{{ sub.applicationNumber }}</span>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1"
+            (click)="copyReference()"
+            title="Copy Reference Number"
+          >
+            @if (copiedReference()) {
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" class="text-success"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/></svg>
+              <span class="text-success fw-bold">Copied!</span>
+            } @else {
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>
+              <span>Copy</span>
+            }
+          </button>
         </div>
 
+        @if (sub.isOffline) {
+          <div class="alert alert-warning small text-start mb-4">
+            <strong>Offline Safe Mode:</strong> Your application has been securely logged on this device and queued for automatic synchronization with the admissions server. Please keep your reference number safely.
+          </div>
+        }
+
+        <!-- Details Summary -->
         <div class="card p-3 bg-stone border text-start mb-4">
-          <div class="d-flex justify-content-between py-1 border-bottom small">
+          <div class="d-flex justify-content-between py-2 border-bottom small">
             <span class="text-muted">Applicant Name:</span>
             <span class="fw-bold text-dark">{{ sub.applicantName }}</span>
           </div>
-          <div class="d-flex justify-content-between py-1 border-bottom small">
+          <div class="d-flex justify-content-between py-2 border-bottom small">
             <span class="text-muted">Chosen Program:</span>
             <span class="fw-bold text-dark">{{ sub.program }}</span>
           </div>
-          <div class="d-flex justify-content-between py-1 small">
-            <span class="text-muted">Status:</span>
-            <span class="badge bg-warning text-dark text-uppercase">Under Review</span>
+          <div class="d-flex justify-content-between py-2 small">
+            <span class="text-muted">Admissions Status:</span>
+            <span class="badge bg-warning text-dark text-uppercase">Under Verification</span>
           </div>
         </div>
 
+        <!-- Next Steps Callout -->
         <div class="alert alert-info small mb-4 text-start">
-          <strong>Next Steps:</strong> Please keep original 10th &amp; 12th certificates ready for document scrutiny. Our counselor will contact your registered phone number.
+          <h6 class="fw-bold text-dark mb-1">What Happens Next?</h6>
+          <ol class="mb-0 ps-3">
+            <li>Our admissions counseling desk will review your eligibility within 24 working hours.</li>
+            <li>You will receive an SMS and email verification regarding counseling dates and seat allocation.</li>
+            <li>Prepare your original 10th &amp; 12th marks cards, migration certificate, and passport photographs for verification.</li>
+          </ol>
         </div>
 
+        <!-- Action Buttons -->
         <div class="d-flex flex-wrap justify-content-center gap-3">
-          <a [href]="apiBaseUrl + '/applications/' + sub.applicationNumber + '/receipt'"
-             target="_blank"
-             rel="noopener noreferrer"
-             class="btn btn-warning btn-sm px-4 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm">
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+          <button
+            type="button"
+            class="btn btn-warning px-4 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm fm-hover-lift"
+            (click)="printReceipt()"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
               <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
               <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
             </svg>
-            Print / Download Application Slip (PDF)
-          </a>
-          <a routerLink="/" class="btn btn-outline-dark btn-sm px-4">
+            Print / Save Application Slip
+          </button>
+          <a routerLink="/" class="btn btn-outline-dark px-4 fm-hover-lift">
             Return to Home
           </a>
-          <a routerLink="/downloads" class="btn btn-institutional-primary btn-sm px-4">
+          <a routerLink="/downloads" class="btn btn-outline-primary px-4 fm-hover-lift">
             Download Prospectus
           </a>
         </div>
       </div>
     } @else {
-      <!-- Progress Bar -->
-      <div class="card p-3 mb-4 border-0 shadow-sm bg-white">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <span class="small fw-bold text-uppercase text-muted">
-            Step {{ currentStep() }} of {{ totalSteps }}:
-            @switch (currentStep()) {
-              @case (1) { Personal Information }
-              @case (2) { Family &amp; Contact }
-              @case (3) { Course Choice }
-              @case (4) { Academic Qualifications }
-              @case (5) { Review &amp; Declaration }
-            }
-          </span>
-          <span class="small fw-semibold text-warning">{{ (currentStep() / totalSteps * 100) | number:'1.0-0' }}% Complete</span>
-        </div>
-        <div class="progress" style="height: 6px;">
-          <div
-            class="progress-bar bg-warning"
-            role="progressbar"
-            [style.width.%]="(currentStep() / totalSteps) * 100"
-            aria-valuenow="20"
-            aria-valuemin="0"
-            aria-valuemax="100"
-          ></div>
-        </div>
-      </div>
-
-      <!-- Step Error Alert -->
-      @if (stepError()) {
-        <div class="alert alert-danger p-2 small mb-4" role="alert">
-          {{ stepError() }}
-        </div>
-      }
-      @if (errorMessage()) {
-        <div class="alert alert-danger p-2 small mb-4" role="alert">
-          {{ errorMessage() }}
-        </div>
-      }
-
-      <div class="card p-4 p-md-5 border-0 shadow-sm bg-white">
-        <!-- STEP 1: Personal Details -->
-        @if (currentStep() === 1) {
-          <h2 class="h5 fw-bold text-dark mb-4 border-bottom pb-2">Step 1: Personal Details</h2>
-          <div class="row g-3">
-            <div class="col-12">
-              <label for="applyName" class="form-label small fw-semibold">
-                Candidate Full Legal Name <span class="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                id="applyName"
-                class="form-control"
-                placeholder="Full name as in 10th marksheet"
-                [ngModel]="applicantName()"
-                (ngModelChange)="applicantName.set($event)"
-                required
-              />
-            </div>
-
-            <div class="col-md-6 col-12">
-              <label for="applyGender" class="form-label small fw-semibold">Gender <span class="text-danger">*</span></label>
-              <select id="applyGender" class="form-select" [ngModel]="gender()" (ngModelChange)="gender.set($event)">
-                <option value="Female">Female</option>
-                <option value="Male">Male</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <div class="col-md-6 col-12">
-              <label for="applyDob" class="form-label small fw-semibold">Date of Birth <span class="text-danger">*</span></label>
-              <input
-                type="date"
-                id="applyDob"
-                class="form-control"
-                [ngModel]="dob()"
-                (ngModelChange)="dob.set($event)"
-                required
-              />
-            </div>
-
-            <div class="col-12">
-              <label for="applyCategory" class="form-label small fw-semibold">Social Category <span class="text-danger">*</span></label>
-              <select id="applyCategory" class="form-select" [ngModel]="category()" (ngModelChange)="category.set($event)">
-                <option value="General">General / Unreserved</option>
-                <option value="OBC">OBC (Other Backward Class)</option>
-                <option value="SC">SC (Scheduled Caste)</option>
-                <option value="ST">ST (Scheduled Tribe)</option>
-                <option value="EWS">EWS (Economically Weaker Section)</option>
-              </select>
-            </div>
-          </div>
-        }
-
-        <!-- STEP 2: Family & Contact -->
-        @if (currentStep() === 2) {
-          <h2 class="h5 fw-bold text-dark mb-4 border-bottom pb-2">Step 2: Family &amp; Contact Details</h2>
-          <div class="row g-3">
-            <div class="col-md-6 col-12">
-              <label for="applyFather" class="form-label small fw-semibold">Father's Full Name <span class="text-danger">*</span></label>
-              <input type="text" id="applyFather" class="form-control" [ngModel]="fatherName()" (ngModelChange)="fatherName.set($event)" required />
-            </div>
-
-            <div class="col-md-6 col-12">
-              <label for="applyMother" class="form-label small fw-semibold">Mother's Full Name <span class="text-danger">*</span></label>
-              <input type="text" id="applyMother" class="form-control" [ngModel]="motherName()" (ngModelChange)="motherName.set($event)" required />
-            </div>
-
-            <div class="col-md-6 col-12">
-              <label for="applyPhone" class="form-label small fw-semibold">Mobile Number <span class="text-danger">*</span></label>
-              <input type="tel" id="applyPhone" class="form-control" placeholder="10-digit number" [ngModel]="phone()" (ngModelChange)="phone.set($event)" maxlength="15" required />
-            </div>
-
-            <div class="col-md-6 col-12">
-              <label for="applyEmail" class="form-label small fw-semibold">Email Address <span class="text-danger">*</span></label>
-              <input type="email" id="applyEmail" class="form-control" placeholder="candidate@example.com" [ngModel]="email()" (ngModelChange)="email.set($event)" required />
-            </div>
-
-            <div class="col-12">
-              <label for="applyStreet" class="form-label small fw-semibold">Address / Street</label>
-              <input type="text" id="applyStreet" class="form-control" placeholder="Village / Ward / Street" [ngModel]="street()" (ngModelChange)="street.set($event)" />
-            </div>
-
-            <div class="col-md-4 col-12">
-              <label for="applyDistrict" class="form-label small fw-semibold">District <span class="text-danger">*</span></label>
-              <input type="text" id="applyDistrict" class="form-control" [ngModel]="district()" (ngModelChange)="district.set($event)" required />
-            </div>
-
-            <div class="col-md-4 col-12">
-              <label for="applyState" class="form-label small fw-semibold">State <span class="text-danger">*</span></label>
-              <input type="text" id="applyState" class="form-control" [ngModel]="state()" (ngModelChange)="state.set($event)" required />
-            </div>
-
-            <div class="col-md-4 col-12">
-              <label for="applyPincode" class="form-label small fw-semibold">Pincode <span class="text-danger">*</span></label>
-              <input type="text" id="applyPincode" class="form-control" [ngModel]="pincode()" (ngModelChange)="pincode.set($event)" maxlength="6" required />
-            </div>
-          </div>
-        }
-
-        <!-- STEP 3: Course Selection -->
-        @if (currentStep() === 3) {
-          <h2 class="h5 fw-bold text-dark mb-4 border-bottom pb-2">Step 3: Target Nursing Program</h2>
-          <p class="text-muted small mb-3">Please select the nursing discipline you are applying for in session 2026:</p>
-
-          <div class="d-flex flex-column gap-3">
-            @for (prog of programs; track prog) {
-              <label class="p-3 border rounded d-flex align-items-center gap-3 cursor-pointer" [class.border-warning]="selectedProgram() === prog" [class.bg-light]="selectedProgram() === prog">
-                <input
-                  type="radio"
-                  name="programSelection"
-                  [value]="prog"
-                  [checked]="selectedProgram() === prog"
-                  (change)="selectedProgram.set(prog)"
-                />
-                <div>
-                  <div class="fw-bold text-dark">{{ prog }}</div>
-                  <span class="extra-small-para text-muted">Session 2026-2027 • Approved Intake Track</span>
-                </div>
-              </label>
-            }
-          </div>
-        }
-
-        <!-- STEP 4: Academic Qualifications -->
-        @if (currentStep() === 4) {
-          <h2 class="h5 fw-bold text-dark mb-4 border-bottom pb-2">Step 4: Academic Background (10th &amp; 12th)</h2>
-          <div class="row g-3">
-            <div class="col-12"><h3 class="h6 fw-bold text-muted mb-0">10th Standard / Matriculation:</h3></div>
-            <div class="col-md-4 col-12">
-              <label for="tenthBoard" class="form-label small fw-semibold">Board</label>
-              <input type="text" id="tenthBoard" class="form-control" [ngModel]="tenthBoard()" (ngModelChange)="tenthBoard.set($event)" />
-            </div>
-            <div class="col-md-4 col-12">
-              <label for="tenthYear" class="form-label small fw-semibold">Passing Year</label>
-              <input type="number" id="tenthYear" class="form-control" [ngModel]="tenthYear()" (ngModelChange)="tenthYear.set($event)" />
-            </div>
-            <div class="col-md-4 col-12">
-              <label for="tenthPercentage" class="form-label small fw-semibold">Aggregate %</label>
-              <input type="number" id="tenthPercentage" class="form-control" [ngModel]="tenthPercentage()" (ngModelChange)="tenthPercentage.set($event)" />
-            </div>
-
-            <div class="col-12 mt-4"><h3 class="h6 fw-bold text-muted mb-0">12th Standard / Intermediate:</h3></div>
-            <div class="col-md-4 col-12">
-              <label for="twelfthBoard" class="form-label small fw-semibold">Board</label>
-              <input type="text" id="twelfthBoard" class="form-control" [ngModel]="twelfthBoard()" (ngModelChange)="twelfthBoard.set($event)" />
-            </div>
-            <div class="col-md-4 col-12">
-              <label for="twelfthYear" class="form-label small fw-semibold">Passing Year</label>
-              <input type="number" id="twelfthYear" class="form-control" [ngModel]="twelfthYear()" (ngModelChange)="twelfthYear.set($event)" />
-            </div>
-            <div class="col-md-4 col-12">
-              <label for="twelfthPercentage" class="form-label small fw-semibold">Aggregate %</label>
-              <input type="number" id="twelfthPercentage" class="form-control" [ngModel]="twelfthPercentage()" (ngModelChange)="twelfthPercentage.set($event)" />
-            </div>
-            <div class="col-md-6 col-12">
-              <label for="pcbPercentage" class="form-label small fw-semibold">Physics, Chemistry, Biology (PCB) %</label>
-              <input type="number" id="pcbPercentage" class="form-control" [ngModel]="pcbPercentage()" (ngModelChange)="pcbPercentage.set($event)" />
-            </div>
-          </div>
-        }
-
-        <!-- STEP 5: Review & Declaration -->
-        @if (currentStep() === 5) {
-          <h2 class="h5 fw-bold text-dark mb-4 border-bottom pb-2">Step 5: Review &amp; Declaration</h2>
-
-          <div class="card p-3 bg-light border mb-4">
-            <h3 class="h6 fw-bold mb-2">Application Summary:</h3>
-            <div class="row g-2 small text-muted">
-              <div class="col-md-6"><strong>Candidate:</strong> {{ applicantName() }}</div>
-              <div class="col-md-6"><strong>Gender / DOB:</strong> {{ gender() }}, {{ dob() }}</div>
-              <div class="col-md-6"><strong>Mobile / Email:</strong> {{ phone() }}, {{ email() }}</div>
-              <div class="col-md-6"><strong>District / State:</strong> {{ district() }}, {{ state() }} ({{ pincode() }})</div>
-              <div class="col-12 mt-2"><strong>Target Discipline:</strong> <span class="badge bg-warning text-dark">{{ selectedProgram() }}</span></div>
-            </div>
-          </div>
-
-          <div class="form-check mb-4">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              id="applyDeclaration"
-              [ngModel]="declaration()"
-              (ngModelChange)="declaration.set($event)"
-              required
-            />
-            <label class="form-check-label small text-muted" for="applyDeclaration">
-              I hereby declare that all entries made in this application are true, complete, and correct to the best of my knowledge. I understand that admission is provisional and subject to statutory scrutiny of original certificates.
-            </label>
-          </div>
-        }
-
-        <!-- Navigation Buttons -->
-        <div class="d-flex justify-content-between align-items-center mt-5 pt-3 border-top">
-          @if (currentStep() > 1) {
-            <button type="button" class="btn btn-outline-secondary btn-sm px-4" (click)="prevStep()">
-              &larr; Previous Step
-            </button>
-          } @else {
-            <div></div>
-          }
-
-          @if (currentStep() < totalSteps) {
-            <button type="button" class="btn btn-institutional-primary btn-sm px-4" (click)="nextStep()">
-              Continue &rarr;
-            </button>
-          } @else {
-            <button
-              type="button"
-              class="btn btn-institutional-primary px-4 fw-bold"
-              [disabled]="isSubmitting() || !declaration()"
-              (click)="submitApplication()"
-            >
-              @if (isSubmitting()) {
-                <span class="spinner-border spinner-border-sm me-2"></span> Submitting...
-              } @else {
-                Submit Application &rarr;
+      <!-- 2-Column Application Layout -->
+      <div class="row g-4">
+        <!-- Main Form Column (8 cols) -->
+        <div class="col-lg-8">
+          <!-- Interactive Horizontal Stepper -->
+          <div class="card p-3 mb-4 border-0 shadow-sm bg-white">
+            <div class="stepper-track d-flex justify-content-between align-items-center mb-3">
+              @for (step of [1, 2, 3, 4, 5]; track step) {
+                <button
+                  type="button"
+                  class="step-badge-btn"
+                  [class.active]="currentStep() === step"
+                  [class.completed]="currentStep() > step"
+                  [disabled]="currentStep() < step"
+                  (click)="goToStep(step)"
+                  [title]="'Go to Step ' + step"
+                >
+                  <span class="step-circle">
+                    @if (currentStep() > step) {
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>
+                    } @else {
+                      {{ step }}
+                    }
+                  </span>
+                  <span class="step-text d-none d-sm-inline">
+                    @switch (step) {
+                      @case (1) { Personal }
+                      @case (2) { Contact }
+                      @case (3) { Program }
+                      @case (4) { Academic }
+                      @case (5) { Review }
+                    }
+                  </span>
+                </button>
               }
-            </button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-semibold text-muted">
+                Step {{ currentStep() }} of {{ totalSteps }}:
+                <strong class="text-dark">
+                  @switch (currentStep()) {
+                    @case (1) { Personal Details }
+                    @case (2) { Family &amp; Communication Address }
+                    @case (3) { Course / Program Selection }
+                    @case (4) { Academic Qualifications (10th &amp; 12th) }
+                    @case (5) { Review Details &amp; Declaration }
+                  }
+                </strong>
+              </span>
+              <span class="small fw-bold text-warning">{{ (currentStep() / totalSteps * 100) | number:'1.0-0' }}% Completed</span>
+            </div>
+            <div class="progress" style="height: 6px;">
+              <div
+                class="progress-bar bg-warning progress-bar-striped progress-bar-animated"
+                role="progressbar"
+                [style.width.%]="(currentStep() / totalSteps) * 100"
+                aria-valuenow="20"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Step Error Alert -->
+          @if (stepError()) {
+            <div class="alert alert-danger p-3 small mb-4 rounded-3 d-flex align-items-center gap-2 fm-fade-down" role="alert">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" class="flex-shrink-0 text-danger"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/></svg>
+              <span>{{ stepError() }}</span>
+            </div>
           }
+          @if (errorMessage()) {
+            <div class="alert alert-danger p-3 small mb-4 rounded-3 d-flex align-items-center gap-2 fm-fade-down" role="alert">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" class="flex-shrink-0 text-danger"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/></svg>
+              <span>{{ errorMessage() }}</span>
+            </div>
+          }
+
+          <!-- Form Card -->
+          <div class="card p-4 p-md-5 border-0 shadow-sm bg-white fm-step-card">
+            <!-- STEP 1: Personal Details -->
+            @if (currentStep() === 1) {
+              <div class="fm-fade-up">
+                <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+                  <div>
+                    <h2 class="h5 fw-bold text-dark mb-0">Step 1: Personal Details</h2>
+                    <p class="text-muted small mb-0">Enter the candidate's legal details as recorded in Matriculation certificate.</p>
+                  </div>
+                  <span class="badge bg-light text-muted border">1 of 5</span>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label for="applicantName" class="form-label small fw-semibold text-dark">
+                      Candidate Full Name <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="applicantName"
+                      class="form-control form-control-lg"
+                      placeholder="e.g. Priya Kumari"
+                      [ngModel]="applicantName()"
+                      (ngModelChange)="applicantName.set($event); saveDraft()"
+                      required
+                    />
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="gender" class="form-label small fw-semibold text-dark">
+                      Gender <span class="text-danger">*</span>
+                    </label>
+                    <select
+                      id="gender"
+                      class="form-select form-select-lg"
+                      [ngModel]="gender()"
+                      (ngModelChange)="gender.set($event); saveDraft()"
+                    >
+                      <option value="Female">Female</option>
+                      <option value="Male">Male</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="dob" class="form-label small fw-semibold text-dark">
+                      Date of Birth <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      id="dob"
+                      class="form-control form-control-lg"
+                      [ngModel]="dob()"
+                      (ngModelChange)="dob.set($event); saveDraft()"
+                      required
+                    />
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="category" class="form-label small fw-semibold text-dark">
+                      Social Category <span class="text-danger">*</span>
+                    </label>
+                    <select
+                      id="category"
+                      class="form-select form-select-lg"
+                      [ngModel]="category()"
+                      (ngModelChange)="category.set($event); saveDraft()"
+                    >
+                      <option value="General">General / UR</option>
+                      <option value="OBC">OBC</option>
+                      <option value="EWS">EWS</option>
+                      <option value="SC">SC</option>
+                      <option value="ST">ST</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- STEP 2: Family & Contact -->
+            @if (currentStep() === 2) {
+              <div class="fm-fade-up">
+                <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+                  <div>
+                    <h2 class="h5 fw-bold text-dark mb-0">Step 2: Family &amp; Communication Address</h2>
+                    <p class="text-muted small mb-0">Parental information and permanent residential postal address.</p>
+                  </div>
+                  <span class="badge bg-light text-muted border">2 of 5</span>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="fatherName" class="form-label small fw-semibold text-dark">
+                      Father's Name <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="fatherName"
+                      class="form-control form-control-lg"
+                      placeholder="e.g. Ramesh Chandra Sharma"
+                      [ngModel]="fatherName()"
+                      (ngModelChange)="fatherName.set($event); saveDraft()"
+                      required
+                    />
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="motherName" class="form-label small fw-semibold text-dark">
+                      Mother's Name <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="motherName"
+                      class="form-control form-control-lg"
+                      placeholder="e.g. Sunita Devi"
+                      [ngModel]="motherName()"
+                      (ngModelChange)="motherName.set($event); saveDraft()"
+                      required
+                    />
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="phone" class="form-label small fw-semibold text-dark">
+                      Primary Contact Number (WhatsApp) <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group input-group-lg">
+                      <span class="input-group-text bg-light text-muted">+91</span>
+                      <input
+                        type="tel"
+                        id="phone"
+                        class="form-control"
+                        placeholder="10-digit mobile number"
+                        maxlength="10"
+                        [ngModel]="phone()"
+                        (ngModelChange)="phone.set($event); saveDraft()"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="email" class="form-label small fw-semibold text-dark">
+                      Email Address <span class="text-muted small">(for admission letter)</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      class="form-control form-control-lg"
+                      placeholder="e.g. priya@example.com"
+                      [ngModel]="email()"
+                      (ngModelChange)="email.set($event); saveDraft()"
+                    />
+                  </div>
+
+                  <div class="col-12">
+                    <label for="street" class="form-label small fw-semibold text-dark">
+                      Village / Street / Landmark Address
+                    </label>
+                    <input
+                      type="text"
+                      id="street"
+                      class="form-control form-control-lg"
+                      placeholder="e.g. Village Rampur, Near Old Post Office"
+                      [ngModel]="street()"
+                      (ngModelChange)="street.set($event); saveDraft()"
+                    />
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="district" class="form-label small fw-semibold text-dark">
+                      District <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="district"
+                      class="form-control form-control-lg"
+                      placeholder="e.g. Patna / Gaya"
+                      [ngModel]="district()"
+                      (ngModelChange)="district.set($event); saveDraft()"
+                      required
+                    />
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="state" class="form-label small fw-semibold text-dark">
+                      State <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="state"
+                      class="form-control form-control-lg"
+                      [ngModel]="state()"
+                      (ngModelChange)="state.set($event); saveDraft()"
+                      required
+                    />
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="pincode" class="form-label small fw-semibold text-dark">
+                      Postal Pincode <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="pincode"
+                      class="form-control form-control-lg"
+                      placeholder="6-digit PIN"
+                      maxlength="6"
+                      [ngModel]="pincode()"
+                      (ngModelChange)="pincode.set($event); saveDraft()"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- STEP 3: Program Selection -->
+            @if (currentStep() === 3) {
+              <div class="fm-fade-up">
+                <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+                  <div>
+                    <h2 class="h5 fw-bold text-dark mb-0">Step 3: Nursing Program Choice</h2>
+                    <p class="text-muted small mb-0">Select the program you wish to pursue for academic session 2026–2027.</p>
+                  </div>
+                  <span class="badge bg-light text-muted border">3 of 5</span>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                  @for (card of programCards; track card.id) {
+                    <div
+                      class="program-selection-card p-3 p-md-4 rounded-3 border fm-hover-lift cursor-pointer"
+                      [class.selected]="selectedProgram() === card.name"
+                      (click)="selectProgram(card.name)"
+                      tabindex="0"
+                      (keyup.enter)="selectProgram(card.name)"
+                      role="radio"
+                      [attr.aria-checked]="selectedProgram() === card.name"
+                    >
+                      <div class="d-flex align-items-start justify-content-between gap-3">
+                        <div class="d-flex align-items-start gap-3">
+                          <div class="program-radio-indicator mt-1">
+                            @if (selectedProgram() === card.name) {
+                              <div class="program-radio-dot"></div>
+                            }
+                          </div>
+                          <div>
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                              <h3 class="h6 fw-bold text-dark mb-0">{{ card.name }}</h3>
+                              @if (card.badge) {
+                                <span class="badge bg-warning text-dark text-uppercase fs-xs fw-bold">{{ card.badge }}</span>
+                              }
+                            </div>
+                            <div class="text-muted small mb-2">
+                              <span class="fw-semibold text-primary me-2">⏳ {{ card.duration }}</span>
+                              <span class="badge bg-light text-secondary border me-2">{{ card.level }}</span>
+                              <span class="text-muted small">Seats: {{ card.seats }}</span>
+                            </div>
+                            <p class="small text-muted mb-0">
+                              <strong class="text-dark">Eligibility:</strong> {{ card.eligibility }}
+                            </p>
+                          </div>
+                        </div>
+                        @if (selectedProgram() === card.name) {
+                          <span class="badge bg-success-subtle text-success border border-success-subtle d-none d-sm-inline">
+                            Selected
+                          </span>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- STEP 4: Academic Details -->
+            @if (currentStep() === 4) {
+              <div class="fm-fade-up">
+                <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+                  <div>
+                    <h2 class="h5 fw-bold text-dark mb-0">Step 4: Academic Qualifications</h2>
+                    <p class="text-muted small mb-0">Enter your secondary (10th) and senior secondary (10+2) academic metrics.</p>
+                  </div>
+                  <span class="badge bg-light text-muted border">4 of 5</span>
+                </div>
+
+                <div class="p-3 bg-light rounded-3 border mb-4">
+                  <h3 class="h6 fw-bold text-dark mb-3">10th Standard (Matriculation)</h3>
+                  <div class="row g-3">
+                    <div class="col-md-5">
+                      <label for="tenthBoard" class="form-label small fw-semibold text-dark">Board Name <span class="text-danger">*</span></label>
+                      <input
+                        type="text"
+                        id="tenthBoard"
+                        class="form-control"
+                        placeholder="e.g. BSEB / CBSE / ICSE"
+                        [ngModel]="tenthBoard()"
+                        (ngModelChange)="tenthBoard.set($event); saveDraft()"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-3">
+                      <label for="tenthYear" class="form-label small fw-semibold text-dark">Year Passed <span class="text-danger">*</span></label>
+                      <input
+                        type="number"
+                        id="tenthYear"
+                        class="form-control"
+                        min="2010"
+                        max="2026"
+                        [ngModel]="tenthYear()"
+                        (ngModelChange)="tenthYear.set($event); saveDraft()"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="tenthPercentage" class="form-label small fw-semibold text-dark">Aggregate % <span class="text-danger">*</span></label>
+                      <input
+                        type="number"
+                        id="tenthPercentage"
+                        class="form-control"
+                        min="30"
+                        max="100"
+                        step="0.01"
+                        placeholder="e.g. 78.5"
+                        [ngModel]="tenthPercentage()"
+                        (ngModelChange)="tenthPercentage.set($event); saveDraft()"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-3 bg-light rounded-3 border mb-3">
+                  <h3 class="h6 fw-bold text-dark mb-3">12th Standard / Intermediate (10+2)</h3>
+                  <div class="row g-3">
+                    <div class="col-md-5">
+                      <label for="twelfthBoard" class="form-label small fw-semibold text-dark">Board Name <span class="text-danger">*</span></label>
+                      <input
+                        type="text"
+                        id="twelfthBoard"
+                        class="form-control"
+                        placeholder="e.g. BSEB / CBSE / Other"
+                        [ngModel]="twelfthBoard()"
+                        (ngModelChange)="twelfthBoard.set($event); saveDraft()"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-3">
+                      <label for="twelfthYear" class="form-label small fw-semibold text-dark">Year Passed <span class="text-danger">*</span></label>
+                      <input
+                        type="number"
+                        id="twelfthYear"
+                        class="form-control"
+                        min="2010"
+                        max="2026"
+                        [ngModel]="twelfthYear()"
+                        (ngModelChange)="twelfthYear.set($event); saveDraft()"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="twelfthPercentage" class="form-label small fw-semibold text-dark">Aggregate % <span class="text-danger">*</span></label>
+                      <input
+                        type="number"
+                        id="twelfthPercentage"
+                        class="form-control"
+                        min="30"
+                        max="100"
+                        step="0.01"
+                        placeholder="e.g. 72.0"
+                        [ngModel]="twelfthPercentage()"
+                        (ngModelChange)="twelfthPercentage.set($event); saveDraft()"
+                        required
+                      />
+                    </div>
+                    <div class="col-12">
+                      <label for="pcbPercentage" class="form-label small fw-semibold text-dark">
+                        Physics + Chemistry + Biology (PCB) Aggregate %
+                      </label>
+                      <div class="input-group">
+                        <input
+                          type="number"
+                          id="pcbPercentage"
+                          class="form-control"
+                          min="0"
+                          max="100"
+                          step="0.01"
+                          placeholder="e.g. 68.5"
+                          [ngModel]="pcbPercentage()"
+                          (ngModelChange)="pcbPercentage.set($event); saveDraft()"
+                        />
+                        <span class="input-group-text bg-light text-muted">%</span>
+                      </div>
+                      <div class="form-text small">
+                        Note: For B.Sc. Nursing, INC mandates min 45% aggregate in PCB (40% for SC/ST).
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- STEP 5: Review & Declaration -->
+            @if (currentStep() === 5) {
+              <div class="fm-fade-up">
+                <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+                  <div>
+                    <h2 class="h5 fw-bold text-dark mb-0">Step 5: Review Application &amp; Declaration</h2>
+                    <p class="text-muted small mb-0">Please verify all entered details before final submission.</p>
+                  </div>
+                  <span class="badge bg-light text-muted border">5 of 5</span>
+                </div>
+
+                <div class="review-grid d-flex flex-column gap-3 mb-4">
+                  <!-- Section 1 Summary -->
+                  <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="fw-bold small text-dark text-uppercase">1. Candidate Information</span>
+                      <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-warning fw-semibold" (click)="goToStep(1)">Edit</button>
+                    </div>
+                    <div class="row g-2 small">
+                      <div class="col-sm-6"><span class="text-muted">Name:</span> <strong class="text-dark">{{ applicantName() }}</strong></div>
+                      <div class="col-sm-6"><span class="text-muted">Gender:</span> <strong class="text-dark">{{ gender() }}</strong></div>
+                      <div class="col-sm-6"><span class="text-muted">DOB:</span> <strong class="text-dark">{{ dob() }}</strong></div>
+                      <div class="col-sm-6"><span class="text-muted">Category:</span> <strong class="text-dark">{{ category() }}</strong></div>
+                    </div>
+                  </div>
+
+                  <!-- Section 2 Summary -->
+                  <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="fw-bold small text-dark text-uppercase">2. Family &amp; Contact</span>
+                      <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-warning fw-semibold" (click)="goToStep(2)">Edit</button>
+                    </div>
+                    <div class="row g-2 small">
+                      <div class="col-sm-6"><span class="text-muted">Father:</span> <strong class="text-dark">{{ fatherName() }}</strong></div>
+                      <div class="col-sm-6"><span class="text-muted">Mother:</span> <strong class="text-dark">{{ motherName() }}</strong></div>
+                      <div class="col-sm-6"><span class="text-muted">Phone:</span> <strong class="text-dark">+91 {{ phone() }}</strong></div>
+                      <div class="col-sm-6"><span class="text-muted">Email:</span> <strong class="text-dark">{{ email() || 'N/A' }}</strong></div>
+                      <div class="col-12"><span class="text-muted">Address:</span> <strong class="text-dark">{{ street() ? street() + ', ' : '' }}{{ district() }}, {{ state() }} - {{ pincode() }}</strong></div>
+                    </div>
+                  </div>
+
+                  <!-- Section 3 Summary -->
+                  <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="fw-bold small text-dark text-uppercase">3. Program Choice</span>
+                      <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-warning fw-semibold" (click)="goToStep(3)">Edit</button>
+                    </div>
+                    <div class="small">
+                      <span class="text-muted">Selected Discipline:</span>
+                      <strong class="text-primary fs-6 d-block mt-1">{{ selectedProgram() }}</strong>
+                    </div>
+                  </div>
+
+                  <!-- Section 4 Summary -->
+                  <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="fw-bold small text-dark text-uppercase">4. Academic Records</span>
+                      <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-warning fw-semibold" (click)="goToStep(4)">Edit</button>
+                    </div>
+                    <div class="row g-2 small">
+                      <div class="col-sm-6"><span class="text-muted">10th Board:</span> <strong class="text-dark">{{ tenthBoard() }} ({{ tenthYear() }}) - {{ tenthPercentage() }}%</strong></div>
+                      <div class="col-sm-6"><span class="text-muted">12th Board:</span> <strong class="text-dark">{{ twelfthBoard() }} ({{ twelfthYear() }}) - {{ twelfthPercentage() }}%</strong></div>
+                      <div class="col-sm-6"><span class="text-muted">PCB Aggregate:</span> <strong class="text-dark">{{ pcbPercentage() }}%</strong></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Solemn Declaration -->
+                <div class="p-3 p-md-4 rounded-3 border bg-warning-subtle mb-4">
+                  <div class="form-check">
+                    <input
+                      type="checkbox"
+                      id="declaration"
+                      class="form-check-input mt-1"
+                      [ngModel]="declaration()"
+                      (ngModelChange)="declaration.set($event)"
+                      required
+                    />
+                    <label for="declaration" class="form-check-label small text-dark ms-2">
+                      <strong>Solemn Candidate Undertaking:</strong> I hereby declare that all entries furnished in this application are true, complete, and correct to the best of my knowledge. I understand that any false information will disqualify my candidature from admissions at Kavya Shree Institute of Nursing.
+                    </label>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- Bottom Navigation Bar -->
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-4">
+              @if (currentStep() > 1) {
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary px-4 fw-semibold fm-hover-lift"
+                  (click)="prevStep()"
+                  [disabled]="isSubmitting()"
+                >
+                  &larr; Back
+                </button>
+              } @else {
+                <div></div>
+              }
+
+              @if (currentStep() < totalSteps) {
+                <button
+                  type="button"
+                  class="btn btn-warning px-4 fw-semibold text-dark shadow-sm fm-hover-lift"
+                  (click)="nextStep()"
+                >
+                  Continue &rarr;
+                </button>
+              } @else {
+                <button
+                  type="button"
+                  class="btn btn-warning px-5 fw-bold text-dark shadow fm-hover-lift"
+                  (click)="submitApplication()"
+                  [disabled]="isSubmitting() || !declaration()"
+                >
+                  @if (isSubmitting()) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Submitting Application...
+                  } @else {
+                    Submit Formal Application
+                  }
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar Column (4 cols) -->
+        <div class="col-lg-4">
+          <aside class="d-flex flex-column gap-4">
+            <!-- Admissions Desk Info Card -->
+            <div class="card p-4 border-0 shadow-sm bg-white rounded-3 fm-reveal">
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="p-2 rounded-circle bg-warning-subtle text-warning-emphasis">
+                  <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                  </svg>
+                </span>
+                <div>
+                  <h3 class="h6 fw-bold text-dark mb-0">Admissions Desk</h3>
+                  <span class="text-muted small">Academic Year 2026–2027</span>
+                </div>
+              </div>
+
+              <div class="small text-muted mb-3">
+                Need immediate help with your application or eligibility verification? Our senior admissions counselors are available daily 9:00 AM – 6:00 PM.
+              </div>
+
+              <div class="d-flex flex-column gap-2 small border-top pt-3">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="text-warning fw-bold">📞 Helpline:</span>
+                  <a href="tel:+919876543210" class="text-decoration-none text-dark fw-bold">+91 98765 43210</a>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="text-warning fw-bold">✉️ Email:</span>
+                  <a href="mailto:admissions@kavyashreenursing.edu.in" class="text-decoration-none text-dark">admissions@kavyashreenursing.edu.in</a>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="text-warning fw-bold">📍 Campus:</span>
+                  <span class="text-dark">Patna, Bihar</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mandatory Documents Checklist -->
+            <div class="card p-4 border-0 shadow-sm bg-white rounded-3 fm-reveal">
+              <h3 class="h6 fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                <span>📋</span> Document Checklist for Counseling
+              </h3>
+              <ul class="list-unstyled small text-muted d-flex flex-column gap-2 mb-0">
+                <li class="d-flex align-items-start gap-2">
+                  <span class="text-success fw-bold">✓</span>
+                  <span>10th Matriculation Mark Sheet &amp; Certificate</span>
+                </li>
+                <li class="d-flex align-items-start gap-2">
+                  <span class="text-success fw-bold">✓</span>
+                  <span>10+2 Intermediate Mark Sheet &amp; Passing Certificate</span>
+                </li>
+                <li class="d-flex align-items-start gap-2">
+                  <span class="text-success fw-bold">✓</span>
+                  <span>School/College Leaving Certificate (CLC/TC)</span>
+                </li>
+                <li class="d-flex align-items-start gap-2">
+                  <span class="text-success fw-bold">✓</span>
+                  <span>Migration Certificate (if applicable)</span>
+                </li>
+                <li class="d-flex align-items-start gap-2">
+                  <span class="text-success fw-bold">✓</span>
+                  <span>Caste / Category Certificate (OBC/SC/ST/EWS)</span>
+                </li>
+                <li class="d-flex align-items-start gap-2">
+                  <span class="text-success fw-bold">✓</span>
+                  <span>6 Recent Passport Size Color Photographs</span>
+                </li>
+                <li class="d-flex align-items-start gap-2">
+                  <span class="text-success fw-bold">✓</span>
+                  <span>Aadhaar Card or Govt. Issued Photo ID</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Institutional Accreditation -->
+            <div class="card p-4 border-0 shadow-sm bg-primary text-white rounded-3 fm-reveal">
+              <h3 class="h6 fw-bold text-white mb-2">Govt. Recognized Campus</h3>
+              <p class="small text-white-50 mb-3">
+                Kavya Shree Institute of Nursing is officially recognized by the Indian Nursing Council (INC) and Bihar Nursing Registration Council (BNRC).
+              </p>
+              <div class="d-flex align-items-center gap-2 small">
+                <span class="badge bg-warning text-dark fw-bold">INC &amp; BNRC</span>
+                <span class="text-white-50">100% Placement Record</span>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
     }
   </div>
 </section>
-

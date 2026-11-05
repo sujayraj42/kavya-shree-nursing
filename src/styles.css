@@ -62,6 +62,12 @@
   /* Focus Indicator (WCAG 2.2 AA) */
   --ks-focus-ring: 0 0 0 3px rgba(235, 150, 36, 0.45);
   --ks-focus-outline: 2px solid var(--color--carrot-orange);
+
+  /* Framer Motion Spring & Easing Physics Tokens */
+  --fm-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --fm-spring-snappy: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --fm-spring-bouncy: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --fm-ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* Global Reset & Base Setup */
@@ -925,3 +931,240 @@ textarea:focus-visible {
     text-align: center;
   }
 }
+
+/* ==========================================================================
+   Framer-Motion Style Animation & Interaction Engine
+   Spring physics, scroll reveal orchestration, and micro-interactions
+   ========================================================================== */
+
+@keyframes fmSpringUp {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fmSpringDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fmFade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fmScaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fmSlideLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fmSlideRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fmPulseAmber {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(235, 150, 36, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(235, 150, 36, 0);
+  }
+}
+
+@keyframes fmShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fmPageIn {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Core Framer-Motion Style Utilities */
+.fm-fade-up {
+  animation: fmSpringUp 0.65s var(--fm-spring) both;
+}
+
+.fm-fade-down {
+  animation: fmSpringDown 0.6s var(--fm-spring) both;
+}
+
+.fm-fade-in {
+  animation: fmFade 0.4s ease-out both;
+}
+
+.fm-scale-in {
+  animation: fmScaleIn 0.55s var(--fm-spring) both;
+}
+
+.fm-slide-left {
+  animation: fmSlideLeft 0.55s var(--fm-spring) both;
+}
+
+.fm-slide-right {
+  animation: fmSlideRight 0.55s var(--fm-spring) both;
+}
+
+.fm-page-enter {
+  animation: fmPageIn 0.48s var(--fm-spring) both;
+}
+
+.fm-pulse-glow {
+  animation: fmPulseAmber 2.2s infinite ease-in-out;
+}
+
+/* Stagger Delays */
+.fm-stagger-1 { animation-delay: 60ms; }
+.fm-stagger-2 { animation-delay: 120ms; }
+.fm-stagger-3 { animation-delay: 180ms; }
+.fm-stagger-4 { animation-delay: 240ms; }
+.fm-stagger-5 { animation-delay: 300ms; }
+
+/* Interactive Hover & Tap Micro-Interactions */
+.fm-hover-lift {
+  transition: transform 0.28s var(--fm-spring), box-shadow 0.28s var(--fm-spring);
+  will-change: transform, box-shadow;
+}
+
+.fm-hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgba(15, 41, 66, 0.12);
+}
+
+.fm-hover-lift:active {
+  transform: translateY(-2px) scale(0.99);
+}
+
+.fm-hover-scale {
+  transition: transform 0.25s var(--fm-spring);
+  will-change: transform;
+}
+
+.fm-hover-scale:hover {
+  transform: scale(1.025);
+}
+
+.fm-press-scale {
+  transition: transform 0.16s ease;
+}
+
+.fm-press-scale:active {
+  transform: scale(0.97);
+}
+
+/* Scroll-triggered reveal system */
+.fm-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.65s var(--fm-spring), transform 0.65s var(--fm-spring);
+  will-change: opacity, transform;
+}
+
+.fm-reveal.fm-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fm-reveal-scale {
+  opacity: 0;
+  transform: scale(0.94);
+  transition: opacity 0.6s var(--fm-spring), transform 0.6s var(--fm-spring);
+  will-change: opacity, transform;
+}
+
+.fm-reveal-scale.fm-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Shimmer Loading / Accent Effect */
+.fm-shimmer-sweep {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: fmShimmer 2.5s infinite;
+}
+
+/* Step Transition Container */
+.fm-step-card {
+  transition: opacity 0.3s var(--fm-spring), transform 0.35s var(--fm-spring);
+}
+
+/* Accessibility: Strict Respect for Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .fm-fade-up,
+  .fm-fade-down,
+  .fm-fade-in,
+  .fm-scale-in,
+  .fm-slide-left,
+  .fm-slide-right,
+  .fm-page-enter,
+  .fm-pulse-glow,
+  .fm-shimmer-sweep {
+    animation: none !important;
+  }
+
+  .fm-reveal,
+  .fm-reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .fm-hover-lift:hover,
+  .fm-hover-lift:active,
+  .fm-hover-scale:hover,
+  .fm-press-scale:active {
+    transform: none !important;
+  }
+}
+
