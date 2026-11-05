@@ -5,6 +5,7 @@ const { Application, VALID_APPLICATION_STATUSES } = require('../models/Applicati
 const { VALID_PROGRAMS } = require('../models/Enquiry');
 const { notifyNewApplication, notifyStatusTransition } = require('../services/automation.service');
 const { generateApplicationReceiptHtml } = require('../services/receipt.service');
+const { logAdminAction } = require('../services/auditLogger');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^[6-9]\d{9}$/;
@@ -259,6 +260,7 @@ async function updateApplicationStatus(req, res, next) {
     const previousStatus = application.status;
     application.status = status;
     await application.save();
+    logAdminAction({ admin: req.admin, action: 'UPDATE_APPLICATION_STATUS', targetType: 'Application', targetId: application.id || application._id, details: { newStatus: status }, ip: req.ip });
 
     notifyStatusTransition({
       entityType: 'Application',
@@ -368,6 +370,7 @@ async function exportApplications(req, res, next) {
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    logAdminAction({ admin: req.admin, action: 'EXPORT_APPLICATIONS_CSV', targetType: 'Application', details: { count: rows.length }, ip: req.ip });
     res.status(200).send(csvContent);
   } catch (err) {
     next(err);
@@ -395,6 +398,7 @@ async function deleteApplication(req, res, next) {
 
     application.deletedAt = new Date();
     await application.save();
+    logAdminAction({ admin: req.admin, action: 'DELETE_APPLICATION', targetType: 'Application', targetId: application.id || application._id, ip: req.ip });
 
     res.status(200).json({ success: true, message: 'Application deleted successfully' });
   } catch (err) {
@@ -411,7 +415,8 @@ async function getApplicationReceipt(req, res, next) {
     }
 
     let application = null;
-    if (mongoose.Types.ObjectId.isValid(rawParam)) {
+    // Only authenticated administrators may look up applications by internal database ObjectId
+    if (req.admin && mongoose.Types.ObjectId.isValid(rawParam)) {
       application = await Application.findOne({ _id: rawParam, deletedAt: null });
     }
     if (!application) {
@@ -449,7 +454,8 @@ async function getApplicationStatus(req, res, next) {
     }
 
     let application = null;
-    if (mongoose.Types.ObjectId.isValid(rawParam)) {
+    // Only authenticated administrators may look up applications by internal database ObjectId
+    if (req.admin && mongoose.Types.ObjectId.isValid(rawParam)) {
       application = await Application.findOne({ _id: rawParam, deletedAt: null });
     }
     if (!application) {

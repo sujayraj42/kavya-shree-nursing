@@ -1,13 +1,13 @@
 'use strict';
 
+const { setCorsHeaders } = require('./_cors');
+
 /**
  * Vercel Serverless Function: API Directory & Health Index
  * Provides instant institutional API routing & health discovery.
  */
 module.exports = (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  setCorsHeaders(req, res);
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204;

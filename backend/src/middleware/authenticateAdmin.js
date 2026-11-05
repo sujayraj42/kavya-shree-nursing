@@ -96,4 +96,30 @@ async function authenticateAdmin(req, res, next) {
   }
 }
 
+/**
+ * Express middleware to enforce explicit role policies per route.
+ */
+function authorizeRoles(...allowedRoles) {
+  return (req, res, next) => {
+    if (!req.admin) {
+      return res.status(401).json({
+        success: false,
+        error: 'Authentication required before checking role authorizations.'
+      });
+    }
+
+    if (!allowedRoles.includes(req.admin.role)) {
+      return res.status(403).json({
+        success: false,
+        error: `Access denied. Action requires one of: ${allowedRoles.join(', ')}`
+      });
+    }
+
+    next();
+  };
+}
+
+authenticateAdmin.authorizeRoles = authorizeRoles;
+authenticateAdmin.authenticateAdmin = authenticateAdmin;
+
 module.exports = authenticateAdmin;

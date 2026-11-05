@@ -7,6 +7,7 @@ const config = require('../config/env');
 const { Admin } = require('../models/Admin');
 const { Enquiry, VALID_STATUSES, ALL_ALLOWED_STATUSES, normalizeStatus } = require('../models/Enquiry');
 const { notifyStatusTransition } = require('../services/automation.service');
+const { logAdminAction } = require('../services/auditLogger');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -78,6 +79,7 @@ async function login(req, res, next) {
 
     admin.lastLoginAt = new Date();
     await admin.save();
+    logAdminAction({ admin, action: 'LOGIN_SUCCESS', targetType: 'Admin', targetId: admin.id || admin._id, ip: req.ip });
 
     const token = jwt.sign(
       {
@@ -280,6 +282,7 @@ async function updateEnquiryStatus(req, res, next) {
 
     enquiry.status = normalizedStatus;
     await enquiry.save();
+    logAdminAction({ admin: req.admin, action: 'UPDATE_ENQUIRY_STATUS', targetType: 'Enquiry', targetId: enquiry.id || enquiry._id, details: { newStatus: normalizedStatus }, ip: req.ip });
 
     res.status(200).json({
       success: true,
@@ -343,6 +346,7 @@ async function addEnquiryNote(req, res, next) {
     });
 
     await enquiry.save();
+    logAdminAction({ admin: req.admin, action: 'ADD_ENQUIRY_NOTE', targetType: 'Enquiry', targetId: enquiry.id || enquiry._id, ip: req.ip });
 
     const createdNote = enquiry.notes[enquiry.notes.length - 1];
 
@@ -490,6 +494,7 @@ async function exportEnquiries(req, res, next) {
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    logAdminAction({ admin: req.admin, action: 'EXPORT_ENQUIRIES_CSV', targetType: 'Enquiry', details: { count: rows.length }, ip: req.ip });
     res.status(200).send(csvContent);
   } catch (error) {
     next(error);
@@ -520,6 +525,7 @@ async function deleteEnquiry(req, res, next) {
 
     enquiry.deletedAt = new Date();
     await enquiry.save();
+    logAdminAction({ admin: req.admin, action: 'DELETE_ENQUIRY', targetType: 'Enquiry', targetId: enquiry.id || enquiry._id, ip: req.ip });
 
     res.status(200).json({ success: true, message: 'Enquiry deleted successfully' });
   } catch (error) {
@@ -578,6 +584,7 @@ async function changePassword(req, res, next) {
 
     admin.password = newPassword;
     await admin.save();
+    logAdminAction({ admin: req.admin, action: 'CHANGE_PASSWORD', targetType: 'Admin', targetId: req.admin.id || req.admin._id, ip: req.ip });
 
     res.status(200).json({
       success: true,

@@ -20,6 +20,16 @@ if (config.trustProxy !== false) {
   app.set('trust proxy', config.trustProxy);
 }
 
+// Enforce HTTPS in production behind reverse proxies
+if (config.isProduction) {
+  app.use((req, res, next) => {
+    if (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(301, `https://${req.headers.host}${req.url}`);
+    }
+    next();
+  });
+}
+
 // Security HTTP headers
 app.use(helmet());
 

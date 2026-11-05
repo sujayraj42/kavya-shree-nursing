@@ -1,9 +1,9 @@
 'use strict';
 
+const { setCorsHeaders } = require('./_cors');
+
 module.exports = (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  setCorsHeaders(req, res);
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204;
@@ -20,4 +20,3 @@ module.exports = (req, res) => {
     version: '1.0.0'
   }));
 };
-

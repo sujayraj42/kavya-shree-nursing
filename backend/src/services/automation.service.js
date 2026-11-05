@@ -1,5 +1,6 @@
 'use strict';
 
+const crypto = require('crypto');
 const config = require('../config/env');
 
 /**
@@ -12,14 +13,23 @@ async function postWebhook(url, payload, { headers = {}, timeoutMs = 8000 } = {}
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
+    const bodyStr = JSON.stringify(payload);
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      'User-Agent': 'KavyaShree-Automation-Service/1.0',
+      ...headers
+    };
+
+    if (process.env.WEBHOOK_SECRET) {
+      const hmac = crypto.createHmac('sha256', process.env.WEBHOOK_SECRET);
+      hmac.update(bodyStr);
+      requestHeaders['X-Signature-256'] = `sha256=${hmac.digest('hex')}`;
+    }
+
     const res = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'KavyaShree-Automation-Service/1.0',
-        ...headers
-      },
-      body: JSON.stringify(payload),
+      headers: requestHeaders,
+      body: bodyStr,
       signal: controller.signal
     });
     return { ok: res.ok, status: res.status };

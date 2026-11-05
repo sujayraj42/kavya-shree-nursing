@@ -36,8 +36,32 @@ const loginLimiter = rateLimit({
   }
 });
 
+const lookupLimiter = rateLimit({
+  windowMs: config.rateLimitWindowMs,
+  max: 45,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: 'Too many application lookup requests from this IP, please try again later.'
+  }
+});
+
+const exportLimiter = rateLimit({
+  windowMs: config.rateLimitWindowMs,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: 'Export rate limit exceeded. Please wait before generating another report.'
+  }
+});
+
 module.exports = {
   globalLimiter,
   enquiryLimiter,
-  loginLimiter
+  loginLimiter,
+  lookupLimiter,
+  exportLimiter
 };

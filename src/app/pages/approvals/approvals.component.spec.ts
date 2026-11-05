@@ -68,3 +68,4 @@ describe('ApprovalsComponent', () => {
     expect((component as any).selectedDoc()).toBeNull();
   });
 });
+
