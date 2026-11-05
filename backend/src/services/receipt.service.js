@@ -260,7 +260,7 @@ function generateApplicationReceiptHtml(app) {
     <div class="institute-header">
       <div class="institute-name">Kavya Shree Institute of Nursing</div>
       <div class="institute-affil">
-        Recognized by Indian Nursing Council (INC) &bull; Bihar Nursing Registration Council (BNRC) &bull; Aryabhatta Knowledge University Affiliated
+        Statutory Affiliation Application on File &bull; INC &amp; BNRC Process (Session 2026–27) &bull; Punpun, Patna, Bihar
       </div>
       <div class="receipt-title-badge">
         Admissions Intake 2026–2027 &bull; Formal Application Acknowledgement

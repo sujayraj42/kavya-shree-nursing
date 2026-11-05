@@ -79,7 +79,7 @@ app.get(['/', '/api'], (req, res) => {
     success: true,
     name: 'Kavya Shree Institute of Nursing API',
     institution: 'Kavya Shree Institute of Nursing',
-    accreditation: 'Recognized by Indian Nursing Council (INC) & Bihar Nursing Registration Council (BNRC)',
+    accreditation: 'Statutory affiliation application submitted to Indian Nursing Council (INC) & Bihar Nurses Registration Council (BNRC) for Session 2026-27',
     version: '1.0.0',
     documentation: 'https://kavya-shree-nursing.vercel.app',
     endpoints: {

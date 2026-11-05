@@ -92,7 +92,7 @@ export class EnquiryModalComponent {
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        this.errorMessage.set(err?.message || this.i18n.translate('status.error'));
+        this.errorMessage.set(err?.error?.error || err?.message || this.i18n.translate('status.error'));
       }
     });
   }

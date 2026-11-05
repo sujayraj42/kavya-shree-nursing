@@ -7,7 +7,8 @@ import {
   FALLBACK_FACULTY,
   FALLBACK_HOSPITAL_TIEUPS,
   FALLBACK_FAQS,
-  FALLBACK_DOWNLOADS
+  FALLBACK_DOWNLOADS,
+  FALLBACK_APPROVALS
 } from '../data/fallback-content';
 
 export interface NoticeItem {
@@ -154,7 +155,8 @@ export class ContentService {
   }
 
   public async getApprovals(): Promise<ApprovalItem[]> {
-    return this.fetchContent<ApprovalItem[]>('/content/approvals', []);
+    const data = await this.fetchContent<ApprovalItem[]>('/content/approvals', FALLBACK_APPROVALS);
+    return data && data.length > 0 ? data : FALLBACK_APPROVALS;
   }
 
   public async getFaculty(): Promise<FacultyItem[]> {

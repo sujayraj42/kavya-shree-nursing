@@ -54,6 +54,7 @@
                 <input
                   type="text"
                   id="modalCandidateName"
+                  name="modalCandidateName"
                   class="form-control"
                   [class.is-invalid]="nameError()"
                   placeholder="e.g. Ananya Kumari"
@@ -75,6 +76,7 @@
                 <input
                   type="tel"
                   id="modalCandidatePhone"
+                  name="modalCandidatePhone"
                   class="form-control"
                   [class.is-invalid]="phoneError()"
                   placeholder="e.g. 9876543210"
@@ -95,6 +97,7 @@
                 </label>
                 <select
                   id="modalProgramSelect"
+                  name="modalProgramSelect"
                   class="form-select"
                   [ngModel]="modalService.selectedProgram()"
                   (ngModelChange)="modalService.selectedProgram.set($event)"
@@ -113,6 +116,7 @@
                 <input
                   type="email"
                   id="modalCandidateEmail"
+                  name="modalCandidateEmail"
                   class="form-control"
                   [class.is-invalid]="emailError()"
                   placeholder="e.g. candidate@example.com"
@@ -132,6 +136,7 @@
                 </label>
                 <textarea
                   id="modalMessage"
+                  name="modalMessage"
                   rows="2"
                   class="form-control"
                   placeholder="Questions regarding fees, hostel, eligibility..."
@@ -147,6 +152,7 @@
                   type="checkbox"
                   class="form-check-input"
                   id="modalConsentCheck"
+                  name="modalConsentCheck"
                   [ngModel]="consent()"
                   (ngModelChange)="consent.set($event)"
                   required
@@ -159,14 +165,14 @@
               <!-- Submit Button -->
               <button
                 type="submit"
-                class="btn btn-institutional-primary w-100 py-2 fw-semibold"
+                class="btn btn-institutional-primary w-100 py-2 d-flex align-items-center justify-content-center"
                 [disabled]="isSubmitting()"
               >
                 @if (isSubmitting()) {
                   <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  {{ i18n.translate('action.submitting') }}
+                  <span>Submitting...</span>
                 } @else {
-                  {{ i18n.translate('action.sendEnquiry') }} &rarr;
+                  <span>{{ i18n.translate('hero.cta_enquire') }}</span>
                 }
               </button>
             </form>
@@ -176,4 +182,3 @@
     </div>
   </div>
 }
-

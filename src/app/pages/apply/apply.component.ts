@@ -289,7 +289,10 @@ export class ApplyComponent implements OnInit {
   }
 
   public printReceipt(): void {
-    if (typeof window !== 'undefined') {
+    const sub = this.submittedData();
+    if (typeof window !== 'undefined' && sub?.applicationNumber) {
+      window.open(`${environment.apiBaseUrl}/applications/${encodeURIComponent(sub.applicationNumber)}/receipt`, '_blank');
+    } else if (typeof window !== 'undefined') {
       window.print();
     }
   }

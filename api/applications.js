@@ -16,8 +16,7 @@ function sanitize(str) {
 }
 
 /**
- * Forwards application summary to Render's enquiry endpoint so the lead
- * is persisted in MongoDB even when Render's application routes are updating.
+ * Forwards application summary to Render's enquiry endpoint as fallback persistence.
  */
 function forwardToRenderEnquiry(payload, appNumber) {
   return new Promise((resolve) => {
@@ -60,6 +59,100 @@ function forwardToRenderEnquiry(payload, appNumber) {
   });
 }
 
+/**
+ * Forwards full application payload to Render's dedicated application endpoint
+ * so that a real Application record is created in MongoDB.
+ */
+function forwardToRenderApplication(payload, appNumber) {
+  return new Promise((resolve) => {
+    try {
+      const body = JSON.stringify({
+        ...payload,
+        applicationNumber: appNumber
+      });
+
+      const req = https.request({
+        hostname: 'kavya-shree-nursing.onrender.com',
+        path: '/api/applications',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(body)
+        },
+        timeout: 6000
+      }, (res) => {
+        let resData = '';
+        res.on('data', chunk => { resData += chunk; });
+        res.on('end', () => {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            resolve({ success: true, statusCode: res.statusCode });
+          } else {
+            // Render /api/applications rejected; fallback to enquiry persistence
+            forwardToRenderEnquiry(payload, appNumber).then(status => {
+              resolve({ success: false, statusCode: res.statusCode, fallbackStatus: status });
+            });
+          }
+        });
+      });
+
+      req.on('error', () => {
+        forwardToRenderEnquiry(payload, appNumber).then(status => {
+          resolve({ success: false, fallbackStatus: status });
+        });
+      });
+
+      req.on('timeout', () => {
+        req.destroy();
+        forwardToRenderEnquiry(payload, appNumber).then(status => {
+          resolve({ success: false, fallbackStatus: status });
+        });
+      });
+
+      req.write(body);
+      req.end();
+    } catch {
+      forwardToRenderEnquiry(payload, appNumber).then(status => {
+        resolve({ success: false, fallbackStatus: status });
+      });
+    }
+  });
+}
+
+/**
+ * Proxies application status lookups to the upstream live Render database.
+ */
+function forwardStatusLookupToRender(ref, res) {
+  const req = https.request({
+    hostname: 'kavya-shree-nursing.onrender.com',
+    path: `/api/applications/${encodeURIComponent(ref)}`,
+    method: 'GET',
+    timeout: 5000
+  }, (remoteRes) => {
+    let raw = '';
+    remoteRes.on('data', chunk => { raw += chunk; });
+    remoteRes.on('end', () => {
+      res.statusCode = remoteRes.statusCode || 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(raw);
+    });
+  });
+
+  req.on('error', () => {
+    res.statusCode = 502;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ success: false, error: 'Upstream admissions service unavailable.' }));
+  });
+
+  req.on('timeout', () => {
+    req.destroy();
+    res.statusCode = 504;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ success: false, error: 'Gateway timeout contacting admissions database.' }));
+  });
+
+  req.end();
+}
+
 module.exports = async (req, res) => {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -72,6 +165,13 @@ module.exports = async (req, res) => {
   }
 
   if (req.method === 'GET') {
+    const urlObj = new URL(req.url, 'http://localhost');
+    const ref = urlObj.searchParams.get('ref') || urlObj.searchParams.get('appNumber');
+
+    if (ref) {
+      return forwardStatusLookupToRender(ref, res);
+    }
+
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
     return res.end(JSON.stringify({
@@ -87,7 +187,6 @@ module.exports = async (req, res) => {
   if (req.method === 'POST') {
     let rawBody = '';
 
-    // Handle raw stream if body isn't pre-parsed by framework
     if (typeof req.body === 'object' && req.body !== null) {
       handleSubmission(req.body, res);
     } else {
@@ -96,7 +195,7 @@ module.exports = async (req, res) => {
         try {
           const parsed = JSON.parse(rawBody || '{}');
           handleSubmission(parsed, res);
-        } catch (err) {
+        } catch {
           res.statusCode = 400;
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify({ success: false, error: 'Malformed JSON payload.' }));
@@ -145,12 +244,14 @@ async function handleSubmission(body, res) {
     }));
   }
 
-  // Generate official reference number: KSIN-2026-APP-XXXXXX
+  // Generate or preserve official reference number: KSIN-2026-APP-XXXXXX
   const randomSuffix = Math.floor(100000 + Math.random() * 900000);
-  const applicationNumber = `KSIN-2026-APP-${randomSuffix}`;
+  const applicationNumber = body.applicationNumber && /^KSIN-2026-APP-[A-Za-z0-9_-]{4,20}$/.test(String(body.applicationNumber))
+    ? sanitize(body.applicationNumber)
+    : `KSIN-2026-APP-${randomSuffix}`;
 
   // Forward to MongoDB persistence asynchronously
-  forwardToRenderEnquiry(body, applicationNumber).catch(() => {});
+  forwardToRenderApplication(body, applicationNumber).catch(() => {});
 
   res.statusCode = 201;
   res.setHeader('Content-Type', 'application/json');
@@ -168,4 +269,3 @@ async function handleSubmission(body, res) {
     }
   }));
 }
-

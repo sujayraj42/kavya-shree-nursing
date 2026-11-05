@@ -129,5 +129,29 @@ describe('ApplyComponent', () => {
     // Verify no throw
     expect((component as any).submittedData()?.applicationNumber).toBe('KSIN-2026-APP-123456');
   });
+
+  it('should open application receipt when printReceipt is called with submittedData', () => {
+    (component as any).submittedData.set({
+      applicationNumber: 'KSIN-2026-APP-778899',
+      applicantName: 'Test Student',
+      program: 'GNM'
+    });
+
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    component.printReceipt();
+    expect(openSpy).toHaveBeenCalledWith(
+      expect.stringContaining('/applications/KSIN-2026-APP-778899/receipt'),
+      '_blank'
+    );
+    openSpy.mockRestore();
+  });
+
+  it('should call window.print as fallback when submittedData is not present', () => {
+    (component as any).submittedData.set(null);
+    const printSpy = vi.spyOn(window, 'print').mockImplementation(() => {});
+    component.printReceipt();
+    expect(printSpy).toHaveBeenCalled();
+    printSpy.mockRestore();
+  });
 });
 

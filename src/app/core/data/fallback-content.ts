@@ -5,7 +5,8 @@ import {
   FacultyItem,
   HospitalTieupItem,
   FaqItem,
-  DownloadItem
+  DownloadItem,
+  ApprovalItem
 } from '../services/content.service';
 
 export const FALLBACK_COURSES: CourseItem[] = [
@@ -380,6 +381,34 @@ export const FALLBACK_DOWNLOADS: DownloadItem[] = [
       fileSize: '1.1 MB',
       downloadUrl: 'assets/documents/syllabus-outline.pdf',
       category: 'Academic'
+    }
+  }
+];
+
+export const FALLBACK_APPROVALS: ApprovalItem[] = [
+  {
+    id: 'app-01',
+    title: 'Statutory Regulatory Framework',
+    subtitle: 'State Nursing Registration Council & Affiliation',
+    content: 'Institutional operations, syllabus delivery, and clinical practicals adhere strictly to statutory curriculum requirements established by the state health authorities and nursing examination councils.',
+    data: {
+      authority: 'State Nursing Examination Council & Affiliating University',
+      status: 'Provisional Institutional Framework 2026',
+      documentUrl: 'assets/documents/affiliation-provisional.pdf',
+      documentType: 'PDF Document',
+      noticeText: 'Official gazette certificates and statutory approval orders are retained on file at the institutional administration office.'
+    }
+  },
+  {
+    id: 'app-02',
+    title: 'Indian Nursing Council (INC) Process',
+    subtitle: 'Statutory Institutional Compliance Schedule',
+    content: 'All academic syllabi for ANM, GNM, and B.Sc. Nursing are structured strictly in compliance with INC standard curriculum guidelines, faculty-student ratios, and clinical rotation norms.',
+    data: {
+      authority: 'Indian Nursing Council Standards',
+      status: 'Session 2026–27 Schedule',
+      documentType: 'Regulatory Compliance Notice',
+      noticeText: 'Curriculum inspection dossiers and infrastructure verification files are open for review during institutional counseling.'
     }
   }
 ];

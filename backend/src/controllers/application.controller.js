@@ -114,7 +114,10 @@ async function submitApplication(req, res, next) {
     // Generate human-friendly reference application number
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const timestampSuffix = Date.now().toString().slice(-4);
-    const applicationNumber = `KSIN-2026-APP-${timestampSuffix}${randomSuffix}`;
+    const isValidAppNumber = body.applicationNumber && /^KSIN-2026-APP-[A-Za-z0-9_-]{4,20}$/.test(String(body.applicationNumber));
+    const applicationNumber = isValidAppNumber
+      ? sanitize(body.applicationNumber)
+      : `KSIN-2026-APP-${timestampSuffix}${randomSuffix}`;
 
     const newApp = await Application.create({
       applicationNumber,

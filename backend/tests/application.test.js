@@ -88,6 +88,29 @@ describe('Online Applications API', () => {
     assert.equal(res.body.data.applicantName, validApplicationPayload.applicantName);
   });
 
+  it('POST /api/applications should preserve valid client-supplied applicationNumber', async () => {
+    const customAppNumber = 'KSIN-2026-APP-998877';
+    const mockCreated = {
+      _id: new mongoose.Types.ObjectId(),
+      applicationNumber: customAppNumber,
+      applicantName: validApplicationPayload.applicantName,
+      program: validApplicationPayload.program,
+      createdAt: new Date()
+    };
+    mock.method(Application, 'create', async (data) => {
+      assert.equal(data.applicationNumber, customAppNumber);
+      return mockCreated;
+    });
+
+    const res = await request(app)
+      .post('/api/applications')
+      .send({ ...validApplicationPayload, applicationNumber: customAppNumber });
+
+    assert.equal(res.status, 201);
+    assert.equal(res.body.success, true);
+    assert.equal(res.body.data.applicationNumber, customAppNumber);
+  });
+
   it('POST /api/applications should reject invalid phone number', async () => {
     const res = await request(app)
       .post('/api/applications')
