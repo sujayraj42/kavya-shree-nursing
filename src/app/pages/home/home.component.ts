@@ -405,6 +405,17 @@ export class HomeComponent {
     // Clear validation error summary
     this.formValidationError.set('');
     this.serverError.set('');
+
+    // OPTIMISTIC UI: Immediately present confirmation state before server network roundtrip completes
+    const optimisticRef = 'KSN-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    this.confirmedSubmission.set({
+      id: optimisticRef,
+      name,
+      program,
+      phone,
+      email: email || 'Not provided'
+    });
+    this.isFormSubmitted.set(true);
     this.isSubmitting.set(true);
 
     this.enquiryService
@@ -419,16 +430,16 @@ export class HomeComponent {
       .subscribe({
         next: (res) => {
           this.isSubmitting.set(false);
+          // Reconcile optimistic reference with confirmed server database ID
           this.confirmedSubmission.set({
-            id: res.data?.id,
+            id: res.data?.id || optimisticRef,
             name,
             program: res.data?.program || program,
             phone,
             email: email || 'Not provided'
           });
-          this.isFormSubmitted.set(true);
 
-          // Reset Form Fields
+          // Reset Form Fields once server confirms receipt
           this.applicantName.set('');
           this.applicantPhone.set('');
           this.applicantEmail.set('');
@@ -438,6 +449,8 @@ export class HomeComponent {
         },
         error: (err) => {
           this.isSubmitting.set(false);
+          // Rollback optimistic state on network failure so user can review and retry
+          this.isFormSubmitted.set(false);
           const serverMsg =
             err?.error?.error ||
             'Unable to connect to the admissions service. Please verify your connection or call our admissions helpline (+91 96616 66485).';

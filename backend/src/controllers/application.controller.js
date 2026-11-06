@@ -6,18 +6,46 @@ const { VALID_PROGRAMS } = require('../models/Enquiry');
 const { notifyNewApplication, notifyStatusTransition } = require('../services/automation.service');
 const { generateApplicationReceiptHtml } = require('../services/receipt.service');
 const { logAdminAction } = require('../services/auditLogger');
+const { cacheService } = require('../services/cache.service');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^[6-9]\d{9}$/;
+const PINCODE_REGEX = /^[1-9][0-9]{5}$/;
+
+const DUPLICATE_APP_WINDOW_MS = 60 * 1000;
+const recentApplicationSubmissions = new Map();
+
+function pruneExpiredAppSubmissions(now) {
+  for (const [key, timestamp] of recentApplicationSubmissions.entries()) {
+    if (now - timestamp >= DUPLICATE_APP_WINDOW_MS) {
+      recentApplicationSubmissions.delete(key);
+    }
+  }
+}
+
+function normalizePhone(raw) {
+  if (!raw) return '';
+  let digits = String(raw).replace(/\D/g, '');
+  if (digits.length === 12 && digits.startsWith('91')) {
+    digits = digits.slice(2);
+  } else if (digits.length === 11 && digits.startsWith('0')) {
+    digits = digits.slice(1);
+  }
+  return digits;
+}
 
 function sanitize(text) {
   if (typeof text !== 'string') return '';
-  return text.replace(/[<>]/g, '').trim();
+  return text.replace(/<[^>]*>/g, '').trim();
 }
 
 function escapeCsvCell(cell) {
   if (cell === null || cell === undefined) return '""';
-  const str = String(cell);
+  let str = String(cell);
+  // Mitigate CSV Formula Injection (CWE-1236): neutralize leading formula triggers
+  if (/^[=+\-@\t\r]/.test(str)) {
+    str = `'${str}`;
+  }
   if (str.includes('"') || str.includes(',') || str.includes('\n') || str.includes('\r')) {
     return `"${str.replace(/"/g, '""')}"`;
   }
@@ -47,7 +75,7 @@ async function submitApplication(req, res, next) {
     const dob = body.dob ? new Date(body.dob) : null;
     const fatherName = sanitize(body.fatherName);
     const motherName = sanitize(body.motherName);
-    const phone = String(body.phone || '').replace(/\D/g, '');
+    const phone = normalizePhone(body.phone);
     const email = sanitize(body.email).toLowerCase();
     const category = sanitize(body.category) || 'General';
     const program = sanitize(body.program);
@@ -67,11 +95,11 @@ async function submitApplication(req, res, next) {
     const academicDetails = {
       tenthBoard: sanitize(rawAcad.tenthBoard),
       tenthYear: Number(rawAcad.tenthYear) || undefined,
-      tenthPercentage: Number(rawAcad.tenthPercentage) || undefined,
+      tenthPercentage: Number(rawAcad.tenthPercentage) !== undefined && !isNaN(Number(rawAcad.tenthPercentage)) ? Number(rawAcad.tenthPercentage) : undefined,
       twelfthBoard: sanitize(rawAcad.twelfthBoard),
       twelfthYear: Number(rawAcad.twelfthYear) || undefined,
-      twelfthPercentage: Number(rawAcad.twelfthPercentage) || undefined,
-      pcbPercentage: Number(rawAcad.pcbPercentage) || undefined
+      twelfthPercentage: Number(rawAcad.twelfthPercentage) !== undefined && !isNaN(Number(rawAcad.twelfthPercentage)) ? Number(rawAcad.twelfthPercentage) : undefined,
+      pcbPercentage: Number(rawAcad.pcbPercentage) !== undefined && !isNaN(Number(rawAcad.pcbPercentage)) ? Number(rawAcad.pcbPercentage) : undefined
     };
 
     const documents = {
@@ -90,6 +118,27 @@ async function submitApplication(req, res, next) {
     if (!dob || isNaN(dob.getTime())) {
       return res.status(400).json({ success: false, error: 'Valid date of birth is required' });
     }
+
+    const today = new Date();
+    if (dob > today) {
+      return res.status(400).json({ success: false, error: 'Date of birth cannot be in the future' });
+    }
+
+    // Enforce Indian Nursing Council (INC) & BNRC statutory age limits (17-35 years as of Dec 31 of admission year)
+    const admissionYear = today.getFullYear();
+    const cutoffDate = new Date(admissionYear, 11, 31);
+    let age = cutoffDate.getFullYear() - dob.getFullYear();
+    const monthDiff = cutoffDate.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && cutoffDate.getDate() < dob.getDate())) {
+      age--;
+    }
+    if (age < 17 || age > 35) {
+      return res.status(400).json({
+        success: false,
+        error: `Applicant age must be between 17 and 35 years as of Dec 31, ${admissionYear} (Calculated age: ${age})`
+      });
+    }
+
     if (!fatherName) {
       return res.status(400).json({ success: false, error: "Father's name is required" });
     }
@@ -105,6 +154,27 @@ async function submitApplication(req, res, next) {
     if (!address.district || !address.pincode) {
       return res.status(400).json({ success: false, error: 'District and pincode are required in address' });
     }
+    if (!PINCODE_REGEX.test(address.pincode)) {
+      return res.status(400).json({ success: false, error: 'A valid 6-digit Indian PIN code is required' });
+    }
+
+    // Percentage range boundary checks (0 - 100%)
+    const validatePercentage = (val, name) => {
+      if (val !== undefined && val !== null) {
+        if (typeof val !== 'number' || !isFinite(val) || val < 0 || val > 100) {
+          return `${name} percentage must be a valid number between 0 and 100`;
+        }
+      }
+      return null;
+    };
+
+    const pctError = validatePercentage(academicDetails.tenthPercentage, '10th') ||
+                     validatePercentage(academicDetails.twelfthPercentage, '12th') ||
+                     validatePercentage(academicDetails.pcbPercentage, 'PCB');
+    if (pctError) {
+      return res.status(400).json({ success: false, error: pctError });
+    }
+
     if (!program || !VALID_PROGRAMS.includes(program)) {
       return res.status(400).json({ success: false, error: 'Please select a valid academic nursing program' });
     }
@@ -119,6 +189,17 @@ async function submitApplication(req, res, next) {
     const applicationNumber = isValidAppNumber
       ? sanitize(body.applicationNumber)
       : `KSIN-2026-APP-${timestampSuffix}${randomSuffix}`;
+
+    // Deduplication check: prevent duplicate submissions within 60s
+    const now = Date.now();
+    pruneExpiredAppSubmissions(now);
+    const fingerprint = `${phone}|${program}|${applicantName.toLowerCase()}${isValidAppNumber ? '|' + applicationNumber : ''}`;
+    if (recentApplicationSubmissions.has(fingerprint)) {
+      return res.status(409).json({
+        success: false,
+        error: 'Duplicate application detected. An identical application was already submitted recently.'
+      });
+    }
 
     const newApp = await Application.create({
       applicationNumber,
@@ -138,8 +219,11 @@ async function submitApplication(req, res, next) {
       status: 'submitted'
     });
 
+    recentApplicationSubmissions.set(fingerprint, now);
+
     // Trigger non-blocking automated notifications (Telegram, Webhook, CRM)
     notifyNewApplication(newApp);
+    cacheService.invalidateStats().catch(() => {});
 
     res.status(201).json({
       success: true,
@@ -153,6 +237,12 @@ async function submitApplication(req, res, next) {
       }
     });
   } catch (err) {
+    if (err.code === 11000 || String(err.message).includes('E11000')) {
+      return res.status(409).json({
+        success: false,
+        error: 'An application with this application number or phone already exists.'
+      });
+    }
     next(err);
   }
 }
@@ -200,10 +290,29 @@ async function listApplications(req, res, next) {
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 10));
     const skip = (page - 1) * limit;
 
-    const [total, applications] = await Promise.all([
+    let appQuery = Application.find(query);
+    if (typeof appQuery.select === 'function') {
+      appQuery = appQuery.select('applicationNumber applicantName phone email program status category academicDetails createdAt');
+    }
+    if (typeof appQuery.sort === 'function') {
+      appQuery = appQuery.sort({ createdAt: -1 });
+    }
+    if (typeof appQuery.skip === 'function') {
+      appQuery = appQuery.skip(skip);
+    }
+    if (typeof appQuery.limit === 'function') {
+      appQuery = appQuery.limit(limit);
+    }
+
+    const [total, rawApplications] = await Promise.all([
       Application.countDocuments(query),
-      Application.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
+      typeof appQuery.lean === 'function' ? appQuery.lean() : appQuery
     ]);
+
+    const applications = rawApplications.map(a => ({
+      ...a,
+      id: a._id ? a._id.toString() : a.id
+    }));
 
     const pages = Math.ceil(total / limit) || 1;
 
@@ -215,6 +324,12 @@ async function listApplications(req, res, next) {
       }
     });
   } catch (err) {
+    if (err.code === 11000 || String(err.message).includes('E11000')) {
+      return res.status(409).json({
+        success: false,
+        error: 'An application with this application number or phone already exists.'
+      });
+    }
     next(err);
   }
 }
@@ -233,6 +348,12 @@ async function getApplicationById(req, res, next) {
 
     res.status(200).json({ success: true, data: application });
   } catch (err) {
+    if (err.code === 11000 || String(err.message).includes('E11000')) {
+      return res.status(409).json({
+        success: false,
+        error: 'An application with this application number or phone already exists.'
+      });
+    }
     next(err);
   }
 }
@@ -260,6 +381,7 @@ async function updateApplicationStatus(req, res, next) {
     const previousStatus = application.status;
     application.status = status;
     await application.save();
+    await cacheService.invalidateStats();
     logAdminAction({ admin: req.admin, action: 'UPDATE_APPLICATION_STATUS', targetType: 'Application', targetId: application.id || application._id, details: { newStatus: status }, ip: req.ip });
 
     notifyStatusTransition({
@@ -283,6 +405,12 @@ async function updateApplicationStatus(req, res, next) {
       }
     });
   } catch (err) {
+    if (err.code === 11000 || String(err.message).includes('E11000')) {
+      return res.status(409).json({
+        success: false,
+        error: 'An application with this application number or phone already exists.'
+      });
+    }
     next(err);
   }
 }
@@ -305,12 +433,18 @@ async function addApplicationNote(req, res, next) {
     }
 
     const author = req.admin?.name || req.admin?.email || 'Administrator';
-    application.notes.push({ author, text: text.trim() });
+    application.notes.push({ author, text: sanitize(text) });
     await application.save();
 
     const created = application.notes[application.notes.length - 1];
     res.status(201).json({ success: true, message: 'Note added successfully', data: created });
   } catch (err) {
+    if (err.code === 11000 || String(err.message).includes('E11000')) {
+      return res.status(409).json({
+        success: false,
+        error: 'An application with this application number or phone already exists.'
+      });
+    }
     next(err);
   }
 }
@@ -373,6 +507,12 @@ async function exportApplications(req, res, next) {
     logAdminAction({ admin: req.admin, action: 'EXPORT_APPLICATIONS_CSV', targetType: 'Application', details: { count: rows.length }, ip: req.ip });
     res.status(200).send(csvContent);
   } catch (err) {
+    if (err.code === 11000 || String(err.message).includes('E11000')) {
+      return res.status(409).json({
+        success: false,
+        error: 'An application with this application number or phone already exists.'
+      });
+    }
     next(err);
   }
 }
@@ -402,6 +542,12 @@ async function deleteApplication(req, res, next) {
 
     res.status(200).json({ success: true, message: 'Application deleted successfully' });
   } catch (err) {
+    if (err.code === 11000 || String(err.message).includes('E11000')) {
+      return res.status(409).json({
+        success: false,
+        error: 'An application with this application number or phone already exists.'
+      });
+    }
     next(err);
   }
 }
@@ -427,10 +573,16 @@ async function getApplicationReceipt(req, res, next) {
       return res.status(404).send('<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;padding:50px;"><h2>Application Not Found</h2><p>The requested application reference does not exist or has been archived.</p></body></html>');
     }
 
-    const html = generateApplicationReceiptHtml(application);
+    const html = generateApplicationReceiptHtml(application, { isStaff: Boolean(req.admin) });
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.status(200).send(html);
   } catch (err) {
+    if (err.code === 11000 || String(err.message).includes('E11000')) {
+      return res.status(409).json({
+        success: false,
+        error: 'An application with this application number or phone already exists.'
+      });
+    }
     next(err);
   }
 }
@@ -481,6 +633,12 @@ async function getApplicationStatus(req, res, next) {
       }
     });
   } catch (err) {
+    if (err.code === 11000 || String(err.message).includes('E11000')) {
+      return res.status(409).json({
+        success: false,
+        error: 'An application with this application number or phone already exists.'
+      });
+    }
     next(err);
   }
 }
@@ -494,6 +652,7 @@ module.exports = {
   getApplicationStatus,
   addApplicationNote,
   exportApplications,
-  deleteApplication
+  deleteApplication,
+  _resetRecentApplicationSubmissions: () => recentApplicationSubmissions.clear()
 };
 

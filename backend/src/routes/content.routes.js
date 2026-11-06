@@ -4,8 +4,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { ContentItem } = require('../models/Content');
 const { FALLBACK_CONTENT } = require('../data/fallbackContent');
+const { cacheMiddleware } = require('../middleware/cacheMiddleware');
 
 const router = express.Router();
+
+const contentRedisCache = cacheMiddleware({ ttl: 600, prefix: 'content:' });
 
 /**
  * Generic content resolver that queries MongoDB first when connected, falling back to static structured data.
@@ -30,7 +33,7 @@ function contentCache(req, res, next) {
   next();
 }
 
-router.get('/notices', contentCache, async (req, res, next) => {
+router.get('/notices', contentCache, contentRedisCache, async (req, res, next) => {
   try {
     const data = await resolveContent('notices');
     res.status(200).json({ success: true, data });
@@ -39,7 +42,7 @@ router.get('/notices', contentCache, async (req, res, next) => {
   }
 });
 
-router.get('/courses', contentCache, async (req, res, next) => {
+router.get('/courses', contentCache, contentRedisCache, async (req, res, next) => {
   try {
     const data = await resolveContent('courses');
     res.status(200).json({ success: true, data });
@@ -48,7 +51,7 @@ router.get('/courses', contentCache, async (req, res, next) => {
   }
 });
 
-router.get('/courses/:id', contentCache, async (req, res, next) => {
+router.get('/courses/:id', contentCache, contentRedisCache, async (req, res, next) => {
   try {
     const courses = await resolveContent('courses');
     const course = courses.find(c => c.id === req.params.id || (c.data && c.data.code && c.data.code.toLowerCase() === req.params.id.toLowerCase()));
@@ -61,7 +64,7 @@ router.get('/courses/:id', contentCache, async (req, res, next) => {
   }
 });
 
-router.get('/approvals', contentCache, async (req, res, next) => {
+router.get('/approvals', contentCache, contentRedisCache, async (req, res, next) => {
   try {
     const data = await resolveContent('approvals');
     res.status(200).json({ success: true, data });
@@ -70,7 +73,7 @@ router.get('/approvals', contentCache, async (req, res, next) => {
   }
 });
 
-router.get('/faculty', contentCache, async (req, res, next) => {
+router.get('/faculty', contentCache, contentRedisCache, async (req, res, next) => {
   try {
     const data = await resolveContent('faculty');
     res.status(200).json({ success: true, data });
@@ -79,7 +82,7 @@ router.get('/faculty', contentCache, async (req, res, next) => {
   }
 });
 
-router.get('/hospital-tieups', contentCache, async (req, res, next) => {
+router.get('/hospital-tieups', contentCache, contentRedisCache, async (req, res, next) => {
   try {
     const data = await resolveContent('hospitalTieups');
     res.status(200).json({ success: true, data });
@@ -88,7 +91,7 @@ router.get('/hospital-tieups', contentCache, async (req, res, next) => {
   }
 });
 
-router.get('/gallery', contentCache, async (req, res, next) => {
+router.get('/gallery', contentCache, contentRedisCache, async (req, res, next) => {
   try {
     const data = await resolveContent('gallery');
     res.status(200).json({ success: true, data });
@@ -97,7 +100,7 @@ router.get('/gallery', contentCache, async (req, res, next) => {
   }
 });
 
-router.get('/faqs', contentCache, async (req, res, next) => {
+router.get('/faqs', contentCache, contentRedisCache, async (req, res, next) => {
   try {
     const data = await resolveContent('faqs');
     res.status(200).json({ success: true, data });
@@ -106,7 +109,7 @@ router.get('/faqs', contentCache, async (req, res, next) => {
   }
 });
 
-router.get('/downloads', contentCache, async (req, res, next) => {
+router.get('/downloads', contentCache, contentRedisCache, async (req, res, next) => {
   try {
     const data = await resolveContent('downloads');
     res.status(200).json({ success: true, data });

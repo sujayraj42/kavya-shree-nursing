@@ -4,8 +4,6 @@
 
 .admin-login-page {
   background-color: var(--ks-bg-paper, #fafafa);
-  background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
-  background-size: 24px 24px;
 }
 
 .admin-login-topbar {

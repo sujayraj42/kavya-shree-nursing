@@ -89,7 +89,7 @@ export const FALLBACK_COURSES: CourseItem[] = [
     id: 'post-basic-bsc',
     title: 'Post Basic B.Sc. Nursing',
     subtitle: '2-Year Bridge Degree for GNM Graduates',
-    content: 'Specialized bridge degree empowering working GNM diploma nurses to upgrade their academic qualification to a recognized bachelor of science.',
+    content: 'Specialized bridge degree enabling working GNM diploma nurses to upgrade their academic qualification to a recognized bachelor of science.',
     data: {
       code: 'Post Basic B.Sc.',
       duration: '2 Years (Full Time)',

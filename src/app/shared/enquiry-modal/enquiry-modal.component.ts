@@ -70,6 +70,10 @@ export class EnquiryModalComponent {
       return;
     }
 
+    // OPTIMISTIC UI: Instantly display provisional success while dispatching HTTP request
+    const optimisticRef = 'KSN-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    this.referenceId.set(optimisticRef);
+    this.successMessage.set(this.i18n.translate('status.success') + optimisticRef);
     this.isSubmitting.set(true);
 
     this.enquiryService.submitEnquiry({
@@ -82,9 +86,10 @@ export class EnquiryModalComponent {
     }).subscribe({
       next: (res) => {
         this.isSubmitting.set(false);
-        this.referenceId.set(res.data?.id ? res.data.id.slice(-6).toUpperCase() : 'REC-2026');
-        this.successMessage.set(this.i18n.translate('status.success') + this.referenceId());
-        // Reset form
+        const finalRef = res.data?.id ? res.data.id.slice(-6).toUpperCase() : optimisticRef;
+        this.referenceId.set(finalRef);
+        this.successMessage.set(this.i18n.translate('status.success') + finalRef);
+        // Reset form once verified
         this.name.set('');
         this.phone.set('');
         this.email.set('');
@@ -92,6 +97,9 @@ export class EnquiryModalComponent {
       },
       error: (err) => {
         this.isSubmitting.set(false);
+        // Rollback optimistic feedback on network failure
+        this.successMessage.set('');
+        this.referenceId.set('');
         this.errorMessage.set(err?.error?.error || err?.message || this.i18n.translate('status.error'));
       }
     });

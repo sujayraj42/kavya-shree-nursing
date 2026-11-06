@@ -1,11 +1,29 @@
 'use strict';
 
+function maskPhone(phone) {
+  if (!phone || String(phone).length < 4) return 'XXXXXXXXXX';
+  const clean = String(phone).trim();
+  return 'XXXXXX' + clean.slice(-4);
+}
+
+function maskEmail(email) {
+  if (!email || !email.includes('@')) return '******@example.com';
+  const [user, domain] = email.split('@');
+  const visible = user.charAt(0) || 'u';
+  return `${visible}****@${domain}`;
+}
+
 /**
  * Generates an official, printable institutional application slip / receipt HTML document.
  * Includes complete candidate details, academic scoreboard, document checklist,
  * verification seal, and auto-print capability.
+ * When accessed publicly (options.isStaff = false), masks sensitive candidate PII.
  */
-function generateApplicationReceiptHtml(app) {
+function generateApplicationReceiptHtml(app, options = {}) {
+  const isStaff = Boolean(options.isStaff);
+  const displayPhone = isStaff ? app.phone : maskPhone(app.phone);
+  const displayEmail = isStaff ? (app.email || 'N/A') : maskEmail(app.email);
+  const displayStreet = isStaff && app.address?.street ? `${app.address.street}, ` : '';
   const submittedDate = app.createdAt
     ? new Date(app.createdAt).toLocaleDateString('en-IN', {
         day: '2-digit',
@@ -310,15 +328,14 @@ function generateApplicationReceiptHtml(app) {
       </tr>
       <tr>
         <th>Contact Mobile</th>
-        <td>${escapeHtml(app.phone)}</td>
+        <td>${escapeHtml(displayPhone)}</td>
         <th>Email Address</th>
-        <td>${escapeHtml(app.email || 'N/A')}</td>
+        <td>${escapeHtml(displayEmail)}</td>
       </tr>
       <tr>
         <th>Permanent Address</th>
         <td colspan="3">
-          ${escapeHtml(app.address?.street ? app.address.street + ', ' : '')}
-          ${escapeHtml(app.address?.district || '')},
+          ${escapeHtml(displayStreet)}${escapeHtml(app.address?.district || '')},
           ${escapeHtml(app.address?.state || 'Bihar')} - ${escapeHtml(app.address?.pincode || '')}
         </td>
       </tr>

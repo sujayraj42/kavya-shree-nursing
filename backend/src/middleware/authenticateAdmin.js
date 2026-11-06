@@ -59,8 +59,9 @@ async function authenticateAdmin(req, res, next) {
       });
     }
 
-    // Verify administrator account still exists in database and is active
+    // Query database with lean projection of required identity fields
     const admin = await Admin.findById(decoded.id).select('email name role isActive');
+
     if (!admin) {
       return res.status(401).json({
         success: false,

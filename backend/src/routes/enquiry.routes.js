@@ -6,6 +6,7 @@ const { Enquiry } = require('../models/Enquiry');
 const validateEnquiry = require('../middleware/validateEnquiry');
 const { enquiryLimiter } = require('../middleware/rateLimiter');
 const { notifyNewEnquiry } = require('../services/automation.service');
+const { cacheService } = require('../services/cache.service');
 
 const router = express.Router();
 
@@ -64,6 +65,7 @@ router.post('/enquiries', enquiryLimiter, validateEnquiry, async (req, res, next
 
     const savedEnquiry = await Enquiry.create(enquiryData);
     recentSubmissions.set(fingerprint, now);
+    cacheService.invalidateStats().catch(() => {});
 
     // Trigger non-blocking automated notifications (Telegram, Webhook, CRM)
     notifyNewEnquiry(savedEnquiry);

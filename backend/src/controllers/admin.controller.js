@@ -8,6 +8,7 @@ const { Admin } = require('../models/Admin');
 const { Enquiry, VALID_STATUSES, ALL_ALLOWED_STATUSES, normalizeStatus } = require('../models/Enquiry');
 const { notifyStatusTransition } = require('../services/automation.service');
 const { logAdminAction } = require('../services/auditLogger');
+const { cacheService } = require('../services/cache.service');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -183,13 +184,29 @@ async function listEnquiries(req, res, next) {
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 10));
     const skip = (page - 1) * limit;
 
-    const [total, enquiries] = await Promise.all([
+    let enquiryQuery = Enquiry.find(query);
+    if (typeof enquiryQuery.select === 'function') {
+      enquiryQuery = enquiryQuery.select('name phone email program status message notes createdAt updatedAt');
+    }
+    if (typeof enquiryQuery.sort === 'function') {
+      enquiryQuery = enquiryQuery.sort({ createdAt: -1 });
+    }
+    if (typeof enquiryQuery.skip === 'function') {
+      enquiryQuery = enquiryQuery.skip(skip);
+    }
+    if (typeof enquiryQuery.limit === 'function') {
+      enquiryQuery = enquiryQuery.limit(limit);
+    }
+
+    const [total, rawEnquiries] = await Promise.all([
       Enquiry.countDocuments(query),
-      Enquiry.find(query)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
+      typeof enquiryQuery.lean === 'function' ? enquiryQuery.lean() : enquiryQuery
     ]);
+
+    const enquiries = rawEnquiries.map(e => ({
+      ...e,
+      id: e._id ? e._id.toString() : e.id
+    }));
 
     const pages = Math.ceil(total / limit) || 1;
 
@@ -282,6 +299,7 @@ async function updateEnquiryStatus(req, res, next) {
 
     enquiry.status = normalizedStatus;
     await enquiry.save();
+    await cacheService.invalidateStats();
     logAdminAction({ admin: req.admin, action: 'UPDATE_ENQUIRY_STATUS', targetType: 'Enquiry', targetId: enquiry.id || enquiry._id, details: { newStatus: normalizedStatus }, ip: req.ip });
 
     res.status(200).json({
@@ -339,10 +357,11 @@ async function addEnquiryNote(req, res, next) {
 
     // Author is bound from authenticated admin token; client-supplied author is ignored
     const author = req.admin.name || req.admin.email || 'Administrator';
+    const cleanNoteText = sanitizeText(trimmedText);
 
     enquiry.notes.push({
       author,
-      text: trimmedText
+      text: cleanNoteText
     });
 
     await enquiry.save();
@@ -365,7 +384,24 @@ async function addEnquiryNote(req, res, next) {
  */
 async function getDashboardStats(req, res, next) {
   try {
-    const [statusAggregation, total, recentEnquiries] = await Promise.all([
+    const cached = await cacheService.get('stats:dashboard');
+    if (cached) {
+      res.set('X-Cache', 'HIT');
+      return res.status(200).json(cached);
+    }
+
+    let recentQuery = Enquiry.find({ deletedAt: null });
+    if (typeof recentQuery.select === 'function') {
+      recentQuery = recentQuery.select('name phone email program status createdAt');
+    }
+    if (typeof recentQuery.sort === 'function') {
+      recentQuery = recentQuery.sort({ createdAt: -1 });
+    }
+    if (typeof recentQuery.limit === 'function') {
+      recentQuery = recentQuery.limit(5);
+    }
+
+    const [statusAggregation, total, recentRaw] = await Promise.all([
       Enquiry.aggregate([
         { $match: { deletedAt: null } },
         {
@@ -376,10 +412,13 @@ async function getDashboardStats(req, res, next) {
         }
       ]),
       Enquiry.countDocuments({ deletedAt: null }),
-      Enquiry.find({ deletedAt: null })
-        .sort({ createdAt: -1 })
-        .limit(5)
+      typeof recentQuery.lean === 'function' ? recentQuery.lean() : recentQuery
     ]);
+
+    const recentEnquiries = recentRaw.map(e => ({
+      ...e,
+      id: e._id ? e._id.toString() : e.id
+    }));
 
     const stats = {
       total,
@@ -400,21 +439,35 @@ async function getDashboardStats(req, res, next) {
       }
     }
 
-    res.status(200).json({
+    const responsePayload = {
       success: true,
       data: {
         stats,
         recentEnquiries
       }
-    });
+    };
+
+    // Cache dashboard stats for 30s to mitigate database roundtrips
+    await cacheService.set('stats:dashboard', responsePayload, 30);
+    res.set('X-Cache', 'MISS');
+    res.status(200).json(responsePayload);
   } catch (error) {
     next(error);
   }
 }
 
+function sanitizeText(str) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/<[^>]*>/g, '').trim();
+}
+
 function escapeCsvCell(cell) {
   if (cell === null || cell === undefined) return '""';
-  const str = String(cell);
+  let str = String(cell);
+  // Mitigate CSV Formula Injection (CWE-1236): neutralize leading formula triggers
+  if (/^[=+\-@\t\r]/.test(str)) {
+    str = `'${str}`;
+  }
   if (str.includes('"') || str.includes(',') || str.includes('\n') || str.includes('\r')) {
     return `"${str.replace(/"/g, '""')}"`;
   }
@@ -525,6 +578,7 @@ async function deleteEnquiry(req, res, next) {
 
     enquiry.deletedAt = new Date();
     await enquiry.save();
+    await cacheService.invalidateStats();
     logAdminAction({ admin: req.admin, action: 'DELETE_ENQUIRY', targetType: 'Enquiry', targetId: enquiry.id || enquiry._id, ip: req.ip });
 
     res.status(200).json({ success: true, message: 'Enquiry deleted successfully' });
@@ -584,6 +638,7 @@ async function changePassword(req, res, next) {
 
     admin.password = newPassword;
     await admin.save();
+    await cacheService.invalidateAdminSession(req.admin.id);
     logAdminAction({ admin: req.admin, action: 'CHANGE_PASSWORD', targetType: 'Admin', targetId: req.admin.id || req.admin._id, ip: req.ip });
 
     res.status(200).json({

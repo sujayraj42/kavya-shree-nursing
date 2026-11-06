@@ -132,11 +132,15 @@ const enquirySchema = new mongoose.Schema(
 
 enquirySchema.index({ createdAt: -1 });
 enquirySchema.index({ deletedAt: 1, createdAt: -1 });
-// Note: { status: 1, createdAt: -1 } also serves as a prefix index for { status: 1 } queries
+// Compound indexes for high-throughput admin queries and active/deleted filtering
+enquirySchema.index({ deletedAt: 1, status: 1, createdAt: -1 });
+enquirySchema.index({ deletedAt: 1, program: 1, createdAt: -1 });
 enquirySchema.index({ status: 1, createdAt: -1 });
 enquirySchema.index({ program: 1, createdAt: -1 });
 enquirySchema.index({ phone: 1 });
 enquirySchema.index({ email: 1 });
+// Compound text index for fast search without collection scan
+enquirySchema.index({ name: 'text', phone: 'text', email: 'text' });
 
 const Enquiry = mongoose.model('Enquiry', enquirySchema);
 

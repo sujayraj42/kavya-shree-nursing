@@ -30,7 +30,6 @@
 .ks-footer-notice {
   background-color: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-left: 3px solid var(--color--carrot-orange);
   border-radius: var(--round-4);
   color: var(--color--white-80);
 }

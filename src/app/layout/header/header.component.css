@@ -70,8 +70,7 @@
     color: #ffffff !important;
     font-weight: 600;
     background-color: rgba(235, 150, 36, 0.22) !important;
-    border-left: 4px solid var(--color--carrot-orange) !important;
-    border-radius: 0 var(--round-4) var(--round-4) 0;
+    border-radius: var(--round-4);
     padding-left: 1.15rem;
   }
 }
@@ -149,7 +148,7 @@
 
 /* Primary Header Action Button */
 .header-cta-btn {
-  background: linear-gradient(135deg, #f7a93b 0%, #eb9624 100%);
+  background-color: #eb9624;
   color: #0b1a2c !important;
   font-family: var(--font--jakarta-sans);
   font-size: 0.84375rem;

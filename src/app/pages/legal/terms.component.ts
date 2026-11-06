@@ -15,7 +15,6 @@ import { RouterLink } from '@angular/router';
             <li class="breadcrumb-item active" aria-current="page">Terms of Use</li>
           </ol>
         </nav>
-        <span class="badge bg-warning text-dark text-uppercase fw-bold mb-2">Legal Governance</span>
         <h1 class="h2 fw-bold text-white mb-2">Terms of Use &amp; Institutional Disclaimer</h1>
         <p class="text-white-50 mb-0 max-w-650">
           General terms, conditions of admission portal usage, intellectual property, and institutional disclaimers.
@@ -79,7 +78,7 @@ import { RouterLink } from '@angular/router';
   `,
   styles: [`
     .page-hero-banner {
-      background: linear-gradient(135deg, #0f2942 0%, #181818 100%);
+      background-color: #0f2942;
       padding: 48px 0;
       border-bottom: 3px solid var(--color--carrot-orange, #eb9624);
     }

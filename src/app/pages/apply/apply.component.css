@@ -1,5 +1,5 @@
 .page-hero-banner {
-  background: linear-gradient(135deg, #0f2942 0%, #181818 100%);
+  background-color: #0f2942;
   padding: 56px 0 48px;
   border-bottom: 3px solid var(--color--carrot-orange, #eb9624);
 }

@@ -174,11 +174,16 @@ const applicationSchema = new mongoose.Schema(
 );
 
 applicationSchema.index({ createdAt: -1 });
+applicationSchema.index({ deletedAt: 1, createdAt: -1 });
+// Compound indexes for active/deleted filter + sorting
+applicationSchema.index({ deletedAt: 1, status: 1, createdAt: -1 });
+applicationSchema.index({ deletedAt: 1, program: 1, createdAt: -1 });
 applicationSchema.index({ status: 1, createdAt: -1 });
 applicationSchema.index({ program: 1, createdAt: -1 });
 applicationSchema.index({ phone: 1 });
 applicationSchema.index({ email: 1 });
-applicationSchema.index({ deletedAt: 1, createdAt: -1 });
+// Text index for instant keyword search
+applicationSchema.index({ applicantName: 'text', phone: 'text', email: 'text', applicationNumber: 'text' });
 
 const Application = mongoose.model('Application', applicationSchema);
 

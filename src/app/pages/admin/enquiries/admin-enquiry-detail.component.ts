@@ -79,16 +79,22 @@ export class AdminEnquiryDetailComponent implements OnInit {
       return;
     }
 
+    const prevStatus = current.status;
+    // OPTIMISTIC UI: Update status badge and feedback instantly before server network reply
+    this.enquiry.update((e) => (e ? { ...e, status: newStatus } : null));
+    this.statusSuccessMessage.set(`Workflow status updated to "${ENQUIRY_STATUS_LABELS[newStatus]}".`);
     this.isUpdatingStatus.set(true);
-    this.statusSuccessMessage.set('');
     this.statusErrorMessage.set('');
 
     try {
       const res = await this.enquiryService.updateStatus(current.id, newStatus);
       this.enquiry.update((e) => (e ? { ...e, status: res.status, updatedAt: res.updatedAt } : null));
-      this.statusSuccessMessage.set(`Workflow status updated to "${ENQUIRY_STATUS_LABELS[res.status]}".`);
       this.isUpdatingStatus.set(false);
     } catch (err: any) {
+      // ROLLBACK optimistic status transition on network or server rejection
+      this.enquiry.update((e) => (e ? { ...e, status: prevStatus } : null));
+      this.selectedStatus.set(prevStatus);
+      this.statusSuccessMessage.set('');
       this.statusErrorMessage.set(err?.message || 'Failed to update status.');
       this.isUpdatingStatus.set(false);
     }
@@ -113,18 +119,30 @@ export class AdminEnquiryDetailComponent implements OnInit {
     this.isSubmittingNote.set(true);
     this.noteErrorMessage.set('');
 
+    // OPTIMISTIC UI: Instantly display draft note in staff audit log
+    const optimisticNote = {
+      id: 'opt-' + Date.now(),
+      author: 'You (syncing...)',
+      text,
+      createdAt: new Date().toISOString()
+    };
+    this.enquiry.update((e) => e ? { ...e, notes: [...e.notes, optimisticNote] } : null);
+    this.newNoteText.set('');
+
     try {
       const createdNote = await this.enquiryService.addNote(current.id, text);
       this.enquiry.update((e) => {
         if (!e) return null;
         return {
           ...e,
-          notes: [...e.notes, createdNote]
+          notes: e.notes.map(n => n.id === optimisticNote.id ? createdNote : n)
         };
       });
-      this.newNoteText.set('');
       this.isSubmittingNote.set(false);
     } catch (err: any) {
+      // Rollback note from list and restore text in form on failure
+      this.enquiry.update((e) => e ? { ...e, notes: e.notes.filter(n => n.id !== optimisticNote.id) } : null);
+      this.newNoteText.set(text);
       this.noteErrorMessage.set(err?.message || 'Failed to save internal note.');
       this.isSubmittingNote.set(false);
     }

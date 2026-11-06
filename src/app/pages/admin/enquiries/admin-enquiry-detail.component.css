@@ -21,7 +21,6 @@
   background-color: #ffffff;
   border: 1px solid var(--ks-border-subtle, #e5e7eb) !important;
   border-radius: var(--round-4, 4px);
-  border-left: 4px solid var(--color--carrot-orange, #eb9624) !important;
 }
 
 .section-card {
@@ -41,7 +40,7 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color--blue, #124e9d) 0%, #0d3c7a 100%);
+  background-color: var(--color--blue, #124e9d);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -72,8 +71,7 @@
 
 .message-box {
   background-color: #fafaf9;
-  border-left: 3px solid var(--color--carrot-orange, #eb9624) !important;
-  border-color: #e7e5e4;
+  border: 1px solid #e7e5e4;
 }
 
 .note-form-box {

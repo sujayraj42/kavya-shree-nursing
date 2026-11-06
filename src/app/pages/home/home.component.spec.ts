@@ -192,7 +192,7 @@ describe('HomeComponent', () => {
     const provisionalPills = compiled.querySelectorAll('#courses .ks-card-provisional-pill');
     expect(provisionalPills.length).toBe(5);
     provisionalPills.forEach((pill) => {
-      expect(pill.textContent).toContain('Provisional Offering — Pending Official Confirmation');
+      expect(pill.textContent).toContain('Provisional Offering: Pending Official Confirmation');
     });
 
     const titles = Array.from(compiled.querySelectorAll('#courses .ks-course-title')).map((el) =>

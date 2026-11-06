@@ -28,7 +28,7 @@ describe('ProgramsComponent', () => {
     const pills = compiled.querySelectorAll('.ks-card-provisional-pill');
     expect(pills.length).toBe(5);
     pills.forEach(pill => {
-      expect(pill.textContent).toContain('Provisional Offering — Pending Official Confirmation');
+      expect(pill.textContent).toContain('Provisional Offering: Pending Official Confirmation');
     });
   });
 

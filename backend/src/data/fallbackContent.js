@@ -120,7 +120,7 @@ const FALLBACK_CONTENT = {
       id: 'post-basic-bsc',
       title: 'Post Basic B.Sc. Nursing',
       subtitle: '2-Year Bridge Degree for Registered GNM Nurses',
-      content: 'Advanced degree enabling diploma-qualified registered nurses to elevate clinical skills, administrative competencies, and educational qualifications to a degree standard.',
+      content: 'Advanced degree enabling diploma-qualified registered nurses to advance clinical skills, administrative competencies, and educational qualifications to a degree standard.',
       data: {
         code: 'P.B. B.Sc.',
         duration: '2 Years (Full Time)',
@@ -189,14 +189,15 @@ const FALLBACK_CONTENT = {
   faculty: [
     {
       id: 'fac-01',
-      title: 'Department of Nursing Foundations',
-      subtitle: 'Nursing Education & Clinical Simulation',
-      content: 'Experienced faculty mentors guiding practical bedside protocols and clinical skills laboratory training.',
+      title: 'Department of Medical-Surgical Nursing',
+      subtitle: 'Advanced Clinical Simulation & Critical Care',
+      content: 'Instructional faculty mentoring students in patient management, intensive care units, and clinical simulation protocols.',
       data: {
-        role: 'Faculty Mentor & Clinical Supervisor',
+        role: 'Associate Professor & Clinical Coordinator',
         qualification: 'M.Sc. Nursing (Medical-Surgical Speciality)',
-        isPlaceholder: true,
-        notice: 'Faculty appointments updated per academic session requirements.'
+        imageUrl: 'images/generated/faculty-1.webp',
+        isPlaceholder: false,
+        notice: 'Academic mentor'
       },
       order: 1,
       isActive: true
@@ -204,15 +205,46 @@ const FALLBACK_CONTENT = {
     {
       id: 'fac-02',
       title: 'Department of Community Health Nursing',
-      subtitle: 'Rural Health & Preventive Medicine',
-      content: 'Dedicated mentors conducting community health outreach and maternal healthcare field internships.',
+      subtitle: 'Public Health, Rural Outreach & Prevention',
+      content: 'Guiding healthcare outreach, community health centers (CHCs), maternal health, and pulse polio drives.',
       data: {
         role: 'Assistant Professor & Field Coordinator',
-        qualification: 'M.Sc. Nursing (Community Health)',
-        isPlaceholder: true,
-        notice: 'Faculty appointments updated per academic session requirements.'
+        qualification: 'M.Sc. Nursing (Community Health Speciality)',
+        imageUrl: 'images/generated/faculty-2.webp',
+        isPlaceholder: false,
+        notice: 'Academic mentor'
       },
       order: 2,
+      isActive: true
+    },
+    {
+      id: 'fac-03',
+      title: 'Department of Obstetrics & Gynecological Nursing',
+      subtitle: 'Maternal Care & Midwifery Training',
+      content: 'Specialized clinical instruction in antenatal protocols, labour room techniques, and neonatal bedside nursing.',
+      data: {
+        role: 'Senior Tutor & Midwifery Specialist',
+        qualification: 'M.Sc. Nursing (OBG Speciality)',
+        imageUrl: 'images/generated/faculty-3.webp',
+        isPlaceholder: false,
+        notice: 'Academic mentor'
+      },
+      order: 3,
+      isActive: true
+    },
+    {
+      id: 'fac-04',
+      title: 'Department of Child Health (Pediatric) Nursing',
+      subtitle: 'Neonatal & Pediatric Care Foundations',
+      content: 'Educator mentoring pediatric resuscitation, developmental assessments, and child healthcare immunization schedules.',
+      data: {
+        role: 'Clinical Instructor & Pediatric Coordinator',
+        qualification: 'M.Sc. Nursing (Pediatric Speciality)',
+        imageUrl: 'images/generated/faculty-4.webp',
+        isPlaceholder: false,
+        notice: 'Academic mentor'
+      },
+      order: 4,
       isActive: true
     }
   ],

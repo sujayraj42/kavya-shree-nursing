@@ -15,7 +15,6 @@ import { RouterLink } from '@angular/router';
             <li class="breadcrumb-item active" aria-current="page">Anti-Ragging</li>
           </ol>
         </nav>
-        <span class="badge bg-danger text-white text-uppercase fw-bold mb-2">Zero Tolerance Policy</span>
         <h1 class="h2 fw-bold text-white mb-2">Statutory Anti-Ragging Framework &amp; Helpline</h1>
         <p class="text-white-50 mb-0 max-w-650">
           Strictly enforced pursuant to the Hon'ble Supreme Court of India directives, UGC Regulations 2009, and Indian Nursing Council guidelines.
@@ -124,7 +123,7 @@ import { RouterLink } from '@angular/router';
   `,
   styles: [`
     .page-hero-banner {
-      background: linear-gradient(135deg, #0f2942 0%, #181818 100%);
+      background-color: #0f2942;
       padding: 48px 0;
       border-bottom: 3px solid #dc3545;
     }

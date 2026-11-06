@@ -41,7 +41,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color--blue, #124e9d) 0%, #0d3c7a 100%);
+  background-color: var(--color--blue, #124e9d);
   color: #ffffff;
   display: flex;
   align-items: center;

@@ -5,7 +5,7 @@
 .hero-section {
   min-height: 84vh;
   padding: 80px 0 70px 0;
-  background: linear-gradient(135deg, #10161d 0%, #171f28 50%, #121820 100%);
+  background-color: #10161d;
   display: flex;
   align-items: center;
 }

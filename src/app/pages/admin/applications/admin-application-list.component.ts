@@ -130,15 +130,24 @@ export class AdminApplicationListComponent implements OnInit {
     const status = this.newStatus();
     if (!app || !status || status === app.status) return;
 
+    const prevStatus = app.status;
+    const optimisticUpdated = { ...app, status: status as AdminApplication['status'] };
+
+    // OPTIMISTIC UI: Update status instantly in modal detail and list table before server reply
+    this.selectedApp.set(optimisticUpdated);
+    this.applications.update((list) => list.map(item => item.id === app.id ? optimisticUpdated : item));
+    this.successMessage.set(`Status updated to ${status}`);
     this.isUpdatingStatus.set(true);
+
     try {
       await this.appService.updateStatus(app.id, status);
-      this.successMessage.set(`Status updated to ${status}`);
-      // Refresh current record
-      const updated = { ...app, status: status as AdminApplication['status'] };
-      this.selectedApp.set(updated);
-      this.loadApplications();
     } catch (err: any) {
+      // Rollback on network or server error
+      const rolledBack = { ...app, status: prevStatus };
+      this.selectedApp.set(rolledBack);
+      this.applications.update((list) => list.map(item => item.id === app.id ? rolledBack : item));
+      this.newStatus.set(prevStatus);
+      this.successMessage.set('');
       this.errorMessage.set(err?.message || 'Failed to update application status.');
     } finally {
       this.isUpdatingStatus.set(false);
