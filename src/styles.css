@@ -127,8 +127,21 @@
   --ks-shadow-drawer: rgba(0, 0, 0, 0.55);
   --ks-orange-alpha-22: rgba(235, 150, 36, 0.22);
   --ks-orange-alpha-28: rgba(235, 150, 36, 0.28);
+  --ks-orange-alpha-30: rgba(235, 150, 36, 0.3);
   --ks-orange-alpha-42: rgba(235, 150, 36, 0.42);
   --ks-orange-alpha-60: rgba(235, 150, 36, 0.6);
+
+  /* Home & Academic Programs Semantic Tokens */
+  --ks-hero-bg: #10161d;
+  --ks-hero-card-bg: #171a1f;
+  --ks-hero-caption-bg: #15181d;
+  --ks-shadow-dark-40: rgba(0, 0, 0, 0.4);
+  --ks-shadow-dark-50: rgba(0, 0, 0, 0.5);
+  --ks-card-border-neutral: #e0e0e0;
+  --ks-surface-stone-alt: #f7f7f7;
+  --ks-surface-white-15: rgba(255, 255, 255, 0.15);
+  --ks-border-white-10: rgba(255, 255, 255, 0.1);
+  --ks-tab-border: #dcdcdc;
 
   /* Framer Motion Spring & Easing Physics Tokens */
   --fm-spring: cubic-bezier(0.16, 1, 0.3, 1);

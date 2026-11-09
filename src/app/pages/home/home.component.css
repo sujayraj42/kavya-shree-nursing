@@ -5,7 +5,7 @@
 .hero-section {
   min-height: 84vh;
   padding: 80px 0 70px 0;
-  background-color: #10161d;
+  background-color: var(--ks-hero-bg);
   display: flex;
   align-items: center;
 }
@@ -26,15 +26,15 @@
 }
 
 .hero-image-card {
-  background-color: #171a1f;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4) !important;
+  background-color: var(--ks-hero-card-bg);
+  border-color: var(--ks-border-white-12) !important;
+  box-shadow: 0 16px 36px var(--ks-shadow-dark-40) !important;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .hero-image-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 20px 42px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 20px 42px var(--ks-shadow-dark-50) !important;
 }
 
 .hero-campus-img {
@@ -47,8 +47,8 @@
 }
 
 .hero-image-caption {
-  background-color: #15181d !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--ks-hero-caption-bg) !important;
+  border-top: 1px solid var(--ks-border-white-08);
 }
 
 .hero-campus-meta {
@@ -75,12 +75,12 @@
 
 /* Visual Dossier Card */
 .ks-visual-card {
-  border-color: #e0e0e0;
+  border-color: var(--ks-card-border-neutral);
 }
 
 .ks-visual-header {
   background-color: var(--color--eeire-black) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--ks-border-white-10);
 }
 
 .ks-logo-img {
@@ -88,22 +88,22 @@
 }
 
 .bg-stone {
-  background-color: #f7f7f7 !important;
+  background-color: var(--ks-surface-stone-alt) !important;
 }
 
 /* Form Container */
 .form-container-box {
   background-color: var(--color--eeire-black) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--ks-border-white-10);
+  box-shadow: 0 12px 30px var(--ks-shadow-dark-25);
 }
 
 .form-control:focus,
 .form-select:focus {
-  background-color: rgba(255, 255, 255, 0.15) !important;
-  color: #ffffff !important;
+  background-color: var(--ks-surface-white-15) !important;
+  color: var(--color--white) !important;
   border-color: var(--color--carrot-orange) !important;
-  box-shadow: 0 0 0 3px rgba(235, 150, 36, 0.3) !important;
+  box-shadow: 0 0 0 3px var(--ks-orange-alpha-30) !important;
 }
 
 /* Form controls retain a comfortable minimum target on touch screens. */
