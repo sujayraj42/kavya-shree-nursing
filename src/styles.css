@@ -155,6 +155,13 @@
   --ks-orange-alpha-12: rgba(235, 150, 36, 0.12);
   --ks-orange-alpha-25: rgba(235, 150, 36, 0.25);
 
+  /* Institutional Trust & Gallery Semantic Tokens */
+  --ks-btn-orange-hover: #d88214;
+  --ks-shadow-dark-10: rgba(0, 0, 0, 0.1);
+  --ks-gallery-overlay-bg: rgba(0, 0, 0, 0.35);
+  --ks-lightbox-backdrop-bg: rgba(0, 0, 0, 0.88);
+  --ks-lightbox-stage-bg: #0d0d0d;
+
   /* Framer Motion Spring & Easing Physics Tokens */
   --fm-spring: cubic-bezier(0.16, 1, 0.3, 1);
   --fm-spring-snappy: cubic-bezier(0.2, 0.8, 0.2, 1);

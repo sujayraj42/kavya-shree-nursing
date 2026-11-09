@@ -1,40 +1,40 @@
 .page-hero-banner {
-  background-color: var(--color--eeire-black, #181818);
+  background-color: var(--color--eeire-black);
   padding: 60px 0 50px 0;
 }
 
 .faculty-avatar-circle {
   width: 56px;
   height: 56px;
-  background-color: var(--color--eeire-black, #181818);
+  background-color: var(--color--eeire-black);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid var(--color--carrot-orange, #eb9624);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 2px solid var(--color--carrot-orange);
+  box-shadow: 0 2px 8px var(--ks-shadow-card-md);
 }
 
 .ks-badge-amber {
-  background-color: var(--color--carrot-orange, #eb9624);
-  color: #181818;
+  background-color: var(--color--carrot-orange);
+  color: var(--color--eeire-black);
   font-size: 0.75rem;
   letter-spacing: 0.05em;
   font-weight: 700;
   padding: 0.25rem 0.5rem;
-  border-radius: var(--round-4, 4px);
+  border-radius: var(--round-4);
 }
 
 .btn-institutional-primary {
-  background-color: var(--color--carrot-orange, #eb9624);
-  color: #181818;
+  background-color: var(--color--carrot-orange);
+  color: var(--color--eeire-black);
   font-weight: 600;
-  border-radius: var(--round-4, 4px);
+  border-radius: var(--round-4);
   border: none;
 }
 
 .btn-institutional-primary:hover {
-  background-color: #d88214;
-  color: #000000;
+  background-color: var(--ks-btn-orange-hover);
+  color: var(--color--black);
 }
 

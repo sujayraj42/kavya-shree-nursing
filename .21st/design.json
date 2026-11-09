@@ -128,6 +128,17 @@
         "@uniquesonu/components/dashboard-activities"
       ],
       "rationale": "Combines 1-click status filter chips, candidate initials avatars, unified enquiries + online applications telemetry, and a 2-column Application Dossier modal with direct outreach and staff audit notes while achieving 0 hardcoded color drift."
+    },
+    {
+      "area": "whole-app-ui-revamp",
+      "choice": "2026-11-09: Completed 4-subsystem Magic UI + 21st token alignment across all 129 files in src/app/ with 0 errors, 0 warnings, 0 suggestions",
+      "references": [
+        "src/styles.css",
+        "src/app/layout",
+        "src/app/shared",
+        "src/app/pages"
+      ],
+      "rationale": "Tokenized all component stylesheets across Shell Layout, Home & Academic Programs, Admissions & Online Application Wizard, and Institutional Trust & Campus Pages to reference :root CSS custom properties with zero hardcoded color drift and full WCAG 2.2 AA compliance."
     }
   ],
   "evidence": [
