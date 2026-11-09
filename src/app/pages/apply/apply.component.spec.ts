@@ -136,20 +136,69 @@ describe('ApplyComponent', () => {
     expect((component as any).submittedData()?.applicationNumber).toBe('KSIN-2026-APP-123456');
   });
 
-  it('should open application receipt when printReceipt is called with submittedData', () => {
+  it('should open application receipt window and render official slip HTML when printReceipt is called with submittedData', () => {
     (component as any).submittedData.set({
       applicationNumber: 'KSIN-2026-APP-778899',
       applicantName: 'Test Student',
       program: 'GNM'
     });
 
-    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    const mockDoc = {
+      open: vi.fn(),
+      write: vi.fn(),
+      close: vi.fn()
+    };
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => ({ document: mockDoc } as any));
     component.printReceipt();
-    expect(openSpy).toHaveBeenCalledWith(
-      expect.stringContaining('/applications/KSIN-2026-APP-778899/receipt'),
-      '_blank'
-    );
+    expect(openSpy).toHaveBeenCalledWith('', '_blank');
+    expect(mockDoc.open).toHaveBeenCalled();
+    expect(mockDoc.write).toHaveBeenCalledWith(expect.stringContaining('KSIN-2026-APP-778899'));
+    expect(mockDoc.write).toHaveBeenCalledWith(expect.stringContaining('Test Student'));
+    expect(mockDoc.close).toHaveBeenCalled();
     openSpy.mockRestore();
+  });
+
+  it('should bridge application submission to /api/enquiries when /api/applications returns 404', async () => {
+    (component as any).currentStep.set(5);
+    (component as any).applicantName.set('Neha Kumari');
+    (component as any).dob.set('2004-08-12');
+    (component as any).fatherName.set('Manoj Kumar');
+    (component as any).motherName.set('Rekha Devi');
+    (component as any).phone.set('9876543210');
+    (component as any).district.set('Patna');
+    (component as any).pincode.set('800001');
+    (component as any).selectedProgram.set('General Nursing & Midwifery (GNM)');
+    (component as any).declaration.set(true);
+
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = vi.fn().mockImplementation((url: string) => {
+      if (String(url).includes('/applications')) {
+        return Promise.resolve({
+          ok: false,
+          status: 404,
+          json: async () => ({ success: false, error: 'API endpoint not found' })
+        });
+      }
+      if (String(url).includes('/enquiries')) {
+        return Promise.resolve({
+          ok: true,
+          status: 201,
+          json: async () => ({ success: true, data: { id: 'enq_123' } })
+        });
+      }
+      return Promise.reject(new Error('Unexpected URL'));
+    });
+
+    try {
+      await component.submitApplication();
+      const sub = (component as any).submittedData();
+      expect(sub).not.toBeNull();
+      expect(sub.applicationNumber).toMatch(/^KSIN-2026-APP-\d+$/);
+      expect(sub.applicantName).toBe('Neha Kumari');
+      expect(sub.isOffline).toBe(false);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 
   it('should call window.print as fallback when submittedData is not present', () => {

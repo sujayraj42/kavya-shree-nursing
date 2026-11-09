@@ -8,6 +8,7 @@ import { I18nService } from '../../core/services/i18n.service';
 
 const STORAGE_KEY = 'ks_online_application_draft';
 const OFFLINE_QUEUE_KEY = 'ks_offline_applications';
+const ADMIN_OFFLINE_QUEUE_KEY = 'ks_nursing_applications_offline_queue';
 
 export interface ProgramCard {
   id: string;
@@ -290,11 +291,26 @@ export class ApplyComponent implements OnInit {
 
   public printReceipt(): void {
     const sub = this.submittedData();
-    if (typeof window !== 'undefined' && sub?.applicationNumber) {
-      window.open(`${environment.apiBaseUrl}/applications/${encodeURIComponent(sub.applicationNumber)}/receipt`, '_blank');
-    } else if (typeof window !== 'undefined') {
+    if (typeof window === 'undefined') return;
+    if (!sub?.applicationNumber) {
       window.print();
+      return;
     }
+
+    const receiptWindow = window.open('', '_blank');
+    if (!receiptWindow || !receiptWindow.document) {
+      window.print();
+      return;
+    }
+
+    const html = this.buildOfficialReceiptHtml(
+      sub.applicationNumber,
+      sub.applicantName || this.applicantName(),
+      sub.program || this.selectedProgram()
+    );
+    receiptWindow.document.open();
+    receiptWindow.document.write(html);
+    receiptWindow.document.close();
   }
 
   public async submitApplication(): Promise<void> {
@@ -308,7 +324,9 @@ export class ApplyComponent implements OnInit {
 
     this.isSubmitting.set(true);
 
+    const generatedAppNumber = `KSIN-2026-APP-${Math.floor(100000 + Math.random() * 900000)}`;
     const payload = {
+      applicationNumber: generatedAppNumber,
       applicantName: this.applicantName().trim(),
       gender: this.gender(),
       dob: this.dob(),
@@ -336,14 +354,16 @@ export class ApplyComponent implements OnInit {
       declaration: true
     };
 
-    // Candidate candidate endpoints to try in order of proximity and stability
-    const endpoints = [
-      '/api/applications',
-      `${environment.apiBaseUrl}/applications`,
-      'https://kavya-shree-nursing.onrender.com/api/applications'
-    ];
+    // Primary application endpoints in order of proximity and stability
+    const endpoints = Array.from(
+      new Set([
+        '/api/applications',
+        `${environment.apiBaseUrl}/applications`,
+        'https://kavya-shree-nursing.onrender.com/api/applications'
+      ])
+    );
 
-    let lastError = '';
+    let finalAppNumber = generatedAppNumber;
     let succeeded = false;
 
     for (const url of endpoints) {
@@ -363,8 +383,10 @@ export class ApplyComponent implements OnInit {
         if (res.ok) {
           const data = await res.json();
           if (data?.success && data?.data?.applicationNumber) {
+            finalAppNumber = data.data.applicationNumber;
+            this.persistOfflineApplication(payload, finalAppNumber);
             this.submittedData.set({
-              applicationNumber: data.data.applicationNumber,
+              applicationNumber: finalAppNumber,
               applicantName: data.data.applicantName || payload.applicantName,
               program: data.data.program || payload.program,
               isOffline: false
@@ -372,31 +394,72 @@ export class ApplyComponent implements OnInit {
             succeeded = true;
             break;
           }
-        } else {
-          try {
-            const errJson = await res.json();
-            lastError = errJson?.error || `HTTP ${res.status}`;
-          } catch {
-            lastError = `HTTP ${res.status}`;
-          }
         }
-      } catch (err: any) {
-        lastError = err?.message || 'Network unreachable';
+      } catch {
+        // Continue to next endpoint
+      }
+    }
+
+    // Bridge: If /api/applications is not mounted on the remote backend (404), persist via /api/enquiries
+    // so the complete application record is stored in MongoDB Atlas and visible in Admin Panel.
+    if (!succeeded) {
+      const enquiryEndpoints = Array.from(
+        new Set([
+          `${environment.apiBaseUrl}/enquiries`,
+          'https://kavya-shree-nursing.onrender.com/api/enquiries',
+          '/api/enquiries'
+        ])
+      );
+      const enquiryPayload = {
+        name: payload.applicantName,
+        phone: payload.phone,
+        email: payload.email || undefined,
+        program: payload.program,
+        message: this.buildStructuredApplicationEnquiryMessage(payload, generatedAppNumber),
+        consent: true
+      };
+
+      for (const url of enquiryEndpoints) {
+        try {
+          const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+          const timeoutId = controller ? setTimeout(() => controller.abort(), 9000) : null;
+
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(enquiryPayload),
+            signal: controller?.signal
+          });
+
+          if (timeoutId) clearTimeout(timeoutId);
+
+          if (res.ok) {
+            this.persistOfflineApplication(payload, generatedAppNumber);
+            this.submittedData.set({
+              applicationNumber: generatedAppNumber,
+              applicantName: payload.applicantName,
+              program: payload.program,
+              isOffline: false
+            });
+            succeeded = true;
+            break;
+          }
+        } catch {
+          // Continue to next fallback
+        }
       }
     }
 
     // Safety Net: If all network attempts fail, queue offline so candidate never loses data
     if (!succeeded) {
-      const fallbackAppNumber = `KSIN-2026-APP-${Math.floor(100000 + Math.random() * 900000)}`;
-      this.persistOfflineApplication(payload, fallbackAppNumber);
+      this.persistOfflineApplication(payload, generatedAppNumber);
 
       this.submittedData.set({
-        applicationNumber: fallbackAppNumber,
+        applicationNumber: generatedAppNumber,
         applicantName: payload.applicantName,
         program: payload.program,
         isOffline: true
       });
-      succeeded = true;
     }
 
     if (typeof window !== 'undefined' && window.sessionStorage) {
@@ -406,16 +469,153 @@ export class ApplyComponent implements OnInit {
     this.isSubmitting.set(false);
   }
 
+  private buildStructuredApplicationEnquiryMessage(payload: any, appNumber: string): string {
+    const clean = (v: unknown) => String(v ?? '').replace(/[<>|]/g, ' ').trim();
+    return [
+      `[ONLINE_APPLICATION ${appNumber}]`,
+      `Gender: ${clean(payload.gender || 'Female')}`,
+      `DOB: ${clean(payload.dob || '')}`,
+      `Category: ${clean(payload.category || 'General')}`,
+      `Father: ${clean(payload.fatherName || 'N/A')}`,
+      `Mother: ${clean(payload.motherName || 'N/A')}`,
+      `Street: ${clean(payload.address?.street || '')}`,
+      `District: ${clean(payload.address?.district || 'Patna')}`,
+      `State: ${clean(payload.address?.state || 'Bihar')}`,
+      `PIN: ${clean(payload.address?.pincode || '')}`,
+      `10th: ${clean(payload.academicDetails?.tenthBoard || 'BSEB')} (${clean(payload.academicDetails?.tenthYear || '')}) ${clean(payload.academicDetails?.tenthPercentage ?? '')}%`,
+      `12th: ${clean(payload.academicDetails?.twelfthBoard || 'BSEB')} (${clean(payload.academicDetails?.twelfthYear || '')}) ${clean(payload.academicDetails?.twelfthPercentage ?? '')}%`,
+      `PCB: ${clean(payload.academicDetails?.pcbPercentage ?? '')}%`
+    ]
+      .join(' | ')
+      .slice(0, 950);
+  }
+
   private persistOfflineApplication(payload: any, appNumber: string): void {
     if (typeof window === 'undefined' || !window.localStorage) return;
-    try {
-      const existing = JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]');
-      existing.push({
-        applicationNumber: appNumber,
-        payload,
-        createdAt: new Date().toISOString()
-      });
-      localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(existing));
-    } catch {}
+    const record = {
+      applicationNumber: appNumber,
+      payload,
+      status: 'submitted',
+      createdAt: new Date().toISOString()
+    };
+
+    for (const key of [OFFLINE_QUEUE_KEY, ADMIN_OFFLINE_QUEUE_KEY]) {
+      try {
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
+        const list = Array.isArray(existing) ? existing.filter((e: any) => e?.applicationNumber !== appNumber) : [];
+        list.unshift(record);
+        localStorage.setItem(key, JSON.stringify(list.slice(0, 100)));
+      } catch {}
+    }
+  }
+
+  private buildOfficialReceiptHtml(appNumber: string, applicantName: string, program: string): string {
+    const esc = (v: unknown) =>
+      String(v ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+
+    const now = new Date();
+    const submittedDate = now.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+    const submittedTime = now.toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    const dobVal = this.dob()
+      ? new Date(this.dob()).toLocaleDateString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        })
+      : 'Not Specified';
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Slip - ${esc(appNumber)} - Kavya Shree Institute of Nursing</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: #1e293b; background-color: #f1f5f9; padding: 24px 16px; line-height: 1.5; }
+    .action-bar { max-width: 800px; margin: 0 auto 16px auto; display: flex; justify-content: space-between; align-items: center; background: #0f2942; color: #ffffff; padding: 12px 20px; border-radius: 8px; }
+    .action-bar button { background: #f59e0b; color: #0f2942; border: none; font-weight: 700; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; }
+    .receipt-container { max-width: 800px; margin: 0 auto; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 36px 40px; }
+    .institute-header { text-align: center; border-bottom: 2px solid #0f2942; padding-bottom: 16px; margin-bottom: 24px; }
+    .institute-name { font-size: 22px; font-weight: 800; color: #0f2942; letter-spacing: 0.5px; text-transform: uppercase; }
+    .institute-affil { font-size: 12px; color: #475569; margin-top: 4px; font-weight: 500; }
+    .receipt-title-badge { display: inline-block; margin-top: 10px; padding: 4px 14px; background: #f8fafc; border: 1px solid #e2e8f0; color: #0f2942; font-weight: 700; font-size: 13px; border-radius: 4px; text-transform: uppercase; }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; background: #f8fafc; padding: 16px 20px; border-radius: 6px; border: 1px solid #e2e8f0; }
+    .meta-item label { display: block; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 2px; }
+    .meta-item .val { font-size: 15px; font-weight: 700; color: #0f2942; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .section-title { font-size: 13px; text-transform: uppercase; color: #0f2942; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 10px; border-left: 4px solid #f59e0b; padding-left: 8px; }
+    .data-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
+    .data-table th, .data-table td { border: 1px solid #e2e8f0; padding: 8px 12px; text-align: left; }
+    .data-table th { background: #f8fafc; color: #475569; font-weight: 700; width: 25%; }
+    .status-badge { display: inline-block; padding: 2px 8px; font-size: 11px; font-weight: 700; border-radius: 4px; text-transform: uppercase; background: #dbeafe; color: #1e40af; }
+    .declaration-box { font-size: 11px; color: #64748b; background: #f8fafc; padding: 12px 16px; border-radius: 6px; border: 1px solid #e2e8f0; margin-top: 16px; line-height: 1.6; }
+    .signatures-row { display: flex; justify-content: space-between; align-items: center; margin-top: 36px; padding-top: 16px; }
+    .sig-box { text-align: center; width: 200px; }
+    .sig-line { border-top: 1px dashed #94a3b8; margin-bottom: 6px; }
+    .sig-label { font-size: 12px; color: #64748b; font-weight: 600; }
+    .seal-box { border: 2px solid #0f2942; color: #0f2942; font-size: 11px; font-weight: 700; padding: 10px 14px; border-radius: 50%; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; text-align: center; text-transform: uppercase; opacity: 0.75; }
+    @media print { body { background: #ffffff; padding: 0; } .action-bar { display: none; } .receipt-container { border: none; padding: 0; max-width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="action-bar">
+    <div><strong>Kavya Shree Institute of Nursing</strong> &bull; Official Candidate Application Slip</div>
+    <div><button onclick="window.print()">Print / Save as PDF</button></div>
+  </div>
+  <div class="receipt-container">
+    <div class="institute-header">
+      <div class="institute-name">Kavya Shree Institute of Nursing</div>
+      <div class="institute-affil">Statutory Affiliation Application on File &bull; INC &amp; BNRC Process (Session 2026–27) &bull; Punpun, Patna, Bihar</div>
+      <div class="receipt-title-badge">Admissions Intake 2026–2027 &bull; Formal Application Acknowledgement</div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item"><label>Application Reference Number</label><div class="val">${esc(appNumber)}</div></div>
+      <div class="meta-item" style="text-align: right;"><label>Submission Date &amp; Time</label><div class="val" style="font-size: 13px;">${esc(submittedDate)} ${esc(submittedTime)}</div></div>
+      <div class="meta-item"><label>Applied Program</label><div class="val" style="font-family: inherit; font-size: 14px; color: #0284c7;">${esc(program)}</div></div>
+      <div class="meta-item" style="text-align: right;"><label>Current Status</label><div class="status-badge">SUBMITTED</div></div>
+    </div>
+    <div class="section-title">1. Applicant Profile &amp; Identity</div>
+    <table class="data-table">
+      <tr><th>Applicant Full Name</th><td><strong>${esc(applicantName)}</strong></td><th>Date of Birth</th><td>${esc(dobVal)}</td></tr>
+      <tr><th>Gender</th><td>${esc(this.gender() || 'Female')}</td><th>Category / Quota</th><td>${esc(this.category() || 'General')}</td></tr>
+      <tr><th>Father's Name</th><td>${esc(this.fatherName() || 'N/A')}</td><th>Mother's Name</th><td>${esc(this.motherName() || 'N/A')}</td></tr>
+      <tr><th>Contact Mobile</th><td>+91 ${esc(this.phone() || 'N/A')}</td><th>Email Address</th><td>${esc(this.email() || 'N/A')}</td></tr>
+      <tr><th>Permanent Address</th><td colspan="3">${this.street() ? esc(this.street()) + ', ' : ''}${esc(this.district() || 'Patna')}, ${esc(this.state() || 'Bihar')} - ${esc(this.pincode() || '')}</td></tr>
+    </table>
+    <div class="section-title">2. Academic Merit Record</div>
+    <table class="data-table">
+      <thead><tr><th>Standard</th><th>Board / Council</th><th>Passing Year</th><th>Aggregate / Score</th></tr></thead>
+      <tbody>
+        <tr><td><strong>10th / Secondary</strong></td><td>${esc(this.tenthBoard())}</td><td>${esc(this.tenthYear())}</td><td><strong>${esc(this.tenthPercentage())}%</strong></td></tr>
+        <tr><td><strong>12th / Sr. Secondary</strong></td><td>${esc(this.twelfthBoard())}</td><td>${esc(this.twelfthYear())}</td><td><strong>${esc(this.twelfthPercentage())}%</strong> (PCB: ${esc(this.pcbPercentage())}%)</td></tr>
+      </tbody>
+    </table>
+    <div class="declaration-box">
+      <strong>Institutional Undertaking &amp; Counseling Instructions:</strong>
+      <ol style="margin-left: 18px; margin-top: 4px;">
+        <li>This computer-generated application slip acknowledges receipt of your online application under Reference ID <strong>${esc(appNumber)}</strong>.</li>
+        <li>Final admission is subject to physical verification of original 10th &amp; 12th marksheets, CLC/migration certificate, caste/category certificate (if applicable), and medical fitness at the campus counseling desk.</li>
+        <li>Admissions Helpline: +91 96616 66485 / +91 62878 79239 &bull; Campus: Punpun Station Road, Patna, Bihar.</li>
+      </ol>
+    </div>
+    <div class="signatures-row">
+      <div class="sig-box"><div class="sig-line"></div><div class="sig-label">Candidate Signature</div></div>
+      <div class="seal-box">Official<br>Seal</div>
+      <div class="sig-box"><div class="sig-line"></div><div class="sig-label">Authorized Admissions Officer</div></div>
+    </div>
+  </div>
+</body>
+</html>`;
   }
 }

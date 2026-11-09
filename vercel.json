@@ -6,6 +6,14 @@
   "framework": null,
   "rewrites": [
     {
+      "source": "/api/applications/:appNumber/receipt",
+      "destination": "/api/applications?appNumber=:appNumber&receipt=1"
+    },
+    {
+      "source": "/api/applications/:appNumber",
+      "destination": "/api/applications?appNumber=:appNumber"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "https://kavya-shree-nursing.onrender.com/api/$1"
     },
