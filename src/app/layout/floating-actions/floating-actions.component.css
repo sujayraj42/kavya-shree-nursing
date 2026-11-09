@@ -15,7 +15,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--color--white);
   text-decoration: none;
   position: relative;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -23,11 +23,11 @@
 
 .ks-fab:hover {
   transform: scale(1.06);
-  color: #ffffff;
+  color: var(--color--white);
 }
 
 .ks-fab:focus-visible {
-  outline: 3px solid var(--color--carrot-orange, #eb9624) !important;
+  outline: 3px solid var(--color--carrot-orange) !important;
   outline-offset: 3px;
 }
 
@@ -40,7 +40,7 @@
 }
 
 .ks-fab-phone {
-  background-color: var(--color--eeire-black, #181818);
+  background-color: var(--color--eeire-black);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -51,12 +51,12 @@
 .ks-fab-tooltip {
   position: absolute;
   right: 62px;
-  background-color: #181818;
-  color: #ffffff;
+  background-color: var(--color--eeire-black);
+  color: var(--color--white);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 0.35rem 0.65rem;
-  border-radius: 4px;
+  border-radius: var(--round-4);
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
@@ -64,14 +64,15 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.ks-fab:hover .ks-fab-tooltip {
+.ks-fab:hover .ks-fab-tooltip,
+.ks-fab:focus-visible .ks-fab-tooltip {
   opacity: 1;
 }
 
 /* Mobile Bottom Bar */
 .ks-mobile-action-bar {
-  background-color: #ffffff;
-  border-color: #e5e5e5 !important;
+  background-color: var(--color--white);
+  border-color: var(--ks-rule) !important;
   z-index: 1040;
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
@@ -79,8 +80,8 @@
 .ks-mobile-btn {
   border-radius: 0;
   border: none;
-  border-right: 1px solid #f0f0f0;
-  color: #333333;
+  border-right: 1px solid var(--ks-rule);
+  color: var(--ks-text-main);
   text-decoration: none;
   min-height: 52px;
 }
@@ -91,8 +92,8 @@
 
 .ks-mobile-btn:hover,
 .ks-mobile-btn:active {
-  background-color: #f8f9fa;
-  color: #181818;
+  background-color: var(--ks-bg-paper);
+  color: var(--color--eeire-black);
 }
 
 .ks-mobile-whatsapp {
@@ -100,13 +101,12 @@
 }
 
 .ks-mobile-apply {
-  background-color: var(--color--carrot-orange, #eb9624);
-  color: #181818;
+  background-color: var(--color--carrot-orange);
+  color: var(--color--eeire-black);
 }
 
 .ks-mobile-apply:hover,
 .ks-mobile-apply:active {
   background-color: #d88214;
-  color: #000000;
+  color: var(--color--black);
 }
-

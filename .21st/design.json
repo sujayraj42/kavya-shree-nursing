@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "project": {
+    "name": "kavya-shree-nursing",
+    "productType": "academic-institution-portal",
+    "stack": [
+      "Angular 22",
+      "TypeScript",
+      "Bootstrap 5",
+      "CSS Custom Properties"
+    ]
+  },
+  "sources": {
+    "tokens": [
+      "src/styles.css",
+      "DESIGN_TOKENS.md"
+    ],
+    "components": [
+      "src/app/layout",
+      "src/app/shared",
+      "src/app/pages"
+    ],
+    "assets": [
+      "public/assets",
+      "public/images"
+    ],
+    "instructions": [
+      "DESIGN_TOKENS.md",
+      "ARCHITECTURE_GRAPH.md"
+    ]
+  },
+  "design": {
+    "colorMode": "light-with-dark-headers",
+    "colors": {
+      "--color--eeire-black": "#181818",
+      "--color--black": "#000000",
+      "--color--carrot-orange": "#eb9624",
+      "--color--blue": "#124e9d",
+      "--color--gray": "#4f4f4f",
+      "--color--gray-light": "#6e7074",
+      "--color--white": "#ffffff",
+      "--ks-bg-paper": "#fafafa",
+      "--ks-bg-stone": "#f4f4f4",
+      "--ks-rule": "#e5e5e5",
+      "--ks-rule-strong": "#d0d0d0",
+      "--ks-provisional-bg": "#fff9ed",
+      "--ks-provisional-border": "#fed89b",
+      "--ks-provisional-text": "#7a4b04"
+    },
+    "typography": {
+      "headings": "var(--font--lora) ('Lora', Georgia, 'Times New Roman', serif)",
+      "body": "var(--font--sans) (Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif)",
+      "scale": {
+        "h1": "2.75rem (44px) / 600 / 1.22",
+        "h2": "2.125rem (34px) / 600 / 1.28",
+        "h3": "1.5rem (24px) / 600 / 1.35",
+        "h4": "1.25rem (20px) / 600 / 1.4",
+        "body": "1.125rem (18px) / 400 / 1.6",
+        "small": "0.875rem (14-15px) / 1.5",
+        "micro": "0.75rem (12px) / 1.4"
+      }
+    },
+    "spacing": {
+      "sectionDesktop": "80px 0 70px 0",
+      "sectionMobile": "48px 0 40px 0",
+      "maxContainerWidth": "1320px"
+    },
+    "radius": {
+      "default": "var(--round-4) (4px)",
+      "pill": "50px"
+    },
+    "shadows": {
+      "cardDefault": "0 4px 12px rgba(0, 0, 0, 0.05)",
+      "elevated": "0 12px 30px rgba(0, 0, 0, 0.15)",
+      "heroCard": "0 16px 36px rgba(0, 0, 0, 0.4)"
+    },
+    "motion": {
+      "spring": "var(--fm-spring) cubic-bezier(0.16, 1, 0.3, 1)",
+      "snappy": "var(--fm-spring-snappy) cubic-bezier(0.2, 0.8, 0.2, 1)",
+      "reducedMotion": "prefers-reduced-motion media query enforced globally"
+    },
+    "density": "comfortable-institutional"
+  },
+  "components": {
+    "installed": [
+      "HeaderComponent",
+      "FooterComponent",
+      "NoticeBarComponent",
+      "FloatingActionsComponent",
+      "EnquiryModalComponent",
+      "AdminLayoutComponent"
+    ],
+    "preferredPrimitives": [
+      ".btn-institutional-primary",
+      ".btn-institutional-outline",
+      ".ks-visual-card",
+      ".ks-section-kicker",
+      ".ks-badge-provisional"
+    ],
+    "patterns": [
+      "Dark Eerie Black (#181818) institutional masthead & dossier headers",
+      "Carrot Orange (#eb9624) primary CTAs and WCAG 2.2 AA focus rings",
+      "Academic Blue (#124e9d) informational badges and links",
+      "Minimum 48x48px interactive touch targets"
+    ]
+  },
+  "constraints": {
+    "must": [
+      "Use CSS custom properties from src/styles.css (:root)",
+      "Maintain WCAG 2.2 AA contrast and focus-visible indicators (--ks-focus-ring)",
+      "Provide Escape key dismissal and aria-modal/aria-labelledby on all dialogs",
+      "Keep minimum 48px touch targets on mobile navigation and floating actions"
+    ],
+    "avoid": [
+      "Purple-to-blue gradients or glassmorphism",
+      "Emojis in headings or coloured left-border cards",
+      "Generic buzzwords or unapproved fonts (Inter, Space Grotesk, Instrument Serif)",
+      "Buttons that fade out on hover"
+    ]
+  },
+  "decisions": [
+    {
+      "area": "admin-console-ui",
+      "choice": "Institutional Dossier & Pipeline Matrix (Variation A)",
+      "references": [
+        "@shadcnspace/components/table-01",
+        "@uniquesonu/components/dashboard-overview",
+        "@uniquesonu/components/dashboard-activities"
+      ],
+      "rationale": "Combines 1-click status filter chips, candidate initials avatars, unified enquiries + online applications telemetry, and a 2-column Application Dossier modal with direct outreach and staff audit notes while achieving 0 hardcoded color drift."
+    }
+  ],
+  "evidence": [
+    "DESIGN_TOKENS.md",
+    "src/styles.css"
+  ],
+  "generatedAt": "2026-11-09T06:36:00.000Z"
+}

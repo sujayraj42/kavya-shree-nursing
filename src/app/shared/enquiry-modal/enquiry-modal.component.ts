@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ModalService } from '../../core/services/modal.service';
 import { EnquiryService, validateEnquiryForm } from '../../core/services/enquiry.service';
@@ -43,6 +43,13 @@ export class EnquiryModalComponent {
   protected nameError = signal('');
   protected phoneError = signal('');
   protected emailError = signal('');
+
+  @HostListener('document:keydown.escape')
+  protected onEscapeKey(): void {
+    if (this.modalService.isEnquiryModalOpen()) {
+      this.close();
+    }
+  }
 
   protected close(): void {
     this.modalService.closeEnquiryModal();

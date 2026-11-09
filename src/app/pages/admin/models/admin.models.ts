@@ -158,3 +158,18 @@ export function formatRefId(id: string | undefined | null): string {
   if (!id) return '';
   return id.slice(-6);
 }
+
+export function getCandidateInitials(name: string | undefined | null): string {
+  if (!name) return 'KS';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  return name.trim().slice(0, 2).toUpperCase();
+}
+
+export function getWhatsAppChatUrl(phone: string | undefined | null): string {
+  const digits = String(phone || '').replace(/\D/g, '');
+  const normalized = digits.length === 10 ? `91${digits}` : digits;
+  return `https://wa.me/${normalized}`;
+}

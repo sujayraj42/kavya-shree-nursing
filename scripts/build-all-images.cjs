@@ -2,7 +2,7 @@ const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
 
-const brainDir = process.env.BRAIN_DIR || 'C:/Users/sujay/.gemini/antigravity/brain/aa961674-65c1-40d0-b195-343b9e0ba865';
+const brainDir = process.env.BRAIN_DIR || path.join(__dirname, '../public/images/source');
 const outDir = path.join(__dirname, '../public/images/generated');
 const imagesDir = path.join(__dirname, '../public/images');
 

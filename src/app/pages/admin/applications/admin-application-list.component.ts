@@ -1,8 +1,8 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AdminApplicationService, AdminApplication } from '../services/admin-application.service';
-import { environment } from '../../../../environments/environment';
+import { getCandidateInitials, getWhatsAppChatUrl } from '../models/admin.models';
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'All Statuses' },
@@ -50,13 +50,23 @@ export class AdminApplicationListComponent implements OnInit {
   protected readonly errorMessage = signal('');
   protected readonly successMessage = signal('');
 
-  // Selected Detail Modal
+  // Selected Detail Modal & Notes
   protected readonly selectedApp = signal<AdminApplication | null>(null);
   protected readonly newStatus = signal('');
   protected readonly isUpdatingStatus = signal(false);
+  protected readonly newNoteText = signal('');
+  protected readonly isSubmittingNote = signal(false);
+  protected readonly noteErrorMessage = signal('');
 
   public ngOnInit(): void {
     this.loadApplications();
+  }
+
+  @HostListener('document:keydown.escape')
+  protected onEscapeKey(): void {
+    if (this.selectedApp()) {
+      this.closeDetail();
+    }
   }
 
   public async loadApplications(): Promise<void> {
@@ -117,12 +127,16 @@ export class AdminApplicationListComponent implements OnInit {
   protected openDetail(app: AdminApplication): void {
     this.selectedApp.set(app);
     this.newStatus.set(app.status);
+    this.newNoteText.set('');
+    this.noteErrorMessage.set('');
     this.errorMessage.set('');
     this.successMessage.set('');
   }
 
   protected closeDetail(): void {
     this.selectedApp.set(null);
+    this.newNoteText.set('');
+    this.noteErrorMessage.set('');
   }
 
   protected async updateStatus(): Promise<void> {
@@ -136,7 +150,7 @@ export class AdminApplicationListComponent implements OnInit {
     // OPTIMISTIC UI: Update status instantly in modal detail and list table before server reply
     this.selectedApp.set(optimisticUpdated);
     this.applications.update((list) => list.map(item => item.id === app.id ? optimisticUpdated : item));
-    this.successMessage.set(`Status updated to ${status}`);
+    this.successMessage.set(`Status updated to ${this.getStatusLabel(status)}`);
     this.isUpdatingStatus.set(true);
 
     try {
@@ -154,6 +168,27 @@ export class AdminApplicationListComponent implements OnInit {
     }
   }
 
+  protected async addInternalNote(): Promise<void> {
+    const app = this.selectedApp();
+    const text = this.newNoteText().trim();
+    if (!app || !text || this.isSubmittingNote()) return;
+
+    this.noteErrorMessage.set('');
+    this.isSubmittingNote.set(true);
+
+    try {
+      const updatedNotes = await this.appService.addApplicationNote(app.id, text);
+      const updatedApp = { ...app, notes: updatedNotes };
+      this.selectedApp.set(updatedApp);
+      this.applications.update(list => list.map(item => item.id === app.id ? updatedApp : item));
+      this.newNoteText.set('');
+    } catch (err: any) {
+      this.noteErrorMessage.set(err?.message || 'Failed to append internal note.');
+    } finally {
+      this.isSubmittingNote.set(false);
+    }
+  }
+
   protected async exportCsv(): Promise<void> {
     if (this.isExporting()) return;
     this.isExporting.set(true);
@@ -168,10 +203,15 @@ export class AdminApplicationListComponent implements OnInit {
 
   protected printReceipt(app: AdminApplication): void {
     if (!app || !app.applicationNumber) return;
-    const url = `${environment.apiBaseUrl}/applications/${app.applicationNumber}/receipt`;
-    if (typeof window !== 'undefined') {
-      window.open(url, '_blank');
-    }
+    this.appService.openApplicationReceipt(app);
+  }
+
+  protected getInitials(name: string): string {
+    return getCandidateInitials(name);
+  }
+
+  protected getWhatsAppLink(phone: string): string {
+    return getWhatsAppChatUrl(phone);
   }
 
   protected getBadgeClass(status: string): string {
@@ -196,4 +236,3 @@ export class AdminApplicationListComponent implements OnInit {
     }
   }
 }
-

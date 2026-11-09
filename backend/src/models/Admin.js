@@ -2,8 +2,8 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const { EMAIL_REGEX } = require('../utils/common');
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const BCRYPT_SALT_ROUNDS = 12;
 
 const adminSchema = new mongoose.Schema(

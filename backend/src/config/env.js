@@ -61,8 +61,15 @@ if (isProduction) {
   }
 }
 
-const rawMongoUri =
-  process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL || '';
+function isPlaceholderMongoUri(uri) {
+  if (!uri || typeof uri !== 'string') return true;
+  return /:(abcd|<password>|your_password|password)@/i.test(uri);
+}
+
+const rawEnvMongoUri = (
+  process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL || ''
+).trim();
+const rawMongoUri = !isProduction && isPlaceholderMongoUri(rawEnvMongoUri) ? '' : rawEnvMongoUri;
 
 function resolveTrustProxy() {
   if (process.env.TRUST_PROXY !== undefined && process.env.TRUST_PROXY !== '') {

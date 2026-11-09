@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdminAuthService } from '../services/admin-auth.service';
@@ -27,6 +27,15 @@ export class AdminLayoutComponent implements OnInit {
 
   public ngOnInit(): void {
     this.authService.verifyProfile();
+  }
+
+  @HostListener('document:keydown.escape')
+  protected onEscapeKey(): void {
+    if (this.isPasswordModalOpen()) {
+      this.closePasswordModal();
+    } else if (this.isMobileMenuOpen()) {
+      this.closeMobileMenu();
+    }
   }
 
   protected isActive(path: string): boolean {

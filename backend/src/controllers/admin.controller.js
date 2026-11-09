@@ -9,15 +9,53 @@ const { Enquiry, VALID_STATUSES, ALL_ALLOWED_STATUSES, normalizeStatus } = requi
 const { notifyStatusTransition } = require('../services/automation.service');
 const { logAdminAction } = require('../services/auditLogger');
 const { cacheService } = require('../services/cache.service');
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const {
+  EMAIL_REGEX,
+  sanitizeText,
+  escapeRegex,
+  escapeCsvCell,
+  parsePagination,
+  applyDateRangeFilter
+} = require('../utils/common');
 
 // Pre-computed hash used to equalise response timing when an email is unknown,
 // so login latency does not reveal which administrator emails exist.
 const TIMING_EQUALISATION_HASH = bcrypt.hashSync('timing-equalisation-placeholder', 12);
 
-function escapeRegex(text) {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+/**
+ * Builds a sanitized Mongoose filter query for enquiries from request query parameters.
+ */
+function buildEnquiryFilterQuery(reqQuery = {}, strictStatusValidation = false) {
+  const { status, program, search, dateFrom, dateTo } = reqQuery;
+  const query = { deletedAt: null };
+
+  if (typeof status === 'string' && status.trim() && status.trim().toLowerCase() !== 'all') {
+    const trimmedStatus = status.trim().toLowerCase();
+    if (ALL_ALLOWED_STATUSES.includes(trimmedStatus)) {
+      query.status = trimmedStatus;
+    } else if (strictStatusValidation) {
+      return {
+        error: `Invalid status filter. Must be one of: ${ALL_ALLOWED_STATUSES.join(', ')}`
+      };
+    }
+  }
+
+  if (typeof program === 'string' && program.trim() && program.trim().toLowerCase() !== 'all') {
+    query.program = program.trim();
+  }
+
+  if (typeof search === 'string' && search.trim()) {
+    const searchClean = search.trim().slice(0, 100);
+    const searchRegex = new RegExp(escapeRegex(searchClean), 'i');
+    query.$or = [
+      { name: searchRegex },
+      { phone: searchRegex },
+      { email: searchRegex }
+    ];
+  }
+
+  applyDateRangeFilter(query, dateFrom, dateTo);
+  return { query };
 }
 
 /**
@@ -53,9 +91,7 @@ async function login(req, res, next) {
 
     const admin = await Admin.findOne({ email: trimmedEmail });
     if (!admin) {
-      // Run a dummy comparison so timing matches the wrong-password path
       await bcrypt.compare(password, TIMING_EQUALISATION_HASH);
-      // Generic error: do not disclose that account does not exist
       return res.status(401).json({
         success: false,
         error: 'Invalid email or password'
@@ -64,7 +100,6 @@ async function login(req, res, next) {
 
     const isMatch = await admin.comparePassword(password);
     if (!isMatch) {
-      // Generic error: do not disclose password mismatch
       return res.status(401).json({
         success: false,
         error: 'Invalid email or password'
@@ -80,11 +115,12 @@ async function login(req, res, next) {
 
     admin.lastLoginAt = new Date();
     await admin.save();
-    logAdminAction({ admin, action: 'LOGIN_SUCCESS', targetType: 'Admin', targetId: admin.id || admin._id, ip: req.ip });
+    const adminId = (admin.id || admin._id).toString();
+    logAdminAction({ admin, action: 'LOGIN_SUCCESS', targetType: 'Admin', targetId: adminId, ip: req.ip });
 
     const token = jwt.sign(
       {
-        id: admin.id || admin._id.toString(),
+        id: adminId,
         email: admin.email,
         name: admin.name,
         role: admin.role
@@ -95,8 +131,8 @@ async function login(req, res, next) {
 
     res.cookie('ks_admin_token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: config.isProduction,
+      sameSite: config.isProduction ? 'none' : 'lax',
       maxAge: 8 * 60 * 60 * 1000
     });
 
@@ -105,7 +141,7 @@ async function login(req, res, next) {
       message: 'Authentication successful',
       token,
       admin: {
-        id: admin.id || admin._id.toString(),
+        id: adminId,
         email: admin.email,
         name: admin.name,
         role: admin.role,
@@ -132,57 +168,15 @@ async function getMe(req, res) {
  */
 async function listEnquiries(req, res, next) {
   try {
-    const { status, program, search, dateFrom, dateTo } = req.query;
-
-    const query = { deletedAt: null };
-
-    if (status && typeof status === 'string' && status.trim()) {
-      const trimmedStatus = status.trim().toLowerCase();
-      if (ALL_ALLOWED_STATUSES.includes(trimmedStatus)) {
-        query.status = trimmedStatus;
-      } else {
-        return res.status(400).json({
-          success: false,
-          error: `Invalid status filter. Must be one of: ${ALL_ALLOWED_STATUSES.join(', ')}`
-        });
-      }
+    const { query, error } = buildEnquiryFilterQuery(req.query, true);
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        error
+      });
     }
 
-    if (program && typeof program === 'string' && program.trim()) {
-      query.program = program.trim();
-    }
-
-    if (search && typeof search === 'string' && search.trim()) {
-      const searchClean = search.trim().slice(0, 100);
-      const escaped = escapeRegex(searchClean);
-      const searchRegex = new RegExp(escaped, 'i');
-      query.$or = [
-        { name: searchRegex },
-        { phone: searchRegex },
-        { email: searchRegex }
-      ];
-    }
-
-    if (dateFrom || dateTo) {
-      query.createdAt = {};
-      if (dateFrom && typeof dateFrom === 'string') {
-        const fromDate = new Date(dateFrom);
-        if (!isNaN(fromDate.getTime())) {
-          query.createdAt.$gte = fromDate;
-        }
-      }
-      if (dateTo && typeof dateTo === 'string') {
-        const toDate = new Date(dateTo);
-        if (!isNaN(toDate.getTime())) {
-          toDate.setHours(23, 59, 59, 999);
-          query.createdAt.$lte = toDate;
-        }
-      }
-    }
-
-    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 10));
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePagination(req.query, 10, 100);
 
     let enquiryQuery = Enquiry.find(query);
     if (typeof enquiryQuery.select === 'function') {
@@ -297,16 +291,37 @@ async function updateEnquiryStatus(req, res, next) {
       });
     }
 
+    const previousStatus = enquiry.status;
     enquiry.status = normalizedStatus;
     await enquiry.save();
     await cacheService.invalidateStats();
-    logAdminAction({ admin: req.admin, action: 'UPDATE_ENQUIRY_STATUS', targetType: 'Enquiry', targetId: enquiry.id || enquiry._id, details: { newStatus: normalizedStatus }, ip: req.ip });
+
+    const targetId = (enquiry.id || enquiry._id).toString();
+    logAdminAction({
+      admin: req.admin,
+      action: 'UPDATE_ENQUIRY_STATUS',
+      targetType: 'Enquiry',
+      targetId,
+      details: { previousStatus, newStatus: normalizedStatus },
+      ip: req.ip
+    });
+
+    notifyStatusTransition({
+      entityType: 'Enquiry',
+      id: targetId,
+      referenceNumber: targetId.slice(-6).toUpperCase(),
+      previousStatus,
+      newStatus: normalizedStatus,
+      candidateName: enquiry.name,
+      candidatePhone: enquiry.phone,
+      adminUser: req.admin
+    });
 
     res.status(200).json({
       success: true,
       message: 'Enquiry status updated successfully',
       data: {
-        id: enquiry.id || enquiry._id.toString(),
+        id: targetId,
         status: enquiry.status,
         updatedAt: enquiry.updatedAt
       }
@@ -355,9 +370,14 @@ async function addEnquiryNote(req, res, next) {
       });
     }
 
-    // Author is bound from authenticated admin token; client-supplied author is ignored
     const author = req.admin.name || req.admin.email || 'Administrator';
     const cleanNoteText = sanitizeText(trimmedText);
+    if (!cleanNoteText) {
+      return res.status(400).json({
+        success: false,
+        error: 'Note text cannot be empty'
+      });
+    }
 
     enquiry.notes.push({
       author,
@@ -365,7 +385,13 @@ async function addEnquiryNote(req, res, next) {
     });
 
     await enquiry.save();
-    logAdminAction({ admin: req.admin, action: 'ADD_ENQUIRY_NOTE', targetType: 'Enquiry', targetId: enquiry.id || enquiry._id, ip: req.ip });
+    logAdminAction({
+      admin: req.admin,
+      action: 'ADD_ENQUIRY_NOTE',
+      targetType: 'Enquiry',
+      targetId: enquiry.id || enquiry._id,
+      ip: req.ip
+    });
 
     const createdNote = enquiry.notes[enquiry.notes.length - 1];
 
@@ -447,7 +473,6 @@ async function getDashboardStats(req, res, next) {
       }
     };
 
-    // Cache dashboard stats for 30s to mitigate database roundtrips
     await cacheService.set('stats:dashboard', responsePayload, 30);
     res.set('X-Cache', 'MISS');
     res.status(200).json(responsePayload);
@@ -456,64 +481,12 @@ async function getDashboardStats(req, res, next) {
   }
 }
 
-function sanitizeText(str) {
-  if (typeof str !== 'string') return '';
-  return str.replace(/<[^>]*>/g, '').trim();
-}
-
-function escapeCsvCell(cell) {
-  if (cell === null || cell === undefined) return '""';
-  let str = String(cell);
-  // Mitigate CSV Formula Injection (CWE-1236): neutralize leading formula triggers
-  if (/^[=+\-@\t\r]/.test(str)) {
-    str = `'${str}`;
-  }
-  if (str.includes('"') || str.includes(',') || str.includes('\n') || str.includes('\r')) {
-    return `"${str.replace(/"/g, '""')}"`;
-  }
-  return `"${str}"`;
-}
-
 /**
  * Streams or sends enquiry records as CSV for reporting and compliance audits.
  */
 async function exportEnquiries(req, res, next) {
   try {
-    const query = { deletedAt: null };
-
-    if (req.query.status && req.query.status !== 'all') {
-      const trimmed = req.query.status.trim().toLowerCase();
-      if (ALL_ALLOWED_STATUSES.includes(trimmed)) {
-        query.status = trimmed;
-      }
-    }
-    if (req.query.program && req.query.program !== 'all') {
-      query.program = req.query.program.trim();
-    }
-    if (req.query.search && String(req.query.search).trim()) {
-      const clean = String(req.query.search).trim().slice(0, 100);
-      const searchRegex = new RegExp(escapeRegex(clean), 'i');
-      query.$or = [
-        { name: searchRegex },
-        { phone: searchRegex },
-        { email: searchRegex }
-      ];
-    }
-    if (req.query.dateFrom || req.query.dateTo) {
-      query.createdAt = {};
-      if (req.query.dateFrom) {
-        const d = new Date(req.query.dateFrom);
-        if (!isNaN(d.getTime())) query.createdAt.$gte = d;
-      }
-      if (req.query.dateTo) {
-        const d = new Date(req.query.dateTo);
-        if (!isNaN(d.getTime())) {
-          d.setHours(23, 59, 59, 999);
-          query.createdAt.$lte = d;
-        }
-      }
-    }
-
+    const { query } = buildEnquiryFilterQuery(req.query, false);
     const enquiries = await Enquiry.find(query).sort({ createdAt: -1 });
 
     const headers = [
@@ -547,7 +520,13 @@ async function exportEnquiries(req, res, next) {
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    logAdminAction({ admin: req.admin, action: 'EXPORT_ENQUIRIES_CSV', targetType: 'Enquiry', details: { count: rows.length }, ip: req.ip });
+    logAdminAction({
+      admin: req.admin,
+      action: 'EXPORT_ENQUIRIES_CSV',
+      targetType: 'Enquiry',
+      details: { count: rows.length },
+      ip: req.ip
+    });
     res.status(200).send(csvContent);
   } catch (error) {
     next(error);
@@ -579,7 +558,13 @@ async function deleteEnquiry(req, res, next) {
     enquiry.deletedAt = new Date();
     await enquiry.save();
     await cacheService.invalidateStats();
-    logAdminAction({ admin: req.admin, action: 'DELETE_ENQUIRY', targetType: 'Enquiry', targetId: enquiry.id || enquiry._id, ip: req.ip });
+    logAdminAction({
+      admin: req.admin,
+      action: 'DELETE_ENQUIRY',
+      targetType: 'Enquiry',
+      targetId: enquiry.id || enquiry._id,
+      ip: req.ip
+    });
 
     res.status(200).json({ success: true, message: 'Enquiry deleted successfully' });
   } catch (error) {
@@ -639,7 +624,13 @@ async function changePassword(req, res, next) {
     admin.password = newPassword;
     await admin.save();
     await cacheService.invalidateAdminSession(req.admin.id);
-    logAdminAction({ admin: req.admin, action: 'CHANGE_PASSWORD', targetType: 'Admin', targetId: req.admin.id || req.admin._id, ip: req.ip });
+    logAdminAction({
+      admin: req.admin,
+      action: 'CHANGE_PASSWORD',
+      targetType: 'Admin',
+      targetId: req.admin.id || req.admin._id,
+      ip: req.ip
+    });
 
     res.status(200).json({
       success: true,
@@ -656,8 +647,8 @@ async function changePassword(req, res, next) {
 async function logout(req, res) {
   res.clearCookie('ks_admin_token', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax'
+    secure: config.isProduction,
+    sameSite: config.isProduction ? 'none' : 'lax'
   });
   res.status(200).json({
     success: true,

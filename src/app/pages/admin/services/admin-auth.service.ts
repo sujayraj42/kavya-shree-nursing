@@ -6,9 +6,17 @@ import { AdminUser, AdminLoginResponse } from '../models/admin.models';
 const TOKEN_STORAGE_KEY = 'ks_admin_auth_token';
 const USER_STORAGE_KEY = 'ks_admin_auth_user';
 
+export interface BaseAdminFilterParams {
+  page?: number;
+  limit?: number;
+  status?: string;
+  program?: string;
+  search?: string;
+}
+
 /**
  * Service managing administrative authentication, session lifecycle,
- * and origin-safe token authorization headers.
+ * shared authenticated API requests, CSV exports, and origin-safe token headers.
  */
 @Injectable({
   providedIn: 'root'
@@ -78,20 +86,44 @@ export class AdminAuthService {
 
   /**
    * Authenticates against the backend API and initializes the administrator session.
+   * Includes fallback to same-origin `/api` when the primary endpoint encounters a network error.
    * Never prints credentials or tokens to logs or console.
    */
   public async login(credentials: { email: string; password: string }): Promise<boolean> {
     this.isAuthenticating.set(true);
     this.authError.set('');
 
+    const payload = {
+      email: (credentials.email || '').trim().toLowerCase(),
+      password: credentials.password || ''
+    };
+
+    const primaryUrl = `${environment.apiBaseUrl}/admin/login`;
+    const fallbackUrl = '/api/admin/login';
+
     try {
-      const response = await fetch(`${environment.apiBaseUrl}/admin/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-      });
+      let response: Response;
+      try {
+        response = await fetch(primaryUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+      } catch (primaryErr) {
+        if (primaryUrl !== fallbackUrl) {
+          response = await fetch(fallbackUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          throw primaryErr;
+        }
+      }
 
       let data: any = null;
       try {
@@ -140,7 +172,7 @@ export class AdminAuthService {
   /**
    * Safely constructs HTTP headers with the Bearer token.
    * Origin check: The token is strictly attached ONLY if the target URL matches
-   * the trusted backend origin configured in environment.apiBaseUrl.
+   * the trusted backend origin configured in environment.apiBaseUrl or same-origin.
    */
   public getAuthorizedHeaders(targetUrl: string): Record<string, string> {
     const headers: Record<string, string> = {
@@ -156,7 +188,7 @@ export class AdminAuthService {
   }
 
   /**
-   * Verifies that the target URL belongs to the configured backend origin.
+   * Verifies that the target URL belongs to the configured backend origin or current window origin.
    */
   public isTrustedOrigin(url: string): boolean {
     try {
@@ -169,6 +201,136 @@ export class AdminAuthService {
     } catch {
       return false;
     }
+  }
+
+  /**
+   * Shared authenticated JSON request helper for admin services.
+   * Automatically retries against same-origin `/api` if the primary endpoint is unreachable or returns 404.
+   */
+  public async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const candidateBaseUrls = Array.from(new Set([environment.apiBaseUrl, '/api']));
+    let lastError = 'Request failed';
+    let primaryUnauthorized = false;
+
+    for (let i = 0; i < candidateBaseUrls.length; i++) {
+      const baseUrl = candidateBaseUrls[i];
+      const url = `${baseUrl}${endpoint}`;
+      const headers = {
+        ...this.getAuthorizedHeaders(url),
+        ...(options.headers || {})
+      };
+
+      try {
+        const response = await fetch(url, {
+          ...options,
+          headers
+        });
+
+        if (response.status === 401) {
+          if (i === 0) {
+            primaryUnauthorized = true;
+          }
+          lastError = 'Your session has expired. Please log in again.';
+          continue;
+        }
+
+        let data: any = null;
+        try {
+          data = await response.json();
+        } catch {
+          data = null;
+        }
+
+        if (response.status === 404 && i < candidateBaseUrls.length - 1) {
+          lastError = data?.error || `Request failed with status ${response.status}`;
+          continue;
+        }
+
+        if (!response.ok || !data?.success) {
+          throw new Error(data?.error || `Request failed with status ${response.status}`);
+        }
+
+        return data as T;
+      } catch (err: any) {
+        lastError = err?.message || 'Network error';
+        if (i === candidateBaseUrls.length - 1) {
+          break;
+        }
+      }
+    }
+
+    if (primaryUnauthorized) {
+      this.logout();
+    }
+
+    throw new Error(lastError);
+  }
+
+  /**
+   * Shared authenticated CSV file download helper for admin services.
+   */
+  public async downloadCsv(endpoint: string, filenamePrefix: string): Promise<void> {
+    const candidateBaseUrls = Array.from(new Set([environment.apiBaseUrl, '/api']));
+    let response: Response | null = null;
+    let primaryUnauthorized = false;
+
+    for (let i = 0; i < candidateBaseUrls.length; i++) {
+      const url = `${candidateBaseUrls[i]}${endpoint}`;
+      try {
+        const res = await fetch(url, {
+          method: 'GET',
+          headers: this.getAuthorizedHeaders(url)
+        });
+
+        if (res.status === 401) {
+          if (i === 0) primaryUnauthorized = true;
+          continue;
+        }
+
+        if (res.status === 404 && i < candidateBaseUrls.length - 1) {
+          continue;
+        }
+
+        if (res.ok) {
+          response = res;
+          break;
+        }
+      } catch {
+        // Try next candidate base URL
+      }
+    }
+
+    if (primaryUnauthorized && !response) {
+      this.logout();
+      throw new Error('Your session has expired. Please log in again.');
+    }
+
+    if (!response || !response.ok) {
+      throw new Error(`Failed to export records${response ? ` (HTTP status ${response.status})` : ''}`);
+    }
+
+    const blob = await response.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = `${filenamePrefix}_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(downloadUrl);
+  }
+
+  /**
+   * Shared query-string builder for paginated admin filter parameters.
+   */
+  public buildFilterQueryString(filters: BaseAdminFilterParams = {}): string {
+    const params = new URLSearchParams();
+    if (filters.page) params.set('page', filters.page.toString());
+    if (filters.limit) params.set('limit', filters.limit.toString());
+    if (filters.status && filters.status !== 'all') params.set('status', filters.status);
+    if (filters.program && filters.program !== 'all') params.set('program', filters.program);
+    if (filters.search && filters.search.trim()) params.set('search', filters.search.trim());
+    return params.toString();
   }
 
   /**
@@ -204,7 +366,6 @@ export class AdminAuthService {
       this.clearSession();
       return false;
     } catch {
-      // In case of transient network failure, retain session
       return this.isAuthenticated();
     }
   }
@@ -212,26 +373,14 @@ export class AdminAuthService {
   /**
    * Updates administrator password using current password verification.
    */
-  public async changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; message: string }> {
-    const url = `${environment.apiBaseUrl}/admin/me/password`;
-    const response = await fetch(url, {
+  public async changePassword(
+    currentPassword: string,
+    newPassword: string
+  ): Promise<{ success: boolean; message: string }> {
+    return this.request<{ success: boolean; message: string }>('/admin/me/password', {
       method: 'PATCH',
-      headers: this.getAuthorizedHeaders(url),
       body: JSON.stringify({ currentPassword, newPassword })
     });
-
-    let data: any = null;
-    try {
-      data = await response.json();
-    } catch {
-      data = null;
-    }
-
-    if (!response.ok || !data?.success) {
-      throw new Error(data?.error || 'Failed to update administrator password.');
-    }
-
-    return data;
   }
 
   private setSession(token: string, user: AdminUser): void {

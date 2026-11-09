@@ -26,8 +26,11 @@ yarn-error.log
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-!.vscode/mcp.json
 .history/*
+
+# Local MCP configs with credentials
+.mcp.json
+.cursor/mcp.json
 
 # Miscellaneous
 scratch/

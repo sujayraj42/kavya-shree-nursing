@@ -1,55 +1,86 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const { Application, VALID_APPLICATION_STATUSES } = require('../models/Application');
+const { Application, VALID_APPLICATION_STATUSES, GENDER_OPTIONS, CATEGORY_OPTIONS } = require('../models/Application');
 const { VALID_PROGRAMS } = require('../models/Enquiry');
 const { notifyNewApplication, notifyStatusTransition } = require('../services/automation.service');
 const { generateApplicationReceiptHtml } = require('../services/receipt.service');
 const { logAdminAction } = require('../services/auditLogger');
 const { cacheService } = require('../services/cache.service');
+const {
+  EMAIL_REGEX,
+  PHONE_REGEX,
+  PINCODE_REGEX,
+  sanitizeText,
+  escapeRegex,
+  escapeCsvCell,
+  normalizePhone,
+  isSafeDocumentUrl,
+  parsePagination,
+  applyDateRangeFilter,
+  createSubmissionDeduplicator
+} = require('../utils/common');
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_REGEX = /^[6-9]\d{9}$/;
-const PINCODE_REGEX = /^[1-9][0-9]{5}$/;
+const applicationDeduplicator = createSubmissionDeduplicator(60 * 1000, 500);
 
-const DUPLICATE_APP_WINDOW_MS = 60 * 1000;
-const recentApplicationSubmissions = new Map();
+function parseOptionalNumber(val) {
+  if (val === undefined || val === null || val === '') return undefined;
+  const num = Number(val);
+  return Number.isNaN(num) ? undefined : num;
+}
 
-function pruneExpiredAppSubmissions(now) {
-  for (const [key, timestamp] of recentApplicationSubmissions.entries()) {
-    if (now - timestamp >= DUPLICATE_APP_WINDOW_MS) {
-      recentApplicationSubmissions.delete(key);
+/**
+ * Builds a sanitized Mongoose filter query for applications from request query parameters.
+ */
+function buildApplicationFilterQuery(reqQuery = {}, strictStatusValidation = false) {
+  const { status, program, search, dateFrom, dateTo } = reqQuery;
+  const query = { deletedAt: null };
+
+  if (typeof status === 'string' && status.trim() && status.trim().toLowerCase() !== 'all') {
+    const trimmedStatus = status.trim().toLowerCase();
+    if (VALID_APPLICATION_STATUSES.includes(trimmedStatus)) {
+      query.status = trimmedStatus;
+    } else if (strictStatusValidation) {
+      return {
+        error: `Invalid status filter. Must be one of: ${VALID_APPLICATION_STATUSES.join(', ')}`
+      };
     }
   }
+
+  if (typeof program === 'string' && program.trim() && program.trim().toLowerCase() !== 'all') {
+    query.program = program.trim();
+  }
+
+  if (typeof search === 'string' && search.trim()) {
+    const clean = search.trim().slice(0, 100);
+    const regex = new RegExp(escapeRegex(clean), 'i');
+    query.$or = [
+      { applicantName: regex },
+      { phone: regex },
+      { email: regex },
+      { applicationNumber: regex }
+    ];
+  }
+
+  applyDateRangeFilter(query, dateFrom, dateTo);
+  return { query };
 }
 
-function normalizePhone(raw) {
-  if (!raw) return '';
-  let digits = String(raw).replace(/\D/g, '');
-  if (digits.length === 12 && digits.startsWith('91')) {
-    digits = digits.slice(2);
-  } else if (digits.length === 11 && digits.startsWith('0')) {
-    digits = digits.slice(1);
-  }
-  return digits;
-}
+/**
+ * Resolves an application by applicationNumber or (when requested by an authenticated admin) by ObjectId.
+ */
+async function findApplicationByParam(rawParam, isAdmin = false) {
+  const param = typeof rawParam === 'string' ? rawParam.trim() : '';
+  if (!param) return null;
 
-function sanitize(text) {
-  if (typeof text !== 'string') return '';
-  return text.replace(/<[^>]*>/g, '').trim();
-}
-
-function escapeCsvCell(cell) {
-  if (cell === null || cell === undefined) return '""';
-  let str = String(cell);
-  // Mitigate CSV Formula Injection (CWE-1236): neutralize leading formula triggers
-  if (/^[=+\-@\t\r]/.test(str)) {
-    str = `'${str}`;
+  let application = null;
+  if (isAdmin && mongoose.Types.ObjectId.isValid(param)) {
+    application = await Application.findOne({ _id: param, deletedAt: null });
   }
-  if (str.includes('"') || str.includes(',') || str.includes('\n') || str.includes('\r')) {
-    return `"${str.replace(/"/g, '""')}"`;
+  if (!application) {
+    application = await Application.findOne({ applicationNumber: param, deletedAt: null });
   }
-  return `"${str}"`;
+  return application;
 }
 
 /**
@@ -70,50 +101,62 @@ async function submitApplication(req, res, next) {
       });
     }
 
-    const applicantName = sanitize(body.applicantName);
-    const gender = sanitize(body.gender);
+    const applicantName = sanitizeText(body.applicantName);
+    const gender = sanitizeText(body.gender);
     const dob = body.dob ? new Date(body.dob) : null;
-    const fatherName = sanitize(body.fatherName);
-    const motherName = sanitize(body.motherName);
+    const fatherName = sanitizeText(body.fatherName);
+    const motherName = sanitizeText(body.motherName);
     const phone = normalizePhone(body.phone);
-    const email = sanitize(body.email).toLowerCase();
-    const category = sanitize(body.category) || 'General';
-    const program = sanitize(body.program);
+    const email = sanitizeText(body.email).toLowerCase();
+    const category = sanitizeText(body.category) || 'General';
+    const program = sanitizeText(body.program);
     const declaration = body.declaration === true || body.declaration === 'true';
 
-    // Address extraction
-    const rawAddress = body.address || {};
+    const rawAddress = body.address && typeof body.address === 'object' ? body.address : {};
     const address = {
-      street: sanitize(rawAddress.street),
-      district: sanitize(rawAddress.district),
-      state: sanitize(rawAddress.state) || 'Bihar',
-      pincode: sanitize(rawAddress.pincode)
+      street: sanitizeText(rawAddress.street),
+      district: sanitizeText(rawAddress.district),
+      state: sanitizeText(rawAddress.state) || 'Bihar',
+      pincode: sanitizeText(rawAddress.pincode)
     };
 
-    // Academic details extraction
-    const rawAcad = body.academicDetails || {};
+    const rawAcad = body.academicDetails && typeof body.academicDetails === 'object' ? body.academicDetails : {};
     const academicDetails = {
-      tenthBoard: sanitize(rawAcad.tenthBoard),
-      tenthYear: Number(rawAcad.tenthYear) || undefined,
-      tenthPercentage: Number(rawAcad.tenthPercentage) !== undefined && !isNaN(Number(rawAcad.tenthPercentage)) ? Number(rawAcad.tenthPercentage) : undefined,
-      twelfthBoard: sanitize(rawAcad.twelfthBoard),
-      twelfthYear: Number(rawAcad.twelfthYear) || undefined,
-      twelfthPercentage: Number(rawAcad.twelfthPercentage) !== undefined && !isNaN(Number(rawAcad.twelfthPercentage)) ? Number(rawAcad.twelfthPercentage) : undefined,
-      pcbPercentage: Number(rawAcad.pcbPercentage) !== undefined && !isNaN(Number(rawAcad.pcbPercentage)) ? Number(rawAcad.pcbPercentage) : undefined
+      tenthBoard: sanitizeText(rawAcad.tenthBoard),
+      tenthYear: parseOptionalNumber(rawAcad.tenthYear),
+      tenthPercentage: parseOptionalNumber(rawAcad.tenthPercentage),
+      twelfthBoard: sanitizeText(rawAcad.twelfthBoard),
+      twelfthYear: parseOptionalNumber(rawAcad.twelfthYear),
+      twelfthPercentage: parseOptionalNumber(rawAcad.twelfthPercentage),
+      pcbPercentage: parseOptionalNumber(rawAcad.pcbPercentage)
     };
+
+    const rawDocs = body.documents && typeof body.documents === 'object' ? body.documents : {};
+    if (
+      !isSafeDocumentUrl(rawDocs.photoUrl) ||
+      !isSafeDocumentUrl(rawDocs.tenthMarksheetUrl) ||
+      !isSafeDocumentUrl(rawDocs.twelfthMarksheetUrl)
+    ) {
+      return res.status(400).json({
+        success: false,
+        error: 'Document URLs must be valid HTTP(S) links or relative paths'
+      });
+    }
 
     const documents = {
-      photoUrl: body.documents?.photoUrl ? String(body.documents.photoUrl).trim() : null,
-      tenthMarksheetUrl: body.documents?.tenthMarksheetUrl ? String(body.documents.tenthMarksheetUrl).trim() : null,
-      twelfthMarksheetUrl: body.documents?.twelfthMarksheetUrl ? String(body.documents.twelfthMarksheetUrl).trim() : null
+      photoUrl: rawDocs.photoUrl ? String(rawDocs.photoUrl).trim() : null,
+      tenthMarksheetUrl: rawDocs.tenthMarksheetUrl ? String(rawDocs.tenthMarksheetUrl).trim() : null,
+      twelfthMarksheetUrl: rawDocs.twelfthMarksheetUrl ? String(rawDocs.twelfthMarksheetUrl).trim() : null
     };
 
-    // Validations
     if (!applicantName || applicantName.length < 2 || applicantName.length > 100) {
       return res.status(400).json({ success: false, error: 'Full applicant name is required (2-100 characters)' });
     }
-    if (!gender || !['Female', 'Male', 'Other'].includes(gender)) {
+    if (!gender || !GENDER_OPTIONS.includes(gender)) {
       return res.status(400).json({ success: false, error: 'Valid gender selection is required' });
+    }
+    if (!CATEGORY_OPTIONS.includes(category)) {
+      return res.status(400).json({ success: false, error: 'Valid category selection is required' });
     }
     if (!dob || isNaN(dob.getTime())) {
       return res.status(400).json({ success: false, error: 'Valid date of birth is required' });
@@ -158,7 +201,6 @@ async function submitApplication(req, res, next) {
       return res.status(400).json({ success: false, error: 'A valid 6-digit Indian PIN code is required' });
     }
 
-    // Percentage range boundary checks (0 - 100%)
     const validatePercentage = (val, name) => {
       if (val !== undefined && val !== null) {
         if (typeof val !== 'number' || !isFinite(val) || val < 0 || val > 100) {
@@ -168,9 +210,10 @@ async function submitApplication(req, res, next) {
       return null;
     };
 
-    const pctError = validatePercentage(academicDetails.tenthPercentage, '10th') ||
-                     validatePercentage(academicDetails.twelfthPercentage, '12th') ||
-                     validatePercentage(academicDetails.pcbPercentage, 'PCB');
+    const pctError =
+      validatePercentage(academicDetails.tenthPercentage, '10th') ||
+      validatePercentage(academicDetails.twelfthPercentage, '12th') ||
+      validatePercentage(academicDetails.pcbPercentage, 'PCB');
     if (pctError) {
       return res.status(400).json({ success: false, error: pctError });
     }
@@ -182,19 +225,16 @@ async function submitApplication(req, res, next) {
       return res.status(400).json({ success: false, error: 'Applicant declaration must be accepted' });
     }
 
-    // Generate human-friendly reference application number
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const timestampSuffix = Date.now().toString().slice(-4);
-    const isValidAppNumber = body.applicationNumber && /^KSIN-2026-APP-[A-Za-z0-9_-]{4,20}$/.test(String(body.applicationNumber));
+    const isValidAppNumber =
+      body.applicationNumber && /^KSIN-2026-APP-[A-Za-z0-9_-]{4,20}$/.test(String(body.applicationNumber));
     const applicationNumber = isValidAppNumber
-      ? sanitize(body.applicationNumber)
+      ? sanitizeText(body.applicationNumber)
       : `KSIN-2026-APP-${timestampSuffix}${randomSuffix}`;
 
-    // Deduplication check: prevent duplicate submissions within 60s
-    const now = Date.now();
-    pruneExpiredAppSubmissions(now);
     const fingerprint = `${phone}|${program}|${applicantName.toLowerCase()}${isValidAppNumber ? '|' + applicationNumber : ''}`;
-    if (recentApplicationSubmissions.has(fingerprint)) {
+    if (applicationDeduplicator.isDuplicate(fingerprint)) {
       return res.status(409).json({
         success: false,
         error: 'Duplicate application detected. An identical application was already submitted recently.'
@@ -219,9 +259,8 @@ async function submitApplication(req, res, next) {
       status: 'submitted'
     });
 
-    recentApplicationSubmissions.set(fingerprint, now);
+    applicationDeduplicator.record(fingerprint);
 
-    // Trigger non-blocking automated notifications (Telegram, Webhook, CRM)
     notifyNewApplication(newApp);
     cacheService.invalidateStats().catch(() => {});
 
@@ -252,47 +291,18 @@ async function submitApplication(req, res, next) {
  */
 async function listApplications(req, res, next) {
   try {
-    const { status, program, search, dateFrom, dateTo } = req.query;
-    const query = { deletedAt: null };
-
-    if (status && status !== 'all') {
-      query.status = status;
-    }
-    if (program && program !== 'all') {
-      query.program = program;
-    }
-    if (search && String(search).trim()) {
-      const clean = String(search).trim().slice(0, 100).replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-      const regex = new RegExp(clean, 'i');
-      query.$or = [
-        { applicantName: regex },
-        { phone: regex },
-        { email: regex },
-        { applicationNumber: regex }
-      ];
-    }
-    if (dateFrom || dateTo) {
-      query.createdAt = {};
-      if (dateFrom) {
-        const d = new Date(dateFrom);
-        if (!isNaN(d.getTime())) query.createdAt.$gte = d;
-      }
-      if (dateTo) {
-        const d = new Date(dateTo);
-        if (!isNaN(d.getTime())) {
-          d.setHours(23, 59, 59, 999);
-          query.createdAt.$lte = d;
-        }
-      }
+    const { query, error } = buildApplicationFilterQuery(req.query, true);
+    if (error) {
+      return res.status(400).json({ success: false, error });
     }
 
-    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 10));
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePagination(req.query, 10, 100);
 
     let appQuery = Application.find(query);
     if (typeof appQuery.select === 'function') {
-      appQuery = appQuery.select('applicationNumber applicantName phone email program status category academicDetails createdAt');
+      appQuery = appQuery.select(
+        'applicationNumber applicantName phone email program status category academicDetails createdAt'
+      );
     }
     if (typeof appQuery.sort === 'function') {
       appQuery = appQuery.sort({ createdAt: -1 });
@@ -324,12 +334,6 @@ async function listApplications(req, res, next) {
       }
     });
   } catch (err) {
-    if (err.code === 11000 || String(err.message).includes('E11000')) {
-      return res.status(409).json({
-        success: false,
-        error: 'An application with this application number or phone already exists.'
-      });
-    }
     next(err);
   }
 }
@@ -348,12 +352,6 @@ async function getApplicationById(req, res, next) {
 
     res.status(200).json({ success: true, data: application });
   } catch (err) {
-    if (err.code === 11000 || String(err.message).includes('E11000')) {
-      return res.status(409).json({
-        success: false,
-        error: 'An application with this application number or phone already exists.'
-      });
-    }
     next(err);
   }
 }
@@ -366,30 +364,40 @@ async function updateApplicationStatus(req, res, next) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, error: 'Invalid application ID format' });
     }
-    if (!status || !VALID_APPLICATION_STATUSES.includes(status)) {
+    if (typeof status !== 'string' || !VALID_APPLICATION_STATUSES.includes(status.trim())) {
       return res.status(400).json({
         success: false,
         error: `Invalid status. Must be one of: ${VALID_APPLICATION_STATUSES.join(', ')}`
       });
     }
 
+    const normalizedStatus = status.trim();
     const application = await Application.findOne({ _id: id, deletedAt: null });
     if (!application) {
       return res.status(404).json({ success: false, error: 'Application record not found' });
     }
 
     const previousStatus = application.status;
-    application.status = status;
+    application.status = normalizedStatus;
     await application.save();
     await cacheService.invalidateStats();
-    logAdminAction({ admin: req.admin, action: 'UPDATE_APPLICATION_STATUS', targetType: 'Application', targetId: application.id || application._id, details: { newStatus: status }, ip: req.ip });
+
+    const targetId = (application.id || application._id).toString();
+    logAdminAction({
+      admin: req.admin,
+      action: 'UPDATE_APPLICATION_STATUS',
+      targetType: 'Application',
+      targetId,
+      details: { previousStatus, newStatus: normalizedStatus },
+      ip: req.ip
+    });
 
     notifyStatusTransition({
       entityType: 'Application',
-      id: application.id || application._id.toString(),
+      id: targetId,
       referenceNumber: application.applicationNumber,
       previousStatus,
-      newStatus: status,
+      newStatus: normalizedStatus,
       candidateName: application.applicantName,
       candidatePhone: application.phone,
       adminUser: req.admin
@@ -399,18 +407,12 @@ async function updateApplicationStatus(req, res, next) {
       success: true,
       message: 'Application status updated successfully',
       data: {
-        id: application.id || application._id.toString(),
+        id: targetId,
         status: application.status,
         updatedAt: application.updatedAt
       }
     });
   } catch (err) {
-    if (err.code === 11000 || String(err.message).includes('E11000')) {
-      return res.status(409).json({
-        success: false,
-        error: 'An application with this application number or phone already exists.'
-      });
-    }
     next(err);
   }
 }
@@ -426,6 +428,14 @@ async function addApplicationNote(req, res, next) {
     if (!text || typeof text !== 'string' || !text.trim()) {
       return res.status(400).json({ success: false, error: 'Note text cannot be empty' });
     }
+    if (text.trim().length > 1000) {
+      return res.status(400).json({ success: false, error: 'Note text must not exceed 1000 characters' });
+    }
+
+    const cleanNoteText = sanitizeText(text);
+    if (!cleanNoteText) {
+      return res.status(400).json({ success: false, error: 'Note text cannot be empty' });
+    }
 
     const application = await Application.findOne({ _id: id, deletedAt: null });
     if (!application) {
@@ -433,28 +443,27 @@ async function addApplicationNote(req, res, next) {
     }
 
     const author = req.admin?.name || req.admin?.email || 'Administrator';
-    application.notes.push({ author, text: sanitize(text) });
+    application.notes.push({ author, text: cleanNoteText });
     await application.save();
+
+    logAdminAction({
+      admin: req.admin,
+      action: 'ADD_APPLICATION_NOTE',
+      targetType: 'Application',
+      targetId: application.id || application._id,
+      ip: req.ip
+    });
 
     const created = application.notes[application.notes.length - 1];
     res.status(201).json({ success: true, message: 'Note added successfully', data: created });
   } catch (err) {
-    if (err.code === 11000 || String(err.message).includes('E11000')) {
-      return res.status(409).json({
-        success: false,
-        error: 'An application with this application number or phone already exists.'
-      });
-    }
     next(err);
   }
 }
 
 async function exportApplications(req, res, next) {
   try {
-    const query = { deletedAt: null };
-    if (req.query.status && req.query.status !== 'all') query.status = req.query.status;
-    if (req.query.program && req.query.program !== 'all') query.program = req.query.program;
-
+    const { query } = buildApplicationFilterQuery(req.query, false);
     const applications = await Application.find(query).sort({ createdAt: -1 });
 
     const headers = [
@@ -493,9 +502,9 @@ async function exportApplications(req, res, next) {
       escapeCsvCell(app.address?.state),
       escapeCsvCell(app.address?.pincode),
       escapeCsvCell(app.program),
-      escapeCsvCell(app.academicDetails?.tenthPercentage || ''),
-      escapeCsvCell(app.academicDetails?.twelfthPercentage || ''),
-      escapeCsvCell(app.academicDetails?.pcbPercentage || ''),
+      escapeCsvCell(app.academicDetails?.tenthPercentage ?? ''),
+      escapeCsvCell(app.academicDetails?.twelfthPercentage ?? ''),
+      escapeCsvCell(app.academicDetails?.pcbPercentage ?? ''),
       escapeCsvCell(app.status)
     ]);
 
@@ -504,15 +513,15 @@ async function exportApplications(req, res, next) {
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    logAdminAction({ admin: req.admin, action: 'EXPORT_APPLICATIONS_CSV', targetType: 'Application', details: { count: rows.length }, ip: req.ip });
+    logAdminAction({
+      admin: req.admin,
+      action: 'EXPORT_APPLICATIONS_CSV',
+      targetType: 'Application',
+      details: { count: rows.length },
+      ip: req.ip
+    });
     res.status(200).send(csvContent);
   } catch (err) {
-    if (err.code === 11000 || String(err.message).includes('E11000')) {
-      return res.status(409).json({
-        success: false,
-        error: 'An application with this application number or phone already exists.'
-      });
-    }
     next(err);
   }
 }
@@ -538,20 +547,20 @@ async function deleteApplication(req, res, next) {
 
     application.deletedAt = new Date();
     await application.save();
-    logAdminAction({ admin: req.admin, action: 'DELETE_APPLICATION', targetType: 'Application', targetId: application.id || application._id, ip: req.ip });
+    await cacheService.invalidateStats();
+    logAdminAction({
+      admin: req.admin,
+      action: 'DELETE_APPLICATION',
+      targetType: 'Application',
+      targetId: application.id || application._id,
+      ip: req.ip
+    });
 
     res.status(200).json({ success: true, message: 'Application deleted successfully' });
   } catch (err) {
-    if (err.code === 11000 || String(err.message).includes('E11000')) {
-      return res.status(409).json({
-        success: false,
-        error: 'An application with this application number or phone already exists.'
-      });
-    }
     next(err);
   }
 }
-
 
 async function getApplicationReceipt(req, res, next) {
   try {
@@ -560,33 +569,22 @@ async function getApplicationReceipt(req, res, next) {
       return res.status(400).send('Application number or ID is required');
     }
 
-    let application = null;
-    // Only authenticated administrators may look up applications by internal database ObjectId
-    if (req.admin && mongoose.Types.ObjectId.isValid(rawParam)) {
-      application = await Application.findOne({ _id: rawParam, deletedAt: null });
-    }
+    const application = await findApplicationByParam(rawParam, Boolean(req.admin));
     if (!application) {
-      application = await Application.findOne({ applicationNumber: rawParam, deletedAt: null });
-    }
-
-    if (!application) {
-      return res.status(404).send('<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;padding:50px;"><h2>Application Not Found</h2><p>The requested application reference does not exist or has been archived.</p></body></html>');
+      return res
+        .status(404)
+        .send(
+          '<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;padding:50px;"><h2>Application Not Found</h2><p>The requested application reference does not exist or has been archived.</p></body></html>'
+        );
     }
 
     const html = generateApplicationReceiptHtml(application, { isStaff: Boolean(req.admin) });
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.status(200).send(html);
   } catch (err) {
-    if (err.code === 11000 || String(err.message).includes('E11000')) {
-      return res.status(409).json({
-        success: false,
-        error: 'An application with this application number or phone already exists.'
-      });
-    }
     next(err);
   }
 }
-
 
 async function getApplicationStatus(req, res, next) {
   try {
@@ -605,15 +603,7 @@ async function getApplicationStatus(req, res, next) {
       });
     }
 
-    let application = null;
-    // Only authenticated administrators may look up applications by internal database ObjectId
-    if (req.admin && mongoose.Types.ObjectId.isValid(rawParam)) {
-      application = await Application.findOne({ _id: rawParam, deletedAt: null });
-    }
-    if (!application) {
-      application = await Application.findOne({ applicationNumber: rawParam, deletedAt: null });
-    }
-
+    const application = await findApplicationByParam(rawParam, Boolean(req.admin));
     if (!application) {
       return res.status(404).json({
         success: false,
@@ -633,12 +623,6 @@ async function getApplicationStatus(req, res, next) {
       }
     });
   } catch (err) {
-    if (err.code === 11000 || String(err.message).includes('E11000')) {
-      return res.status(409).json({
-        success: false,
-        error: 'An application with this application number or phone already exists.'
-      });
-    }
     next(err);
   }
 }
@@ -653,6 +637,5 @@ module.exports = {
   addApplicationNote,
   exportApplications,
   deleteApplication,
-  _resetRecentApplicationSubmissions: () => recentApplicationSubmissions.clear()
+  _resetRecentApplicationSubmissions: () => applicationDeduplicator.clear()
 };
-

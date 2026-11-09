@@ -107,7 +107,7 @@
         <a
           routerLink="/"
           target="_blank"
-          rel="noopener"
+          rel="noopener noreferrer"
           class="sidebar-nav-link d-flex align-items-center gap-3 px-3 py-2 text-decoration-none rounded"
           title="Open Public Candidate Website in a new tab"
         >
@@ -203,7 +203,7 @@
           <a
             routerLink="/"
             target="_blank"
-            rel="noopener"
+            rel="noopener noreferrer"
             class="btn btn-sm btn-outline-light d-none d-sm-inline-flex align-items-center gap-1 text-decoration-none"
           >
             <span>Public Site &nearr;</span>
@@ -265,7 +265,7 @@
             <a
               routerLink="/"
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
               (click)="closeMobileMenu()"
               class="sidebar-nav-link text-decoration-none px-3 py-2 text-white-50 rounded"
             >
@@ -303,12 +303,12 @@
 
   <!-- Change Password Modal -->
   @if (isPasswordModalOpen()) {
-    <div class="modal show d-block" tabindex="-1" style="background: rgba(0,0,0,0.6);" role="dialog">
+    <div class="modal show d-block" tabindex="-1" style="background: rgba(0,0,0,0.6);" role="dialog" aria-modal="true" aria-labelledby="adminPasswordModalTitle">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
           <div class="modal-header bg-dark text-white">
-            <h5 class="modal-title h6 fw-bold">Update Administrator Password</h5>
-            <button type="button" class="btn-close btn-close-white" (click)="closePasswordModal()"></button>
+            <h5 class="modal-title h6 fw-bold" id="adminPasswordModalTitle">Update Administrator Password</h5>
+            <button type="button" class="btn-close btn-close-white" (click)="closePasswordModal()" aria-label="Close password modal"></button>
           </div>
           <div class="modal-body p-4">
             @if (passwordError()) {

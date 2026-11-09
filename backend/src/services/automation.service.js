@@ -1,13 +1,20 @@
 'use strict';
 
 const crypto = require('crypto');
-const config = require('../config/env');
+const { escapeHtml, isSafeWebhookUrl } = require('../utils/common');
+
+function redactWebhookUrlForLog(rawUrl) {
+  if (typeof rawUrl !== 'string') return 'unknown-url';
+  return rawUrl.replace(/\/bot[^/]+\//i, '/bot[REDACTED]/').replace(/([?&](token|key|secret|sig)=)[^&]+/gi, '$1[REDACTED]');
+}
 
 /**
- * Dispatches an HTTP POST request safely in the background with timeout and error handling.
+ * Dispatches an HTTP POST request safely in the background with SSRF protection, timeout, and error handling.
  */
 async function postWebhook(url, payload, { headers = {}, timeoutMs = 8000 } = {}) {
-  if (!url || typeof url !== 'string') return null;
+  if (!url || typeof url !== 'string' || !isSafeWebhookUrl(url)) {
+    return null;
+  }
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -34,7 +41,7 @@ async function postWebhook(url, payload, { headers = {}, timeoutMs = 8000 } = {}
     });
     return { ok: res.ok, status: res.status };
   } catch (err) {
-    console.warn(`[WARN] Automation webhook dispatch failed (${url}): ${err.message}`);
+    console.warn(`[WARN] Automation webhook dispatch failed (${redactWebhookUrlForLog(url)}): ${err.message}`);
     return { ok: false, error: err.message };
   } finally {
     clearTimeout(timer);
@@ -52,7 +59,7 @@ async function sendTelegramAlert(text) {
     return null;
   }
 
-  const endpoint = `https://api.telegram.org/bot${token}/sendMessage`;
+  const endpoint = `https://api.telegram.org/bot${encodeURIComponent(token)}/sendMessage`;
   return postWebhook(endpoint, {
     chat_id: chatId,
     text,
@@ -62,7 +69,7 @@ async function sendTelegramAlert(text) {
 }
 
 /**
- * Dispatches a lead payload to an external CRM or Google Sheets webhook (Zapier, Make, n8n, Google Apps Script).
+ * Dispatches a lead payload to an external CRM or Google Sheets webhook.
  */
 async function sendLeadWebhook(payload) {
   const webhookUrl = process.env.WEBHOOK_LEAD_URL;
@@ -84,14 +91,14 @@ function notifyNewEnquiry(enquiry) {
       });
 
       const telegramMsg = [
-        '<b>🚨 NEW ADMISSION ENQUIRY</b>',
-        `<b>Institute:</b> Kavya Shree Institute of Nursing`,
-        `<b>Candidate:</b> ${enquiry.name || 'N/A'}`,
-        `<b>Phone:</b> <code>${enquiry.phone || 'N/A'}</code>`,
-        `<b>Course:</b> ${enquiry.program || 'N/A'}`,
-        enquiry.email ? `<b>Email:</b> ${enquiry.email}` : null,
-        enquiry.message ? `<b>Note:</b> <i>${enquiry.message.slice(0, 200)}</i>` : null,
-        `<b>Time:</b> ${nowStr}`
+        '<b>NEW ADMISSION ENQUIRY</b>',
+        '<b>Institute:</b> Kavya Shree Institute of Nursing',
+        `<b>Candidate:</b> ${escapeHtml(enquiry.name || 'N/A')}`,
+        `<b>Phone:</b> <code>${escapeHtml(enquiry.phone || 'N/A')}</code>`,
+        `<b>Course:</b> ${escapeHtml(enquiry.program || 'N/A')}`,
+        enquiry.email ? `<b>Email:</b> ${escapeHtml(enquiry.email)}` : null,
+        enquiry.message ? `<b>Note:</b> <i>${escapeHtml(String(enquiry.message).slice(0, 200))}</i>` : null,
+        `<b>Time:</b> ${escapeHtml(nowStr)}`
       ]
         .filter(Boolean)
         .join('\n');
@@ -112,10 +119,7 @@ function notifyNewEnquiry(enquiry) {
         }
       };
 
-      await Promise.allSettled([
-        sendTelegramAlert(telegramMsg),
-        sendLeadWebhook(leadPayload)
-      ]);
+      await Promise.allSettled([sendTelegramAlert(telegramMsg), sendLeadWebhook(leadPayload)]);
     } catch (err) {
       console.warn(`[WARN] notifyNewEnquiry automation failed: ${err.message}`);
     }
@@ -124,7 +128,6 @@ function notifyNewEnquiry(enquiry) {
 
 /**
  * Handles automated alerts and integrations when a new online application is submitted.
- * Non-blocking: executes asynchronously.
  */
 function notifyNewApplication(application) {
   setImmediate(async () => {
@@ -134,15 +137,15 @@ function notifyNewApplication(application) {
       });
 
       const telegramMsg = [
-        '<b>🎓 NEW ONLINE ADMISSION APPLICATION</b>',
-        `<b>Application No:</b> <code>${application.applicationNumber}</code>`,
-        `<b>Applicant:</b> ${application.applicantName}`,
-        `<b>Phone:</b> <code>${application.phone}</code>`,
-        `<b>Program:</b> ${application.program}`,
-        `<b>District:</b> ${application.address?.district || 'N/A'}, ${application.address?.state || 'Bihar'}`,
-        `<b>10th Marks:</b> ${application.academicDetails?.tenthPercentage || 'N/A'}%`,
-        `<b>12th Marks:</b> ${application.academicDetails?.twelfthPercentage || 'N/A'}% (PCB: ${application.academicDetails?.pcbPercentage || 'N/A'}%)`,
-        `<b>Time:</b> ${nowStr}`
+        '<b>NEW ONLINE ADMISSION APPLICATION</b>',
+        `<b>Application No:</b> <code>${escapeHtml(application.applicationNumber)}</code>`,
+        `<b>Applicant:</b> ${escapeHtml(application.applicantName)}`,
+        `<b>Phone:</b> <code>${escapeHtml(application.phone)}</code>`,
+        `<b>Program:</b> ${escapeHtml(application.program)}`,
+        `<b>District:</b> ${escapeHtml(application.address?.district || 'N/A')}, ${escapeHtml(application.address?.state || 'Bihar')}`,
+        `<b>10th Marks:</b> ${escapeHtml(application.academicDetails?.tenthPercentage ?? 'N/A')}%`,
+        `<b>12th Marks:</b> ${escapeHtml(application.academicDetails?.twelfthPercentage ?? 'N/A')}% (PCB: ${escapeHtml(application.academicDetails?.pcbPercentage ?? 'N/A')}%)`,
+        `<b>Time:</b> ${escapeHtml(nowStr)}`
       ].join('\n');
 
       const leadPayload = {
@@ -167,10 +170,7 @@ function notifyNewApplication(application) {
         }
       };
 
-      await Promise.allSettled([
-        sendTelegramAlert(telegramMsg),
-        sendLeadWebhook(leadPayload)
-      ]);
+      await Promise.allSettled([sendTelegramAlert(telegramMsg), sendLeadWebhook(leadPayload)]);
     } catch (err) {
       console.warn(`[WARN] notifyNewApplication automation failed: ${err.message}`);
     }
@@ -212,15 +212,16 @@ function notifyStatusTransition({
         await postWebhook(webhookUrl, auditPayload);
       }
 
-      // If status reaches 'verified' or 'admitted', send priority alert
-      if (['verified', 'admitted', 'shortlisted'].includes(newStatus)) {
+      if (
+        ['verified', 'document_verified', 'provisionally_selected', 'admitted', 'shortlisted'].includes(newStatus)
+      ) {
         const text = [
-          `<b>✅ APPLICATION STATUS UPDATED</b>`,
-          `<b>Ref:</b> <code>${referenceNumber || id}</code>`,
-          `<b>Candidate:</b> ${candidateName || 'N/A'}`,
-          `<b>Status:</b> <b>${newStatus.toUpperCase()}</b> (was: ${previousStatus || 'N/A'})`,
-          `<b>Officer:</b> ${adminUser?.name || adminUser?.email || 'Admin'}`,
-          `<b>Time:</b> ${nowStr}`
+          '<b>APPLICATION STATUS UPDATED</b>',
+          `<b>Ref:</b> <code>${escapeHtml(referenceNumber || id)}</code>`,
+          `<b>Candidate:</b> ${escapeHtml(candidateName || 'N/A')}`,
+          `<b>Status:</b> <b>${escapeHtml(String(newStatus).toUpperCase())}</b> (was: ${escapeHtml(previousStatus || 'N/A')})`,
+          `<b>Officer:</b> ${escapeHtml(adminUser?.name || adminUser?.email || 'Admin')}`,
+          `<b>Time:</b> ${escapeHtml(nowStr)}`
         ].join('\n');
         await sendTelegramAlert(text);
       }
@@ -238,4 +239,3 @@ module.exports = {
   notifyNewApplication,
   notifyStatusTransition
 };
-

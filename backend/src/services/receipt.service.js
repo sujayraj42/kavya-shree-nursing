@@ -1,5 +1,7 @@
 'use strict';
 
+const { escapeHtml } = require('../utils/common');
+
 function maskPhone(phone) {
   if (!phone || String(phone).length < 4) return 'XXXXXXXXXX';
   const clean = String(phone).trim();
@@ -50,10 +52,22 @@ function generateApplicationReceiptHtml(app, options = {}) {
 
   const documents = app.documents || {};
   const docList = [
-    { name: '10th Secondary Marksheet / Certificate', present: Boolean(documents.tenthMarksheet) },
-    { name: '12th Senior Secondary Marksheet / Certificate', present: Boolean(documents.twelfthMarksheet) },
-    { name: 'Government ID Proof (Aadhaar / Voter Card)', present: Boolean(documents.idProof) },
-    { name: 'Candidate Passport Photograph', present: Boolean(documents.photo) }
+    {
+      name: '10th Secondary Marksheet / Certificate',
+      present: Boolean(documents.tenthMarksheet || documents.tenthMarksheetUrl)
+    },
+    {
+      name: '12th Senior Secondary Marksheet / Certificate',
+      present: Boolean(documents.twelfthMarksheet || documents.twelfthMarksheetUrl)
+    },
+    {
+      name: 'Government ID Proof (Aadhaar / Voter Card)',
+      present: Boolean(documents.idProof || documents.idProofUrl)
+    },
+    {
+      name: 'Candidate Passport Photograph',
+      present: Boolean(documents.photo || documents.photoUrl)
+    }
   ];
 
   return `<!DOCTYPE html>
@@ -419,16 +433,6 @@ function generateApplicationReceiptHtml(app, options = {}) {
 
 </body>
 </html>`;
-}
-
-function escapeHtml(str) {
-  if (str === null || str === undefined) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
 }
 
 module.exports = {

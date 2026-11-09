@@ -1,20 +1,14 @@
 'use strict';
 
 const { VALID_PROGRAMS } = require('../models/Enquiry');
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function stripHtml(str) {
-  if (typeof str !== 'string') return '';
-  return str.replace(/<[^>]*>/g, '').trim();
-}
+const { EMAIL_REGEX, sanitizeText } = require('../utils/common');
 
 function validateEnquiry(req, res, next) {
   const body = req.body || {};
   const errors = [];
 
-  // 1. Name validation (sanitized to remove HTML tags)
-  let name = stripHtml(typeof body.name === 'string' ? body.name : '');
+  // 1. Name validation (sanitized to remove HTML/script tags)
+  const name = sanitizeText(typeof body.name === 'string' ? body.name : '');
   if (!name) {
     errors.push({ field: 'name', message: 'Candidate full name is required' });
   } else if (name.length < 2) {
@@ -24,7 +18,7 @@ function validateEnquiry(req, res, next) {
   }
 
   // 2. Phone validation
-  let phoneRaw = body.phone !== undefined && body.phone !== null ? String(body.phone).trim() : '';
+  const phoneRaw = body.phone !== undefined && body.phone !== null ? String(body.phone).trim() : '';
   const phoneDigits = phoneRaw.replace(/\D/g, '');
   if (!phoneRaw) {
     errors.push({ field: 'phone', message: 'Contact phone number is required' });
@@ -48,7 +42,7 @@ function validateEnquiry(req, res, next) {
   }
 
   // 4. Program validation
-  let program = typeof body.program === 'string' ? body.program.trim() : '';
+  const program = typeof body.program === 'string' ? body.program.trim() : '';
   if (!program) {
     errors.push({ field: 'program', message: 'Intended academic program is required' });
   } else if (!VALID_PROGRAMS.includes(program)) {
@@ -58,10 +52,10 @@ function validateEnquiry(req, res, next) {
     });
   }
 
-  // 5. Message validation (Optional, sanitized to remove HTML tags)
+  // 5. Message validation (Optional, sanitized to remove HTML/script tags)
   let message = '';
   if (body.message !== undefined && body.message !== null) {
-    message = stripHtml(String(body.message));
+    message = sanitizeText(String(body.message));
     if (message.length > 1000) {
       errors.push({ field: 'message', message: 'Inquiry message must not exceed 1000 characters' });
     }
@@ -84,7 +78,6 @@ function validateEnquiry(req, res, next) {
     });
   }
 
-  // Normalized payload attached to request
   req.validatedEnquiry = {
     name,
     phone: phoneDigits,

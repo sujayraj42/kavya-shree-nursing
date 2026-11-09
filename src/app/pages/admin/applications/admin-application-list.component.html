@@ -18,7 +18,7 @@
         [disabled]="isExporting()"
         aria-label="Export formal applications to CSV"
       >
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
           <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
           <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
         </svg>
@@ -32,7 +32,7 @@
         [disabled]="isLoading()"
         aria-label="Refresh application records"
       >
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
           <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
           <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
         </svg>
@@ -41,26 +41,43 @@
     </div>
   </div>
 
+  <!-- Interactive Pipeline Status Filter Strip -->
+  <div class="d-flex flex-wrap align-items-center gap-2 mb-3" role="group" aria-label="Quick filter by application status">
+    @for (st of statusOptions; track st.value) {
+      <button
+        type="button"
+        class="status-chip"
+        [class.status-chip-active]="selectedStatus() === st.value"
+        (click)="onStatusFilter(st.value)"
+      >
+        {{ st.label }}
+      </button>
+    }
+  </div>
+
   <!-- Filters Toolbar -->
   <div class="card filter-card border-0 shadow-sm p-3 mb-4 bg-white">
     <div class="row g-2 align-items-center">
       <!-- Search -->
       <div class="col-12 col-lg-5">
+        <label for="appSearchInput" class="visually-hidden">Search online applications</label>
         <div class="input-group input-group-sm">
           <span class="input-group-text bg-white text-muted border-end-0">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
               <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
             </svg>
           </span>
           <input
+            id="appSearchInput"
             type="search"
             class="form-control border-start-0 ps-1"
             placeholder="Search by candidate name, phone, or application #..."
+            aria-label="Search by candidate name, phone, or application number"
             [ngModel]="searchQuery()"
             (ngModelChange)="searchQuery.set($event)"
             (keyup.enter)="onSearch()"
           />
-          <button class="btn btn-outline-secondary" type="button" (click)="onSearch()">
+          <button class="btn btn-primary" type="button" (click)="onSearch()">
             Search
           </button>
         </div>
@@ -95,8 +112,8 @@
       </div>
 
       <!-- Reset -->
-      <div class="col-12 col-lg-1 text-end">
-        <button type="button" class="btn btn-link text-muted btn-sm p-0" (click)="resetFilters()">
+      <div class="col-12 col-lg-1 text-lg-end">
+        <button type="button" class="btn btn-outline-secondary btn-sm w-100" (click)="resetFilters()">
           Reset
         </button>
       </div>
@@ -110,19 +127,26 @@
   }
 
   <!-- Applications Table -->
-  <div class="card border-0 shadow-sm overflow-hidden bg-white mb-4">
+  <div class="card table-card border-0 shadow-sm overflow-hidden bg-white mb-4">
     @if (isLoading()) {
       <div class="p-5 text-center text-muted">
-        <div class="spinner-border spinner-border-sm text-primary mb-2" role="status"></div>
+        <div class="spinner-border spinner-border-sm text-primary mb-2" role="status">
+          <span class="visually-hidden">Loading application records...</span>
+        </div>
         <div class="small">Loading application records...</div>
       </div>
     } @else if (applications().length === 0) {
       <div class="p-5 text-center text-muted">
-        <svg width="40" height="40" viewBox="0 0 16 16" fill="currentColor" class="text-muted opacity-50 mb-2">
-          <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
-        </svg>
-        <p class="mb-0 fw-semibold">No applications found</p>
-        <p class="small text-muted mb-0">Try clearing or adjusting your search filters.</p>
+        <div class="empty-icon-wrap mx-auto mb-3">
+          <svg width="36" height="36" viewBox="0 0 16 16" fill="currentColor" class="text-muted opacity-50" aria-hidden="true">
+            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+          </svg>
+        </div>
+        <h2 class="h5 text-dark mb-1">No Online Applications Located</h2>
+        <p class="small text-muted mb-3">No candidate applications matched your search or status filter.</p>
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="resetFilters()">
+          Clear All Active Filters
+        </button>
       </div>
     } @else {
       <div class="table-responsive">
@@ -130,7 +154,7 @@
           <thead class="table-light text-uppercase extra-small-para text-muted">
             <tr>
               <th scope="col" class="ps-3">Application Ref</th>
-              <th scope="col">Applicant Name</th>
+              <th scope="col">Applicant</th>
               <th scope="col">Program</th>
               <th scope="col">Contact</th>
               <th scope="col">Academic %</th>
@@ -146,15 +170,28 @@
                   {{ app.applicationNumber }}
                 </td>
                 <td>
-                  <div class="fw-semibold text-dark">{{ app.applicantName }}</div>
-                  <div class="extra-small-para text-muted">{{ app.gender }}, {{ app.category }}</div>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="candidate-avatar">
+                      {{ getInitials(app.applicantName) }}
+                    </div>
+                    <div>
+                      <div class="fw-semibold text-dark">{{ app.applicantName }}</div>
+                      <div class="extra-small-para text-muted">{{ app.gender }} • {{ app.category }}</div>
+                    </div>
+                  </div>
                 </td>
                 <td>
-                  <span class="small fw-semibold text-dark">{{ app.program }}</span>
+                  <span class="program-badge">{{ app.program }}</span>
                 </td>
                 <td>
-                  <div class="small text-dark">{{ app.phone }}</div>
-                  <div class="extra-small-para text-muted">{{ app.email }}</div>
+                  <div class="d-flex flex-column gap-1">
+                    <a [href]="'tel:' + app.phone" class="candidate-contact text-decoration-none text-dark small fw-semibold">
+                      {{ app.phone }}
+                    </a>
+                    <a [href]="'mailto:' + app.email" class="text-muted extra-small-para text-decoration-none">
+                      {{ app.email }}
+                    </a>
+                  </div>
                 </td>
                 <td>
                   <div class="small">12th: <strong>{{ app.academicDetails.twelfthPercentage ?? 'N/A' }}%</strong></div>
@@ -182,10 +219,10 @@
                     </button>
                     <button
                       type="button"
-                      class="btn btn-sm btn-outline-primary"
+                      class="btn btn-sm btn-inspect"
                       (click)="openDetail(app)"
                     >
-                      View
+                      Inspect &rarr;
                     </button>
                   </div>
                 </td>
@@ -198,7 +235,7 @@
       <!-- Pagination -->
       <div class="d-flex justify-content-between align-items-center p-3 border-top bg-light">
         <span class="small text-muted">
-          Showing page {{ pagination().page }} of {{ pagination().pages }} ({{ pagination().total }} total)
+          Showing page <strong>{{ pagination().page }}</strong> of <strong>{{ pagination().pages }}</strong> ({{ pagination().total }} total)
         </span>
         <div class="btn-group btn-group-sm">
           <button
@@ -224,29 +261,47 @@
 
   <!-- Detail Modal -->
   @if (selectedApp(); as app) {
-    <div class="modal show d-block" tabindex="-1" style="background: rgba(0,0,0,0.6);" role="dialog">
+    <div class="modal show d-block ks-modal-backdrop" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="appDossierModalTitle">
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 shadow">
           <div class="modal-header bg-dark text-white">
-            <h5 class="modal-title h6 fw-bold">
+            <h5 class="modal-title h6 fw-bold" id="appDossierModalTitle">
               Application Dossier: {{ app.applicationNumber }}
             </h5>
-            <button type="button" class="btn-close btn-close-white" (click)="closeDetail()"></button>
+            <button type="button" class="btn-close btn-close-white" (click)="closeDetail()" aria-label="Close application dossier"></button>
           </div>
 
           <div class="modal-body p-4">
             @if (successMessage()) {
-              <div class="alert alert-success p-2 small mb-3">{{ successMessage() }}</div>
+              <div class="alert alert-success p-2 small mb-3" role="status">{{ successMessage() }}</div>
             }
 
-            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-              <div>
-                <h2 class="h5 fw-bold text-dark mb-0">{{ app.applicantName }}</h2>
-                <span class="extra-small-para text-muted">{{ app.gender }} • {{ app.category }} Category</span>
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3 pb-3 border-bottom">
+              <div class="d-flex align-items-center gap-3">
+                <div class="candidate-avatar">
+                  {{ getInitials(app.applicantName) }}
+                </div>
+                <div>
+                  <h2 class="h5 fw-bold text-dark mb-0">{{ app.applicantName }}</h2>
+                  <span class="extra-small-para text-muted">{{ app.gender }} • {{ app.category }} Category • Submitted {{ app.createdAt | date:'dd MMM yyyy' }}</span>
+                </div>
               </div>
-              <span [class]="getBadgeClass(app.status)" class="fs-6">
+              <span [class]="getBadgeClass(app.status)" class="fs-6 align-self-start align-self-sm-center">
                 {{ getStatusLabel(app.status) }}
               </span>
+            </div>
+
+            <!-- Direct Candidate Outreach Bar -->
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <a [href]="'tel:' + app.phone" class="btn btn-sm btn-outline-secondary">
+                Call: {{ app.phone }}
+              </a>
+              <a [href]="'mailto:' + app.email" class="btn btn-sm btn-outline-secondary">
+                Email Candidate
+              </a>
+              <a [href]="getWhatsAppLink(app.phone)" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-success">
+                WhatsApp Chat &nearr;
+              </a>
             </div>
 
             <!-- Status Update Section -->
@@ -272,7 +327,7 @@
             </div>
 
             <!-- Information Grid -->
-            <div class="row g-3 small">
+            <div class="row g-3 small mb-4">
               <div class="col-md-6">
                 <div class="card p-3 border h-100">
                   <h3 class="h6 fw-bold border-bottom pb-2 mb-2">Personal &amp; Contact</h3>
@@ -294,11 +349,62 @@
                 </div>
               </div>
             </div>
+
+            <!-- Confidential Staff Notes & Activity Log -->
+            <div class="card p-3 border">
+              <h3 class="h6 fw-bold border-bottom pb-2 mb-2">Confidential Staff Notes &amp; Audit Log</h3>
+              <div class="mb-3">
+                <label for="appNoteInput" class="form-label extra-small-para fw-semibold text-muted mb-1">
+                  Append Internal Verification Note
+                </label>
+                <div class="d-flex gap-2">
+                  <input
+                    id="appNoteInput"
+                    type="text"
+                    class="form-control form-control-sm"
+                    maxlength="1000"
+                    placeholder="e.g. Verified 12th marksheet and category certificate..."
+                    [ngModel]="newNoteText()"
+                    (ngModelChange)="newNoteText.set($event)"
+                    (keyup.enter)="addInternalNote()"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary text-nowrap"
+                    [disabled]="isSubmittingNote() || !newNoteText().trim()"
+                    (click)="addInternalNote()"
+                  >
+                    {{ isSubmittingNote() ? 'Saving...' : 'Add Note' }}
+                  </button>
+                </div>
+                @if (noteErrorMessage()) {
+                  <div class="text-danger extra-small-para mt-1">{{ noteErrorMessage() }}</div>
+                }
+              </div>
+
+              @if (!app.notes || app.notes.length === 0) {
+                <div class="extra-small-para text-muted fst-italic">
+                  No internal verification notes logged for this application yet.
+                </div>
+              } @else {
+                <div class="d-flex flex-column gap-2">
+                  @for (note of app.notes; track note.id || note.createdAt) {
+                    <div class="p-2 bg-light rounded border small">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="extra-small-para text-dark">{{ note.author }}</strong>
+                        <span class="extra-small-para text-muted font-monospace">{{ note.createdAt | date:'dd MMM yyyy, hh:mm a' }}</span>
+                      </div>
+                      <div class="extra-small-para text-dark">{{ note.text }}</div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
           </div>
 
           <div class="modal-footer bg-light d-flex justify-content-between">
             <button type="button" class="btn btn-sm btn-outline-dark d-inline-flex align-items-center gap-1" (click)="printReceipt(app)">
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                 <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
                 <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
               </svg>
@@ -311,4 +417,3 @@
     </div>
   }
 </div>
-

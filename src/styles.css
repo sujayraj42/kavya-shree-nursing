@@ -59,6 +59,38 @@
   --ks-badge-blue-border: rgba(18, 78, 157, 0.2);
   --ks-badge-blue-text: var(--color--blue);
 
+  /* Admin Console & Workflow Semantic Tokens */
+  --ks-border-subtle: #e5e7eb;
+  --ks-admin-sidebar-header: #111111;
+  --ks-admin-border-dark: rgba(255, 255, 255, 0.08);
+  --ks-admin-hover-dark: rgba(255, 255, 255, 0.05);
+  --ks-admin-sublink-text: rgba(255, 255, 255, 0.65);
+  --ks-admin-blue-hover: #0d3c7a;
+  --ks-admin-blue-soft: #f0f4f9;
+  --ks-admin-blue-shadow: rgba(18, 78, 157, 0.35);
+  --ks-admin-orange-hover: #d88316;
+  --ks-admin-orange-ring: rgba(235, 150, 36, 0.2);
+  --ks-admin-blue-ring: rgba(18, 78, 157, 0.2);
+  --ks-status-info-bg: #e8f4fd;
+  --ks-status-info-border: #b8daf6;
+  --ks-status-info-text: #0b5394;
+  --ks-status-success-bg: #eaf7ed;
+  --ks-status-success-border: #bce4c6;
+  --ks-status-success-text: #1e7e34;
+  --ks-status-success-dot: #28a745;
+  --ks-status-success-ring: rgba(40, 167, 69, 0.2);
+  --ks-status-neutral-bg: #f1f5f9;
+  --ks-status-neutral-border: #cbd5e1;
+  --ks-status-neutral-text: #475569;
+  --ks-status-dark-bg: #eeeeee;
+  --ks-status-dark-border: #cccccc;
+  --ks-status-dark-text: #222222;
+  --ks-avatar-warm-bg: #f0e3ce;
+  --ks-modal-backdrop: rgba(0, 0, 0, 0.6);
+  --ks-shadow-card-sm: rgba(0, 0, 0, 0.04);
+  --ks-shadow-card-md: rgba(0, 0, 0, 0.08);
+  --ks-shadow-avatar: rgba(0, 0, 0, 0.12);
+
   /* Focus Indicator (WCAG 2.2 AA) */
   --ks-focus-ring: 0 0 0 3px rgba(235, 150, 36, 0.45);
   --ks-focus-outline: 2px solid var(--color--carrot-orange);

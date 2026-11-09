@@ -1,104 +1,104 @@
 .detail-heading {
-  font-family: var(--font--lora, "Lora", Georgia, serif);
+  font-family: var(--font--lora);
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: var(--ks-ink, #181818);
+  color: var(--ks-ink);
 }
 
 .back-link {
-  color: var(--color--blue, #124e9d);
+  color: var(--color--blue);
   font-size: 0.875rem;
   font-weight: 600;
   transition: all 0.15s ease-in-out;
 }
 
 .back-link:hover {
-  color: #0d3c7a;
+  color: var(--ks-admin-blue-hover);
   text-decoration: underline;
 }
 
 .header-card {
-  background-color: #ffffff;
-  border: 1px solid var(--ks-border-subtle, #e5e7eb) !important;
-  border-radius: var(--round-4, 4px);
+  background-color: var(--color--white);
+  border: 1px solid var(--ks-border-subtle) !important;
+  border-radius: var(--round-4);
 }
 
 .section-card {
-  background-color: #ffffff;
-  border: 1px solid var(--ks-border-subtle, #e5e7eb) !important;
-  border-radius: var(--round-4, 4px);
+  background-color: var(--color--white);
+  border: 1px solid var(--ks-border-subtle) !important;
+  border-radius: var(--round-4);
 }
 
 .status-card {
-  background-color: #ffffff;
-  border: 1px solid var(--ks-border-subtle, #e5e7eb) !important;
-  border-radius: var(--round-4, 4px);
-  border-top: 3px solid var(--color--blue, #124e9d) !important;
+  background-color: var(--color--white);
+  border: 1px solid var(--ks-border-subtle) !important;
+  border-radius: var(--round-4);
+  border-top: 3px solid var(--color--blue) !important;
 }
 
 .candidate-large-avatar {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background-color: var(--color--blue, #124e9d);
-  color: #ffffff;
+  background-color: var(--color--blue);
+  color: var(--color--white);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 1.15rem;
   letter-spacing: 0.05em;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 4px var(--ks-shadow-avatar);
   flex-shrink: 0;
 }
 
 .ref-badge {
-  background-color: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1;
+  background-color: var(--ks-status-neutral-bg);
+  color: var(--ks-status-neutral-text);
+  border: 1px solid var(--ks-status-neutral-border);
   font-size: 0.75rem;
 }
 
 .contact-link:hover {
-  color: var(--color--blue, #124e9d) !important;
+  color: var(--color--blue) !important;
   text-decoration: underline !important;
 }
 
 .program-box {
-  background-color: #f8fafc;
-  border-color: #e2e8f0 !important;
+  background-color: var(--ks-status-neutral-bg);
+  border-color: var(--ks-status-neutral-border) !important;
 }
 
 .message-box {
-  background-color: #fafaf9;
-  border: 1px solid #e7e5e4;
+  background-color: var(--ks-bg-paper);
+  border: 1px solid var(--ks-rule);
 }
 
 .note-form-box {
-  background-color: #f9fafb;
-  border-color: #e5e7eb !important;
+  background-color: var(--ks-bg-paper);
+  border-color: var(--ks-border-subtle) !important;
 }
 
 .staff-badge {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background-color: #e0e7ff;
-  color: var(--color--blue, #124e9d);
+  background-color: var(--ks-badge-blue-bg);
+  color: var(--color--blue);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .btn-primary {
-  background-color: var(--color--blue, #124e9d);
-  border-color: var(--color--blue, #124e9d);
-  color: #ffffff;
-  border-radius: var(--round-4, 4px);
+  background-color: var(--color--blue);
+  border-color: var(--color--blue);
+  color: var(--color--white);
+  border-radius: var(--round-4);
   transition: all 0.15s ease-in-out;
 }
 
 .btn-primary:hover {
-  background-color: #0d3c7a;
-  border-color: #0d3c7a;
+  background-color: var(--ks-admin-blue-hover);
+  border-color: var(--ks-admin-blue-hover);
 }

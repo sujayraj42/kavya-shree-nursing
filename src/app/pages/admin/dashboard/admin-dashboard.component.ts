@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminEnquiryService } from '../services/admin-enquiry.service';
+import { AdminApplicationService } from '../services/admin-application.service';
 import { AdminAuthService } from '../services/admin-auth.service';
 import {
   AdminEnquiry,
@@ -18,10 +19,12 @@ import {
 })
 export class AdminDashboardComponent implements OnInit {
   protected readonly enquiryService = inject(AdminEnquiryService);
+  protected readonly appService = inject(AdminApplicationService);
   protected readonly authService = inject(AdminAuthService);
 
   protected readonly stats = signal<DashboardStats | null>(null);
   protected readonly recentEnquiries = signal<AdminEnquiry[]>([]);
+  protected readonly totalApplications = signal<number>(0);
   protected readonly isLoading = signal<boolean>(true);
   protected readonly errorMessage = signal<string>('');
 
@@ -34,9 +37,15 @@ export class AdminDashboardComponent implements OnInit {
     this.errorMessage.set('');
 
     try {
-      const data = await this.enquiryService.getDashboardData();
+      const [data, appData] = await Promise.all([
+        this.enquiryService.getDashboardData(),
+        this.appService.listApplications({ page: 1, limit: 5 }).catch(() => null)
+      ]);
       this.stats.set(data.stats);
       this.recentEnquiries.set(data.recentEnquiries);
+      if (appData) {
+        this.totalApplications.set(appData.pagination.total);
+      }
       this.isLoading.set(false);
     } catch (err: any) {
       this.errorMessage.set(err?.message || 'Failed to load dashboard metrics. Please try again.');

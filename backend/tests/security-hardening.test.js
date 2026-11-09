@@ -173,5 +173,64 @@ describe('Security Hardening and Defensive Controls', () => {
     // Malicious origin must not be granted CORS access
     assert.notEqual(blockedHeaders['Access-Control-Allow-Origin'], 'https://malicious-phishing-site.example.com');
   });
+
+  it('isSafeWebhookUrl and postWebhook should block SSRF targets (loopback, metadata, private IPs)', async () => {
+    const { isSafeWebhookUrl } = require('../src/utils/common');
+    const { postWebhook } = require('../src/services/automation.service');
+
+    assert.equal(isSafeWebhookUrl('http://127.0.0.1:8080/internal'), false);
+    assert.equal(isSafeWebhookUrl('http://localhost:5000/admin'), false);
+    assert.equal(isSafeWebhookUrl('http://169.254.169.254/latest/meta-data/'), false);
+    assert.equal(isSafeWebhookUrl('http://192.168.1.10/router'), false);
+    assert.equal(isSafeWebhookUrl('http://10.0.0.5/private'), false);
+    assert.equal(isSafeWebhookUrl('javascript:alert(1)'), false);
+    assert.equal(isSafeWebhookUrl('https://hooks.zapier.com/hooks/catch/123/abc'), true);
+
+    const ssrfAttempt = await postWebhook('http://169.254.169.254/latest/meta-data/', { test: 1 });
+    assert.equal(ssrfAttempt, null);
+  });
+
+  it('isSafeDocumentUrl should allow valid HTTP(S) or relative paths and reject dangerous protocols', () => {
+    const { isSafeDocumentUrl } = require('../src/utils/common');
+
+    assert.equal(isSafeDocumentUrl(null), true);
+    assert.equal(isSafeDocumentUrl(''), true);
+    assert.equal(isSafeDocumentUrl('/uploads/marksheet-10th.pdf'), true);
+    assert.equal(isSafeDocumentUrl('https://cdn.example.com/docs/photo.jpg'), true);
+    assert.equal(isSafeDocumentUrl('javascript:alert(document.cookie)'), false);
+    assert.equal(isSafeDocumentUrl('data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg=='), false);
+    assert.equal(isSafeDocumentUrl('//evil.example.com/protocol-relative'), false);
+  });
+
+  it('syncDevAdmins should ensure default/seed admin accounts can always authenticate', async () => {
+    const bcrypt = require('bcryptjs');
+    const { syncDevAdmins } = require('../src/config/devStorage');
+
+    const staleAdmins = [
+      {
+        _id: '671e6245d8b7a12345678900',
+        id: '671e6245d8b7a12345678900',
+        email: 'admin@edu.in',
+        name: 'Institute Administrator',
+        role: 'superadmin',
+        passwords: [bcrypt.hashSync('old-forgotten-password-999', 10)]
+      }
+    ];
+
+    const expectedPass = process.env.DEV_ADMIN_PASSWORD || process.env.ADMIN_SEED_PASSWORD || 'qwertyuiop123';
+    const { admins, modified } = syncDevAdmins(staleAdmins);
+
+    assert.equal(modified, true);
+    const adminEdu = admins.find(a => a.email === 'admin@edu.in');
+    const adminInst = admins.find(a => a.email === 'admin@kavyashreenursing.edu.in');
+    assert.ok(adminEdu, 'admin@edu.in must exist');
+    assert.ok(adminInst, 'admin@kavyashreenursing.edu.in must exist');
+    assert.equal(adminEdu.isActive, true);
+    assert.equal(
+      adminEdu.passwords.some(h => bcrypt.compareSync(expectedPass, h)),
+      true,
+      'Updated password list must validate against configured seed password'
+    );
+  });
 });
 

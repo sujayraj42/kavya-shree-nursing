@@ -5,14 +5,14 @@
 
 .admin-shell {
   min-height: 100vh;
-  background-color: var(--ks-bg-paper, #fafafa);
+  background-color: var(--ks-bg-paper);
 }
 
 /* Sidebar (Desktop 260px) */
 .admin-sidebar {
   width: 260px;
-  background-color: var(--color--eeire-black, #181818);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--color--eeire-black);
+  border-right: 1px solid var(--ks-admin-border-dark);
   position: sticky;
   top: 0;
   height: 100vh;
@@ -20,7 +20,7 @@
 }
 
 .sidebar-brand-header {
-  background-color: #111111;
+  background-color: var(--ks-admin-sidebar-header);
 }
 
 .sidebar-logo {
@@ -28,70 +28,70 @@
 }
 
 .sidebar-title {
-  font-family: var(--font--lora, "Lora", serif);
+  font-family: var(--font--lora);
   font-size: 0.95rem;
   letter-spacing: -0.01em;
 }
 
 .sidebar-subtitle {
-  color: var(--color--carrot-orange, #eb9624) !important;
+  color: var(--color--carrot-orange) !important;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .sidebar-nav-link {
-  color: var(--color--white-80, rgba(255, 255, 255, 0.8));
+  color: var(--color--white-80);
   font-size: 0.9rem;
   transition: all 0.15s ease-in-out;
-  border-radius: var(--round-4, 4px) !important;
+  border-radius: var(--round-4) !important;
 }
 
 .sidebar-nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: var(--color--white, #ffffff);
+  background-color: var(--ks-admin-border-dark);
+  color: var(--color--white);
 }
 
 .sidebar-sub-link {
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--ks-admin-sublink-text);
   font-size: 0.825rem;
   transition: all 0.15s ease-in-out;
-  border-radius: var(--round-4, 4px) !important;
+  border-radius: var(--round-4) !important;
 }
 
 .sidebar-sub-link:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: var(--color--white, #ffffff);
+  background-color: var(--ks-admin-hover-dark);
+  color: var(--color--white);
 }
 
 .active-sidebar-item {
-  background-color: var(--color--blue, #124e9d) !important;
-  color: #ffffff !important;
+  background-color: var(--color--blue) !important;
+  color: var(--color--white) !important;
   font-weight: 600;
-  box-shadow: 0 2px 6px rgba(18, 78, 157, 0.35);
+  box-shadow: 0 2px 6px var(--ks-admin-blue-shadow);
 }
 
 .sidebar-avatar {
   width: 34px;
   height: 34px;
-  background-color: var(--color--carrot-orange, #eb9624);
+  background-color: var(--color--carrot-orange);
   font-size: 0.875rem;
 }
 
 /* Top Sticky Navigation Bar */
 .admin-top-nav {
-  background-color: var(--color--eeire-black, #181818);
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  background-color: var(--color--eeire-black);
+  border-color: var(--ks-admin-border-dark) !important;
   z-index: 1030;
 }
 
 .bg-surface {
-  background-color: var(--ks-bg-paper, #fafafa);
+  background-color: var(--ks-bg-paper);
 }
 
 .admin-subfooter {
-  background-color: #ffffff;
-  border-color: var(--ks-rule, #e5e5e5) !important;
+  background-color: var(--color--white);
+  border-color: var(--ks-rule) !important;
 }
 
 /* Status Indicator Dots */
@@ -103,25 +103,29 @@
 }
 
 .status-dot-success {
-  background-color: #28a745;
-  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
+  background-color: var(--ks-status-success-dot);
+  box-shadow: 0 0 0 2px var(--ks-status-success-ring);
 }
 
 .status-dot-warning {
-  background-color: var(--color--carrot-orange, #eb9624);
-  box-shadow: 0 0 0 2px rgba(235, 150, 36, 0.2);
+  background-color: var(--color--carrot-orange);
+  box-shadow: 0 0 0 2px var(--ks-admin-orange-ring);
 }
 
 .status-dot-info {
-  background-color: var(--color--blue, #124e9d);
-  box-shadow: 0 0 0 2px rgba(18, 78, 157, 0.2);
+  background-color: var(--color--blue);
+  box-shadow: 0 0 0 2px var(--ks-admin-blue-ring);
 }
 
 .ks-badge-provisional {
-  background-color: var(--ks-provisional-bg, #fff9ed);
-  border: 1px solid var(--ks-provisional-border, #fed89b);
-  color: var(--ks-provisional-text, #7a4b04);
+  background-color: var(--ks-provisional-bg);
+  border: 1px solid var(--ks-provisional-border);
+  color: var(--ks-provisional-text);
   font-size: 0.725rem;
   font-weight: 600;
-  border-radius: var(--round-4, 4px);
+  border-radius: var(--round-4);
+}
+
+.ks-modal-backdrop {
+  background-color: var(--ks-modal-backdrop);
 }

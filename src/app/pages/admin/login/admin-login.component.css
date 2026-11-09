@@ -3,12 +3,12 @@
    ========================================================================== */
 
 .admin-login-page {
-  background-color: var(--ks-bg-paper, #fafafa);
+  background-color: var(--ks-bg-paper);
 }
 
 .admin-login-topbar {
-  background-color: var(--color--eeire-black, #181818);
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  background-color: var(--color--eeire-black);
+  border-color: var(--ks-admin-border-dark) !important;
 }
 
 .admin-login-container {
@@ -16,13 +16,13 @@
 }
 
 .admin-login-card {
-  background-color: var(--color--white, #ffffff);
-  border-color: var(--ks-rule, #e5e5e5) !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+  background-color: var(--color--white);
+  border-color: var(--ks-rule) !important;
+  box-shadow: 0 4px 24px var(--ks-shadow-card-md) !important;
 }
 
 .admin-card-header {
-  background-color: #fafafa;
+  background-color: var(--ks-bg-paper);
 }
 
 .admin-login-logo {
@@ -35,18 +35,18 @@
 }
 
 .admin-title {
-  font-family: var(--font--lora, "Lora", serif);
-  color: var(--color--eeire-black, #181818);
+  font-family: var(--font--lora);
+  color: var(--color--eeire-black);
   letter-spacing: -0.01em;
 }
 
 .form-label {
-  color: var(--color--eeire-black, #181818);
+  color: var(--color--eeire-black);
 }
 
 .form-control {
-  border-radius: var(--round-4, 4px);
-  border: 1px solid var(--ks-rule-strong, #d0d0d0);
+  border-radius: var(--round-4);
+  border: 1px solid var(--ks-rule-strong);
   font-family: var(--font--sans);
   font-size: 0.95rem;
   padding: 0.6rem 0.85rem;
@@ -54,30 +54,30 @@
 }
 
 .form-control:focus {
-  border-color: var(--color--carrot-orange, #eb9624);
+  border-color: var(--color--carrot-orange);
   box-shadow: var(--ks-focus-ring) !important;
 }
 
 .input-group-text {
-  border-radius: var(--round-4, 4px);
-  border-color: var(--ks-rule-strong, #d0d0d0);
+  border-radius: var(--round-4);
+  border-color: var(--ks-rule-strong);
 }
 
 .btn-ks-primary {
-  background-color: var(--color--carrot-orange, #eb9624);
-  border: 2px solid var(--color--carrot-orange, #eb9624);
-  color: var(--color--black, #000000);
+  background-color: var(--color--carrot-orange);
+  border: 2px solid var(--color--carrot-orange);
+  color: var(--color--black);
   font-family: var(--font--sans);
   font-size: 0.95rem;
-  min-height: 44px;
+  min-height: 48px;
   transition: all 0.2s ease-in-out;
 }
 
 .btn-ks-primary:hover:not(:disabled),
 .btn-ks-primary:focus-visible:not(:disabled) {
-  background-color: #d88316;
-  border-color: #d88316;
-  color: var(--color--black, #000000);
+  background-color: var(--ks-admin-orange-hover);
+  border-color: var(--ks-admin-orange-hover);
+  color: var(--color--black);
 }
 
 .btn-ks-primary:disabled {
@@ -86,24 +86,24 @@
 }
 
 .admin-security-banner {
-  border-color: var(--ks-rule, #e5e5e5) !important;
-  background-color: #fbfbfb !important;
+  border-color: var(--ks-rule) !important;
+  background-color: var(--ks-bg-paper) !important;
 }
 
 .admin-login-footer {
-  background-color: var(--color--eeire-black, #181818);
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  background-color: var(--color--eeire-black);
+  border-color: var(--ks-admin-border-dark) !important;
 }
 
 .hover-orange:hover {
-  color: var(--color--carrot-orange, #eb9624) !important;
+  color: var(--color--carrot-orange) !important;
 }
 
 .ks-badge-provisional {
-  background-color: var(--ks-provisional-bg, #fff9ed);
-  border: 1px solid var(--ks-provisional-border, #fed89b);
-  color: var(--ks-provisional-text, #7a4b04);
+  background-color: var(--ks-provisional-bg);
+  border: 1px solid var(--ks-provisional-border);
+  color: var(--ks-provisional-text);
   font-size: 0.725rem;
   font-weight: 600;
-  border-radius: var(--round-4, 4px);
+  border-radius: var(--round-4);
 }

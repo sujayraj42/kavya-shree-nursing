@@ -4,29 +4,29 @@
    ========================================================================== */
 
 .dashboard-heading {
-  font-family: var(--font--lora, "Lora", serif);
-  color: var(--color--eeire-black, #181818);
+  font-family: var(--font--lora);
+  color: var(--color--eeire-black);
   letter-spacing: -0.01em;
 }
 
 .dashboard-card-title {
-  font-family: var(--font--lora, "Lora", serif);
+  font-family: var(--font--lora);
 }
 
 .admin-page-header {
-  border-color: var(--ks-rule, #e5e5e5) !important;
+  border-color: var(--ks-rule) !important;
 }
 
 .stat-card {
-  background-color: var(--color--white, #ffffff);
-  border-color: var(--ks-rule, #e5e5e5) !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+  background-color: var(--color--white);
+  border-color: var(--ks-rule) !important;
+  box-shadow: 0 2px 10px var(--ks-shadow-card-sm) !important;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 16px var(--ks-shadow-card-md) !important;
 }
 
 .stat-icon-box {
@@ -35,7 +35,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--round-4, 4px);
+  border-radius: var(--round-4);
 }
 
 .tracking-wide {
@@ -49,115 +49,115 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.4rem 0.75rem;
-  border-radius: var(--round-4, 4px);
+  border-radius: var(--round-4);
   font-size: 0.825rem;
   border: 1px solid transparent;
   transition: all 0.15s ease;
 }
 
 .badge-filter-primary {
-  background-color: rgba(18, 78, 157, 0.08);
-  border-color: rgba(18, 78, 157, 0.2);
-  color: var(--color--blue, #124e9d);
+  background-color: var(--ks-badge-blue-bg);
+  border-color: var(--ks-badge-blue-border);
+  color: var(--color--blue);
 }
 
 .badge-filter-primary:hover {
-  background-color: var(--color--blue, #124e9d);
-  color: #ffffff;
+  background-color: var(--color--blue);
+  color: var(--color--white);
 }
 
 .badge-filter-info {
-  background-color: #e8f4fd;
-  border-color: #b8daf6;
-  color: #0b5394;
+  background-color: var(--ks-status-info-bg);
+  border-color: var(--ks-status-info-border);
+  color: var(--ks-status-info-text);
 }
 
 .badge-filter-info:hover {
-  background-color: #0b5394;
-  color: #ffffff;
+  background-color: var(--ks-status-info-text);
+  color: var(--color--white);
 }
 
 .badge-filter-warning {
-  background-color: var(--ks-provisional-bg, #fff9ed);
-  border-color: var(--ks-provisional-border, #fed89b);
-  color: var(--ks-provisional-text, #7a4b04);
+  background-color: var(--ks-provisional-bg);
+  border-color: var(--ks-provisional-border);
+  color: var(--ks-provisional-text);
 }
 
 .badge-filter-warning:hover {
-  background-color: var(--color--carrot-orange, #eb9624);
-  color: #000000;
+  background-color: var(--color--carrot-orange);
+  color: var(--color--black);
 }
 
 .badge-filter-success {
-  background-color: #eaf7ed;
-  border-color: #bce4c6;
-  color: #1e7e34;
+  background-color: var(--ks-status-success-bg);
+  border-color: var(--ks-status-success-border);
+  color: var(--ks-status-success-text);
 }
 
 .badge-filter-success:hover {
-  background-color: #1e7e34;
-  color: #ffffff;
+  background-color: var(--ks-status-success-text);
+  color: var(--color--white);
 }
 
 .badge-filter-secondary {
-  background-color: #f1f1f1;
-  border-color: #d8d8d8;
-  color: #555555;
+  background-color: var(--ks-status-neutral-bg);
+  border-color: var(--ks-status-neutral-border);
+  color: var(--ks-status-neutral-text);
 }
 
 .badge-filter-secondary:hover {
-  background-color: #555555;
-  color: #ffffff;
+  background-color: var(--ks-status-neutral-text);
+  color: var(--color--white);
 }
 
 .badge-filter-dark {
-  background-color: #eeeeee;
-  border-color: #cccccc;
-  color: #222222;
+  background-color: var(--ks-status-dark-bg);
+  border-color: var(--ks-status-dark-border);
+  color: var(--ks-status-dark-text);
 }
 
 .badge-filter-dark:hover {
-  background-color: #222222;
-  color: #ffffff;
+  background-color: var(--ks-status-dark-text);
+  color: var(--color--white);
 }
 
 /* Institutional Table */
 .institutional-table thead {
-  background-color: #fafafa;
+  background-color: var(--ks-bg-paper);
 }
 
 .institutional-table th {
   font-weight: 600;
-  color: var(--color--gray, #4f4f4f);
+  color: var(--color--gray);
 }
 
 .institutional-table-row td {
   padding: 0.85rem 0.75rem;
-  border-color: var(--ks-rule, #e5e5e5);
+  border-color: var(--ks-rule);
 }
 
 .candidate-avatar {
   width: 32px;
   height: 32px;
-  background-color: #f0e3ce;
-  color: #7a4b04;
+  background-color: var(--ks-avatar-warm-bg);
+  color: var(--ks-provisional-text);
   font-size: 0.85rem;
 }
 
 .hover-orange:hover {
-  color: var(--color--carrot-orange, #eb9624) !important;
+  color: var(--color--carrot-orange) !important;
 }
 
 .btn-ks-primary {
-  background-color: var(--color--carrot-orange, #eb9624);
-  border: 1px solid var(--color--carrot-orange, #eb9624);
-  color: #000000;
+  background-color: var(--color--carrot-orange);
+  border: 1px solid var(--color--carrot-orange);
+  color: var(--color--black);
   font-weight: 600;
   transition: all 0.15s ease-in-out;
 }
 
 .btn-ks-primary:hover {
-  background-color: #d88316;
-  border-color: #d88316;
-  color: #000000;
+  background-color: var(--ks-admin-orange-hover);
+  border-color: var(--ks-admin-orange-hover);
+  color: var(--color--black);
 }

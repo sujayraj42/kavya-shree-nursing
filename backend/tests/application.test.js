@@ -209,4 +209,28 @@ describe('Online Applications API', () => {
     assert.equal(res.body.data.applicationNumber, 'KSIN-2026-APP-1234');
     assert.equal(res.body.data.status, 'submitted');
   });
+
+  it('GET /api/admin/applications should list applications via admin router alias', async () => {
+    mock.method(Application, 'countDocuments', async () => 1);
+    mock.method(Application, 'find', () => ({
+      sort: () => ({
+        skip: () => ({
+          limit: async () => [{
+            id: 'app1',
+            applicationNumber: 'KSIN-2026-APP-0001',
+            applicantName: 'Suman Kumari',
+            status: 'submitted'
+          }]
+        })
+      })
+    }));
+
+    const res = await request(app)
+      .get('/api/admin/applications')
+      .set('Authorization', `Bearer ${validToken}`);
+
+    assert.equal(res.status, 200);
+    assert.equal(res.body.success, true);
+    assert.equal(res.body.data.applications.length, 1);
+  });
 });
