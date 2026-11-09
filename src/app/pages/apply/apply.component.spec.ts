@@ -23,6 +23,12 @@ describe('ApplyComponent', () => {
     expect((component as any).totalSteps).toBe(5);
   });
 
+  it('should mark the active wizard step with aria-current="step"', () => {
+    const activeStep = fixture.nativeElement.querySelector('[aria-current="step"]');
+    expect(activeStep).toBeTruthy();
+    expect(activeStep.textContent).toContain('1');
+  });
+
   it('should reject progression to step 2 if candidate name is too short', () => {
     (component as any).applicantName.set('A');
     component.nextStep();

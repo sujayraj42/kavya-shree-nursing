@@ -143,6 +143,18 @@
   --ks-border-white-10: rgba(255, 255, 255, 0.1);
   --ks-tab-border: #dcdcdc;
 
+  /* Online Application Wizard Semantic Tokens */
+  --ks-apply-hero-bg: #0f2942;
+  --ks-step-pending-bg: #e2e8f0;
+  --ks-step-completed-bg: #198754;
+  --ks-step-text-muted: #64748b;
+  --ks-step-text-active: #0f172a;
+  --ks-program-selected-bg: #fffcf5;
+  --ks-radio-border-muted: #94a3b8;
+  --ks-success-circle-bg: #d1e7dd;
+  --ks-orange-alpha-12: rgba(235, 150, 36, 0.12);
+  --ks-orange-alpha-25: rgba(235, 150, 36, 0.25);
+
   /* Framer Motion Spring & Easing Physics Tokens */
   --fm-spring: cubic-bezier(0.16, 1, 0.3, 1);
   --fm-spring-snappy: cubic-bezier(0.2, 0.8, 0.2, 1);

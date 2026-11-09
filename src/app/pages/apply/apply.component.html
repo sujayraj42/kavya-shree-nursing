@@ -135,6 +135,7 @@
                   class="step-badge-btn"
                   [class.active]="currentStep() === step"
                   [class.completed]="currentStep() > step"
+                  [attr.aria-current]="currentStep() === step ? 'step' : null"
                   [disabled]="currentStep() < step"
                   (click)="goToStep(step)"
                   [title]="'Go to Step ' + step"
