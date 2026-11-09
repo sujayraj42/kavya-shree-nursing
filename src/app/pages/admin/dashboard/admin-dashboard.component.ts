@@ -37,16 +37,14 @@ export class AdminDashboardComponent implements OnInit {
     this.errorMessage.set('');
 
     try {
-      const [data, appData] = await Promise.all([
-        this.enquiryService.getDashboardData(),
-        this.appService.listApplications({ page: 1, limit: 5 }).catch(() => null)
-      ]);
+      const data = await this.enquiryService.getDashboardData();
       this.stats.set(data.stats);
       this.recentEnquiries.set(data.recentEnquiries);
+      this.isLoading.set(false);
+      const appData = await this.appService.listApplications({ page: 1, limit: 5 }).catch(() => null);
       if (appData) {
         this.totalApplications.set(appData.pagination.total);
       }
-      this.isLoading.set(false);
     } catch (err: any) {
       this.errorMessage.set(err?.message || 'Failed to load dashboard metrics. Please try again.');
       this.isLoading.set(false);

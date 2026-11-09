@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { AdminDashboardComponent } from './admin-dashboard.component';
 import { AdminEnquiryService } from '../services/admin-enquiry.service';
+import { AdminApplicationService } from '../services/admin-application.service';
 import { AdminAuthService } from '../services/admin-auth.service';
 
 describe('AdminDashboardComponent', () => {
@@ -9,6 +10,9 @@ describe('AdminDashboardComponent', () => {
   let fixture: ComponentFixture<AdminDashboardComponent>;
   let mockEnquiryService: {
     getDashboardData: ReturnType<typeof vi.fn>;
+  };
+  let mockApplicationService: {
+    listApplications: ReturnType<typeof vi.fn>;
   };
   let mockAuthService: {
     currentUser: ReturnType<typeof vi.fn>;
@@ -43,6 +47,12 @@ describe('AdminDashboardComponent', () => {
     mockEnquiryService = {
       getDashboardData: vi.fn().mockResolvedValue(sampleDashboardData)
     };
+    mockApplicationService = {
+      listApplications: vi.fn().mockResolvedValue({
+        applications: [],
+        pagination: { page: 1, limit: 5, total: 3, totalPages: 1 }
+      })
+    };
     mockAuthService = {
       currentUser: vi.fn().mockReturnValue({ name: 'Admissions Officer' })
     };
@@ -52,6 +62,7 @@ describe('AdminDashboardComponent', () => {
       providers: [
         provideRouter([]),
         { provide: AdminEnquiryService, useValue: mockEnquiryService },
+        { provide: AdminApplicationService, useValue: mockApplicationService },
         { provide: AdminAuthService, useValue: mockAuthService }
       ]
     }).compileComponents();
