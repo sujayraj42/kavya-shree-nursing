@@ -1,41 +1,41 @@
 .ks-notice-bar {
-  background-color: var(--ks-provisional-bg, #fff9ed);
-  border-bottom: 1px solid var(--ks-provisional-border, #fed89b);
-  color: var(--ks-provisional-text, #7a4b04);
+  background-color: var(--ks-provisional-bg);
+  border-bottom: 1px solid var(--ks-provisional-border);
+  color: var(--ks-provisional-text);
   font-family: var(--font--sans);
   z-index: 1040;
   position: relative;
 }
 
 .ks-badge-amber {
-  background-color: var(--color--carrot-orange, #eb9624);
-  color: #181818;
+  background-color: var(--color--carrot-orange);
+  color: var(--color--eeire-black);
   font-size: 0.75rem;
   letter-spacing: 0.05em;
   font-weight: 700;
   padding: 0.25rem 0.5rem;
-  border-radius: var(--round-4, 4px);
+  border-radius: var(--round-4);
 }
 
 .notice-text {
-  color: #5c3803;
+  color: var(--ks-notice-text);
 }
 
 .apply-link {
   font-size: 0.8125rem;
   font-weight: 600;
   white-space: nowrap;
-  background-color: var(--color--carrot-orange, #eb9624);
-  color: #181818;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: var(--round-4, 4px);
+  background-color: var(--color--carrot-orange);
+  color: var(--color--eeire-black);
+  border: 1px solid var(--ks-border-dark-10);
+  border-radius: var(--round-4);
   text-decoration: none;
   line-height: 1.6;
 }
 
 .apply-link:hover {
-  background-color: #d88214;
-  color: #000000;
+  background-color: var(--ks-admin-orange-hover);
+  color: var(--color--black);
 }
 
 .btn-close-sm {

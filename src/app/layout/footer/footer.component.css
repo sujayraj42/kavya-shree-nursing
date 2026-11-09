@@ -2,7 +2,7 @@
 
 .footer-section {
   background-color: var(--color--eeire-black);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--ks-border-white-08);
 }
 
 .ks-footer-logo {
@@ -28,8 +28,8 @@
 }
 
 .ks-footer-notice {
-  background-color: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--ks-surface-white-04);
+  border: 1px solid var(--ks-border-white-08);
   border-radius: var(--round-4);
   color: var(--color--white-80);
 }

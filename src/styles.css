@@ -95,6 +95,41 @@
   --ks-focus-ring: 0 0 0 3px rgba(235, 150, 36, 0.45);
   --ks-focus-outline: 2px solid var(--color--carrot-orange);
 
+  /* Shell Layout, Drawer & Floating Action Semantic Tokens */
+  --ks-drawer-bg: #14171a;
+  --ks-header-drawer-bg: var(--ks-drawer-bg);
+  --ks-header-cta-ink: #0b1a2c;
+  --ks-whatsapp-green: #25d366;
+  --ks-whatsapp-brand: var(--ks-whatsapp-green);
+  --ks-whatsapp-hover: #20ba59;
+  --ks-whatsapp-teal: #128c7e;
+  --ks-whatsapp-dark: var(--ks-whatsapp-teal);
+  --ks-notice-bg: var(--ks-provisional-bg);
+  --ks-notice-text: #5c3803;
+  --ks-surface-subtle: #f8fafc;
+  --ks-surface-charcoal-hover: #2a2a2a;
+  --ks-white-85: rgba(255, 255, 255, 0.85);
+  --ks-surface-white-04: rgba(255, 255, 255, 0.04);
+  --ks-surface-white-06: rgba(255, 255, 255, 0.06);
+  --ks-surface-white-07: rgba(255, 255, 255, 0.07);
+  --ks-surface-white-10: rgba(255, 255, 255, 0.1);
+  --ks-surface-white-14: rgba(255, 255, 255, 0.14);
+  --ks-border-white-08: rgba(255, 255, 255, 0.08);
+  --ks-border-white-12: rgba(255, 255, 255, 0.12);
+  --ks-border-white-18: rgba(255, 255, 255, 0.18);
+  --ks-border-white-20: rgba(255, 255, 255, 0.2);
+  --ks-border-white-25: rgba(255, 255, 255, 0.25);
+  --ks-border-white-32: rgba(255, 255, 255, 0.32);
+  --ks-border-white-35: rgba(255, 255, 255, 0.35);
+  --ks-border-dark-10: rgba(0, 0, 0, 0.1);
+  --ks-shadow-dark-20: rgba(0, 0, 0, 0.2);
+  --ks-shadow-dark-25: rgba(0, 0, 0, 0.25);
+  --ks-shadow-drawer: rgba(0, 0, 0, 0.55);
+  --ks-orange-alpha-22: rgba(235, 150, 36, 0.22);
+  --ks-orange-alpha-28: rgba(235, 150, 36, 0.28);
+  --ks-orange-alpha-42: rgba(235, 150, 36, 0.42);
+  --ks-orange-alpha-60: rgba(235, 150, 36, 0.6);
+
   /* Framer Motion Spring & Easing Physics Tokens */
   --fm-spring: cubic-bezier(0.16, 1, 0.3, 1);
   --fm-spring-snappy: cubic-bezier(0.2, 0.8, 0.2, 1);

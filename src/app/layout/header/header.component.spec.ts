@@ -49,6 +49,16 @@ describe('HeaderComponent', () => {
     expect(component['isMenuOpen']()).toBe(false);
   });
 
+  it('should close mobile navigation drawer when Escape key is pressed', () => {
+    const fixture = TestBed.createComponent(HeaderComponent);
+    fixture.detectChanges();
+    const comp = fixture.componentInstance as any;
+    comp.toggleMenu();
+    expect(comp.isMenuOpen()).toBe(true);
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(comp.isMenuOpen()).toBe(false);
+  });
+
   it('should have proper ARIA attributes on mobile toggler', async () => {
     const fixture = TestBed.createComponent(HeaderComponent);
     await fixture.whenStable();
